@@ -14,11 +14,7 @@ final class NetworkTest: XCTestCase {
     var sut: OpenMarketRequest!
     
     override func setUpWithError() throws {
-        sut = OpenMarketRequest(
-            method: .get,
-            baseURL: URLHost.openMarket.url,
-            path: ""
-        )
+        sut = OpenMarketRequestDirector().createGetRequest()
     }
     
     override func tearDownWithError() throws {
@@ -54,9 +50,6 @@ final class NetworkTest: XCTestCase {
     func test_POST_메서드_동작확인() {
         //given
         let expectation = expectation(description: "비동기테스트")
-        guard let assetImage = UIImage(named: "testImage") else { return }
-        guard let jpegData = assetImage.compress() else { return }
-        
         let product = RegistrationProduct(name: "궁극의 푸른눈의 백룡",
                                           description: "공격력 제일쎔",
                                           price: 10000.0,
@@ -64,23 +57,9 @@ final class NetworkTest: XCTestCase {
                                           discountedPrice: 0.0,
                                           stock: 1,
                                           secret: UserInfo.secret.text)
-        
-        guard let productData = try? JSONEncoder().encode(product) else { return }
-        
-        let multiPartFormData = MultiPartForm(
-            boundary: boundary,
-            jsonData: productData,
-            images: [ProductImage(name: "testImage", data: jpegData, type: "jpeg")]
-        )
-        
         let networkManager = NetworkManager()
-        let request = OpenMarketRequest(
-            method: .post,
-            baseURL: URLHost.openMarket.url,
-            headers: ["identifier": UserInfo.identifier.text, "Content-Type": "multipart/form-data; boundary=\(boundary)"],
-            body: .multiPartForm(multiPartFormData),
-            path: URLAdditionalPath.product.value
-        )
+        
+        guard let request = OpenMarketRequestDirector().createPostRequest(product: product, imageName: "testImage") else { return }
         
         networkManager.dataTask(with: request) { result in
             switch result {
@@ -107,16 +86,10 @@ final class NetworkTest: XCTestCase {
                                           discountedPrice: 0.0,
                                           stock: 33,
                                           secret: UserInfo.secret.text)
-        guard let productData = try? JSONEncoder().encode(product) else { return }
         let networkManager = NetworkManager()
-        let request = OpenMarketRequest(
-            method: .patch,
-            baseURL: URLHost.openMarket.url,
-            headers: ["identifier": UserInfo.identifier.text, "Content-Type": "application/json"],
-            body: .json(productData),
-            
-            path: URLAdditionalPath.product.value + "/181/"
-        )
+       
+        guard let request = OpenMarketRequestDirector().createPatchRequest(product: product, productNumber: 189) else { return }
+        
         networkManager.dataTask(with: request) { result in
             switch result {
             case .success(let success):
@@ -134,15 +107,9 @@ final class NetworkTest: XCTestCase {
         //given
         let expectation = expectation(description: "비동기 요청을 기다림.")
         let networkManager = NetworkManager()
-        let body = ProductDeleteKey(secret: UserInfo.secret.text)
-        guard let data = try? JSONEncoder().encode(body) else { return }
-        let deleteRequest = OpenMarketRequest(
-            method: .post,
-            baseURL: URLHost.openMarket.url,
-            headers: ["identifier": UserInfo.identifier.text, "Content-Type": "application/json"],
-            body: .json(data),
-            path: URLAdditionalPath.product.value + "/181/archived"
-        )
+       
+        guard let deleteRequest = OpenMarketRequestDirector().createDeleteURIRequest(vendorSecret: UserInfo.secret.text, productNumber: 189) else { return }
+        
         networkManager.dataTask(with: deleteRequest) { (result: Result<Data, Error>) in
             switch result {
             case .success(let success):
@@ -161,13 +128,8 @@ final class NetworkTest: XCTestCase {
         // given
         let expectation = expectation(description: "비동기 요청을 기다림.")
         let networkManager = NetworkManager()
-        let deleteRequest = OpenMarketRequest(
-            method: .delete,
-            baseURL: URLHost.openMarket.url,
-            headers: ["identifier": UserInfo.identifier.text,
-                      "Content-Type" : "application/json"],
-            path: URLAdditionalPath.product.value + "/MTgxfGI0MGU3ZWYwLTYwZmItMTFlZC1hOTE3LTQxYTQ3YmFmMDM1NQ"
-        )
+        guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(with: "MTg5fDU3MDNjODU4LTYxMTAtMTFlZC1hOTE3LTYxZDNlYmI5MDA4MQ") else { return }
+        
         networkManager.dataTask(with: deleteRequest) { (result: Result<Data, Error>) in
             switch result {
             case .success(let success):

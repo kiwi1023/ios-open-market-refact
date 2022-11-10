@@ -8,7 +8,7 @@
 import Foundation
 @testable import ios_open_market_refact
 
-final class MockSession: SessionProtocol {
+final class StubSession: SessionProtocol {
     func dataTask(with request: APIRequest,
                   completionHandler: @escaping (Result<Data, Error>) -> Void) {
         guard let mockData = MockData(fileName: "ProductListMockData").data else {

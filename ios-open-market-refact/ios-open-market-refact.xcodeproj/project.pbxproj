@@ -22,6 +22,7 @@
 		4D8B7BC1291CE3CE00A6E5F2 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC0291CE3CE00A6E5F2 /* NetworkManager.swift */; };
 		4D8B7BC3291CE41300A6E5F2 /* OpenMarketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC2291CE41300A6E5F2 /* OpenMarketRequest.swift */; };
 		4D8B7BC5291CE45B00A6E5F2 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */; };
+		4D8B7BC7291D031200A6E5F2 /* ProductDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		4D8B7BC0291CE3CE00A6E5F2 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		4D8B7BC2291CE41300A6E5F2 /* OpenMarketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMarketRequest.swift; sourceTree = "<group>"; };
 		4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetail.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				459EDB5E291CAE4700B1A7EB /* ProductListModel.swift */,
+				4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */,
 				45578591291CB20F0082A983 /* CurrencyEnum.swift */,
 			);
 			path = Model;
@@ -282,6 +285,7 @@
 			files = (
 				455785A7291CF2FF0082A983 /* SessionProtocol.swift in Sources */,
 				4D85B720291A1D0000E41E71 /* ViewController.swift in Sources */,
+				4D8B7BC7291D031200A6E5F2 /* ProductDetail.swift in Sources */,
 				4D8B7BBF291CE09C00A6E5F2 /* APIRequestProtocol.swift in Sources */,
 				45578592291CB20F0082A983 /* CurrencyEnum.swift in Sources */,
 				4D8B7BC5291CE45B00A6E5F2 /* APIError.swift in Sources */,

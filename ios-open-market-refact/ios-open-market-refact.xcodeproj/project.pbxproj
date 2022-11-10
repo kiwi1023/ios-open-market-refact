@@ -12,6 +12,11 @@
 		4D85B71C291A1D0000E41E71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71B291A1D0000E41E71 /* AppDelegate.swift */; };
 		4D85B71E291A1D0000E41E71 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */; };
 		4D85B720291A1D0000E41E71 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71F291A1D0000E41E71 /* ViewController.swift */; };
+		4D8B7BBD291CE04400A6E5F2 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BBC291CE04400A6E5F2 /* HTTPMethod.swift */; };
+		4D8B7BBF291CE09C00A6E5F2 /* APIRequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BBE291CE09C00A6E5F2 /* APIRequestProtocol.swift */; };
+		4D8B7BC1291CE3CE00A6E5F2 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC0291CE3CE00A6E5F2 /* NetworkManager.swift */; };
+		4D8B7BC3291CE41300A6E5F2 /* OpenMarketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC2291CE41300A6E5F2 /* OpenMarketRequest.swift */; };
+		4D8B7BC5291CE45B00A6E5F2 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +28,11 @@
 		4D85B71F291A1D0000E41E71 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4D85B724291A1D0100E41E71 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D85B729291A1D0100E41E71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4D8B7BBC291CE04400A6E5F2 /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		4D8B7BBE291CE09C00A6E5F2 /* APIRequestProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestProtocol.swift; sourceTree = "<group>"; };
+		4D8B7BC0291CE3CE00A6E5F2 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		4D8B7BC2291CE41300A6E5F2 /* OpenMarketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMarketRequest.swift; sourceTree = "<group>"; };
+		4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,9 +58,10 @@
 		459EDB5C291CADD700B1A7EB /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				459EDB5D291CAE0C00B1A7EB /* Model */,
-				4D85B71B291A1D0000E41E71 /* AppDelegate.swift */,
 				4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */,
+				4D85B71B291A1D0000E41E71 /* AppDelegate.swift */,
+				4D8B7BBA291CDEF400A6E5F2 /* Utill */,
+				459EDB5D291CAE0C00B1A7EB /* Model */,
 				4D85B71F291A1D0000E41E71 /* ViewController.swift */,
 			);
 			path = Resource;
@@ -88,6 +99,26 @@
 				459EDB5B291CADC500B1A7EB /* Source */,
 			);
 			path = "ios-open-market-refact";
+			sourceTree = "<group>";
+		};
+		4D8B7BBA291CDEF400A6E5F2 /* Utill */ = {
+			isa = PBXGroup;
+			children = (
+				4D8B7BBB291CDF1400A6E5F2 /* Network */,
+			);
+			path = Utill;
+			sourceTree = "<group>";
+		};
+		4D8B7BBB291CDF1400A6E5F2 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				4D8B7BC0291CE3CE00A6E5F2 /* NetworkManager.swift */,
+				4D8B7BBC291CE04400A6E5F2 /* HTTPMethod.swift */,
+				4D8B7BBE291CE09C00A6E5F2 /* APIRequestProtocol.swift */,
+				4D8B7BC2291CE41300A6E5F2 /* OpenMarketRequest.swift */,
+				4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,9 +179,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D85B720291A1D0000E41E71 /* ViewController.swift in Sources */,
+				4D8B7BBF291CE09C00A6E5F2 /* APIRequestProtocol.swift in Sources */,
 				45578592291CB20F0082A983 /* CurrencyEnum.swift in Sources */,
+				4D8B7BC5291CE45B00A6E5F2 /* APIError.swift in Sources */,
+				4D8B7BBD291CE04400A6E5F2 /* HTTPMethod.swift in Sources */,
+				4D8B7BC1291CE3CE00A6E5F2 /* NetworkManager.swift in Sources */,
 				4D85B71C291A1D0000E41E71 /* AppDelegate.swift in Sources */,
 				4D85B71E291A1D0000E41E71 /* SceneDelegate.swift in Sources */,
+				4D8B7BC3291CE41300A6E5F2 /* OpenMarketRequest.swift in Sources */,
 				459EDB5F291CAE4700B1A7EB /* ProductListModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

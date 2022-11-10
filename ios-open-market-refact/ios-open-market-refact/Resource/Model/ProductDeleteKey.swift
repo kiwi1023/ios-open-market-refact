@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct ProductDeleteKey: Codable {
+struct ProductDeleteKey: Encodable {
     let secret: String
 }

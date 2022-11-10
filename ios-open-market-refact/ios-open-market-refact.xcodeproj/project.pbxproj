@@ -26,6 +26,7 @@
 		4D8B7BC3291CE41300A6E5F2 /* OpenMarketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC2291CE41300A6E5F2 /* OpenMarketRequest.swift */; };
 		4D8B7BC5291CE45B00A6E5F2 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */; };
 		4D8B7BC7291D031200A6E5F2 /* ProductDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */; };
+		4D8B7BCA291D24EA00A6E5F2 /* Data + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC9291D24EA00A6E5F2 /* Data + Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		4D8B7BC2291CE41300A6E5F2 /* OpenMarketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMarketRequest.swift; sourceTree = "<group>"; };
 		4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetail.swift; sourceTree = "<group>"; };
+		4D8B7BC9291D24EA00A6E5F2 /* Data + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data + Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +174,7 @@
 		4D8B7BBA291CDEF400A6E5F2 /* Utill */ = {
 			isa = PBXGroup;
 			children = (
+				4D8B7BC8291D24D600A6E5F2 /* Extensiojn */,
 				455785B4291D0C720082A983 /* NameSpace */,
 				4D8B7BBB291CDF1400A6E5F2 /* Network */,
 			);
@@ -189,6 +192,14 @@
 				455785A6291CF2FF0082A983 /* SessionProtocol.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		4D8B7BC8291D24D600A6E5F2 /* Extensiojn */ = {
+			isa = PBXGroup;
+			children = (
+				4D8B7BC9291D24EA00A6E5F2 /* Data + Extension.swift */,
+			);
+			path = Extensiojn;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -303,6 +314,7 @@
 				455785B8291D0D620082A983 /* ProductDeleteKey.swift in Sources */,
 				455785A7291CF2FF0082A983 /* SessionProtocol.swift in Sources */,
 				4D85B720291A1D0000E41E71 /* ViewController.swift in Sources */,
+				4D8B7BCA291D24EA00A6E5F2 /* Data + Extension.swift in Sources */,
 				4D8B7BC7291D031200A6E5F2 /* ProductDetail.swift in Sources */,
 				4D8B7BBF291CE09C00A6E5F2 /* APIRequestProtocol.swift in Sources */,
 				45578592291CB20F0082A983 /* CurrencyEnum.swift in Sources */,

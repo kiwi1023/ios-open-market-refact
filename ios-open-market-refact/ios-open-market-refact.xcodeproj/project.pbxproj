@@ -16,7 +16,6 @@
 		455785B3291D0B730082A983 /* RegistrationProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785B2291D0B730082A983 /* RegistrationProduct.swift */; };
 		455785B6291D0C7E0082A983 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785B5291D0C7E0082A983 /* UserInfo.swift */; };
 		455785B8291D0D620082A983 /* ProductDeleteKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785B7291D0D620082A983 /* ProductDeleteKey.swift */; };
-		455785B9291D2C570082A983 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D85B724291A1D0100E41E71 /* Assets.xcassets */; };
 		455785BB291D317F0082A983 /* UIImage + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785BA291D317F0082A983 /* UIImage + Extension.swift */; };
 		459EDB5F291CAE4700B1A7EB /* ProductListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459EDB5E291CAE4700B1A7EB /* ProductListModel.swift */; };
 		4D85B71C291A1D0000E41E71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71B291A1D0000E41E71 /* AppDelegate.swift */; };
@@ -29,6 +28,7 @@
 		4D8B7BC5291CE45B00A6E5F2 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */; };
 		4D8B7BC7291D031200A6E5F2 /* ProductDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */; };
 		4D8B7BCA291D24EA00A6E5F2 /* Data + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC9291D24EA00A6E5F2 /* Data + Extension.swift */; };
+		4D8B7BCC291D4E8D00A6E5F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D85B724291A1D0100E41E71 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -294,7 +294,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				455785B9291D2C570082A983 /* Assets.xcassets in Resources */,
+				4D8B7BCC291D4E8D00A6E5F2 /* Assets.xcassets in Resources */,
 				455785B1291CF6B20082A983 /* ProductListMockData.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

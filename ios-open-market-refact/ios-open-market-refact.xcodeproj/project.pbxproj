@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45578592291CB20F0082A983 /* CurrencyEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45578591291CB20F0082A983 /* CurrencyEnum.swift */; };
+		459EDB5F291CAE4700B1A7EB /* ProductListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459EDB5E291CAE4700B1A7EB /* ProductListModel.swift */; };
 		4D85B71C291A1D0000E41E71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71B291A1D0000E41E71 /* AppDelegate.swift */; };
 		4D85B71E291A1D0000E41E71 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */; };
 		4D85B720291A1D0000E41E71 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71F291A1D0000E41E71 /* ViewController.swift */; };
-		4D85B725291A1D0100E41E71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D85B724291A1D0100E41E71 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		45578591291CB20F0082A983 /* CurrencyEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyEnum.swift; sourceTree = "<group>"; };
+		459EDB5E291CAE4700B1A7EB /* ProductListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListModel.swift; sourceTree = "<group>"; };
 		4D85B718291A1D0000E41E71 /* ios-open-market-refact.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-open-market-refact.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D85B71B291A1D0000E41E71 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -33,6 +36,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		459EDB5B291CADC500B1A7EB /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				4D85B724291A1D0100E41E71 /* Assets.xcassets */,
+				4D85B729291A1D0100E41E71 /* Info.plist */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		459EDB5C291CADD700B1A7EB /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				459EDB5D291CAE0C00B1A7EB /* Model */,
+				4D85B71B291A1D0000E41E71 /* AppDelegate.swift */,
+				4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */,
+				4D85B71F291A1D0000E41E71 /* ViewController.swift */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		459EDB5D291CAE0C00B1A7EB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				459EDB5E291CAE4700B1A7EB /* ProductListModel.swift */,
+				45578591291CB20F0082A983 /* CurrencyEnum.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		4D85B70F291A1D0000E41E71 = {
 			isa = PBXGroup;
 			children = (
@@ -52,11 +84,8 @@
 		4D85B71A291A1D0000E41E71 /* ios-open-market-refact */ = {
 			isa = PBXGroup;
 			children = (
-				4D85B71B291A1D0000E41E71 /* AppDelegate.swift */,
-				4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */,
-				4D85B71F291A1D0000E41E71 /* ViewController.swift */,
-				4D85B724291A1D0100E41E71 /* Assets.xcassets */,
-				4D85B729291A1D0100E41E71 /* Info.plist */,
+				459EDB5C291CADD700B1A7EB /* Resource */,
+				459EDB5B291CADC500B1A7EB /* Source */,
 			);
 			path = "ios-open-market-refact";
 			sourceTree = "<group>";
@@ -70,7 +99,6 @@
 			buildPhases = (
 				4D85B714291A1D0000E41E71 /* Sources */,
 				4D85B715291A1D0000E41E71 /* Frameworks */,
-				4D85B716291A1D0000E41E71 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -114,25 +142,16 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		4D85B716291A1D0000E41E71 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4D85B725291A1D0100E41E71 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		4D85B714291A1D0000E41E71 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				4D85B720291A1D0000E41E71 /* ViewController.swift in Sources */,
+				45578592291CB20F0082A983 /* CurrencyEnum.swift in Sources */,
 				4D85B71C291A1D0000E41E71 /* AppDelegate.swift in Sources */,
 				4D85B71E291A1D0000E41E71 /* SceneDelegate.swift in Sources */,
+				459EDB5F291CAE4700B1A7EB /* ProductListModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +208,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "ios-open-market-refact/Source/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -243,6 +263,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "ios-open-market-refact/Source/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -261,9 +282,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "ios-open-market-refact/Info.plist";
+				INFOPLIST_FILE = "ios-open-market-refact/Source/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -288,9 +308,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "ios-open-market-refact/Info.plist";
+				INFOPLIST_FILE = "ios-open-market-refact/Source/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

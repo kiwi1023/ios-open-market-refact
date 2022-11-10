@@ -7,7 +7,7 @@
 
 struct RegistrationProduct: Encodable {
     let name: String
-    let descriptions: String
+    let description: String
     let price: Double
     let currency: String
     let discountedPrice: Double?
@@ -16,7 +16,7 @@ struct RegistrationProduct: Encodable {
     
     enum CodingKeys: String, CodingKey {
         case name
-        case descriptions
+        case description
         case price
         case currency
         case stock

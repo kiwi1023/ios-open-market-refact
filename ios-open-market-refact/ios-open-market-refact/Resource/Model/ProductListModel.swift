@@ -17,18 +17,6 @@ struct ProductList: Decodable {
     let lastPage: Int
     let hasNext: Bool
     let hasPrev: Bool
-    
-    enum CodingKeys: String, CodingKey {
-        case pageNo = "page_no"
-        case itemsPerPage = "items_per_page"
-        case totalCount = "total_count"
-        case offset
-        case limit
-        case pages
-        case lastPage = "last_page"
-        case hasNext = "has_next"
-        case hasPrev = "has_prev"
-    }
 }
 
 // MARK: - Product
@@ -36,6 +24,7 @@ struct Product: Decodable {
     let id: Int
     let vendorID: Int
     let name: String
+    let description: String
     let thumbnail: String
     let currency: Currency
     let price: Double
@@ -49,6 +38,7 @@ struct Product: Decodable {
         case id
         case vendorID = "vendor_id"
         case name
+        case description
         case thumbnail
         case currency
         case price

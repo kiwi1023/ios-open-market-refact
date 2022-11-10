@@ -13,5 +13,5 @@ struct OpenMarketRequest: APIRequest {
     var headers: [String : String]?
     var query: [String : String]?
     var body: Data?
-    var path: String?
+    var path: String
 }

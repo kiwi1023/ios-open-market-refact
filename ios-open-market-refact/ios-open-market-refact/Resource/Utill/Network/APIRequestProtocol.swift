@@ -13,7 +13,7 @@ enum URLHost {
     var url: String {
         switch self {
         case .openMarket:
-            return "https://market-training.yagom-academy.kr"
+            return "https://openmarket.yagom-academy.kr"
         }
     }
 }
@@ -38,13 +38,11 @@ protocol APIRequest {
     var headers: [String: String]? { get }
     var query: [String: String]? { get }
     var body: Data? { get }
-    var path: String? { get }
+    var path: String { get }
 }
 
 extension APIRequest {
-    var url: URL? {
-        guard let path = path else { return nil }
-        
+    var url: URL? {        
         var urlComponents = URLComponents(string: baseURL + path)
         urlComponents?.queryItems = query?.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
         return urlComponents?.url

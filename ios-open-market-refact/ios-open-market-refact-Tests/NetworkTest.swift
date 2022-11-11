@@ -10,24 +10,14 @@ import XCTest
 
 final class NetworkTest: XCTestCase {
     
-    let boundary = "Boundary-\(UUID().uuidString)"
-    var sut: OpenMarketRequest!
-    
-    override func setUpWithError() throws {
-        sut = OpenMarketRequestDirector().createGetRequest()
-    }
-    
-    override func tearDownWithError() throws {
-        sut = nil
-    }
-    
     func test_GET_메서드_동작확인() {
         // given
         let expectation = expectation(description: "비동기테스트")
         let session = StubSession()
         var productName: String?
+        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 100) else { return }
         
-        session.dataTask(with: sut) { result in
+        session.dataTask(with: request) { result in
             switch result {
             case .success(let data):
                 let decodedData = try? JSONDecoder().decode(ProductList.self, from: data)
@@ -58,8 +48,10 @@ final class NetworkTest: XCTestCase {
                                           stock: 1,
                                           secret: UserInfo.secret.text)
         let networkManager = NetworkManager()
+        guard let assetImage = UIImage(named: "testImage") else { return }
+        guard let jpegData = assetImage.compress() else { return }
         
-        guard let request = OpenMarketRequestDirector().createPostRequest(product: product, imageName: "testImage") else { return }
+        guard let request = OpenMarketRequestDirector().createPostRequest(product: product, images: [ProductImage(name: "testImage", data: jpegData, type: "jpeg")]) else { return }
         
         networkManager.dataTask(with: request) { result in
             switch result {
@@ -108,7 +100,7 @@ final class NetworkTest: XCTestCase {
         let expectation = expectation(description: "비동기 요청을 기다림.")
         let networkManager = NetworkManager()
        
-        guard let deleteRequest = OpenMarketRequestDirector().createDeleteURIRequest(vendorSecret: UserInfo.secret.text, productNumber: 189) else { return }
+        guard let deleteRequest = OpenMarketRequestDirector().createDeleteURIRequest(productNumber: 189) else { return }
         
         networkManager.dataTask(with: deleteRequest) { (result: Result<Data, Error>) in
             switch result {

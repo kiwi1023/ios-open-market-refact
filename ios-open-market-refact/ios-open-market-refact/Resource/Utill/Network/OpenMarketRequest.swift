@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 struct OpenMarketRequest: APIRequest {
     var method: HTTPMethod
@@ -82,10 +81,10 @@ struct OpenMarketRequestDirector {
         self.builder = builder
     }
     
-    func createGetRequest() -> OpenMarketRequest? {
+   func createGetRequest(pageNumber: Int, itemsPerPage: Int) -> OpenMarketRequest? {
         let getRequest = builder.setMethod(.get)
             .setPath(URLAdditionalPath.product.value)
-            .setQuery(["page_no": "1", "items_per_page": "100"])
+            .setQuery(["page_no": "\(pageNumber)", "items_per_page": "\(itemsPerPage)"])
             .buildRequest()
         
         return getRequest
@@ -99,19 +98,15 @@ struct OpenMarketRequestDirector {
         return getDetailRequest
     }
     
-    func createPostRequest(product: RegistrationProduct, imageName: String) -> OpenMarketRequest? {
+    func createPostRequest(product: RegistrationProduct, images: [ProductImage]) -> OpenMarketRequest? {
         guard let productData = try? JSONEncoder().encode(product) else { return nil }
-        guard let assetImage = UIImage(named: imageName) else { return nil }
-        guard let jpegData = assetImage.compress() else { return nil}
-        
+
         let boundary = "Boundary-\(UUID().uuidString)"
         let postRequest = builder.setMethod(.post)
             .setPath(URLAdditionalPath.product.value)
             .setBody(HTTPBody.multiPartForm(MultiPartForm(boundary: boundary,
                                                           jsonData: productData,
-                                                          images: [ProductImage(name: imageName,
-                                                                                data: jpegData,
-                                                                                type: "jpeg")])))
+                                                          images: images)))
             .setHeaders(["Content-Type": "multipart/form-data; boundary=\(boundary)",
                          "identifier": UserInfo.identifier.text])
             .buildRequest()
@@ -132,8 +127,8 @@ struct OpenMarketRequestDirector {
         return patchRequest
     }
     
-    func createDeleteURIRequest(vendorSecret: String, productNumber: Int) -> OpenMarketRequest? {
-        let body = ProductDeleteKey(secret: vendorSecret)
+    func createDeleteURIRequest(productNumber: Int) -> OpenMarketRequest? {
+        let body = ProductDeleteKey(secret: UserInfo.secret.text)
         
         guard let data = try? JSONEncoder().encode(body) else { return nil }
 

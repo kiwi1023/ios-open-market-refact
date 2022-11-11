@@ -20,7 +20,7 @@ struct ProductList: Decodable {
 }
 
 // MARK: - Product
-struct Product: Decodable {
+struct Product: Decodable, Hashable {
     let id: Int
     let vendorID: Int
     let name: String

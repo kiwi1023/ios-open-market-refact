@@ -16,17 +16,17 @@ final class ProductListView: UIView {
         case main
     }
     
-    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Int>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Int>
+    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
     
     //MARK: - View Initializer
     
     init() {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .red
+        backgroundColor = .systemBackground
         configurationCollectionView()
-        updateDataSource(data: [1,2,3,4,5])
+        updateDataSource(data: [Product(id: 186, vendorID: 11, name: "블랙매지션", description: "마라탕", thumbnail: "https://s3.ap-northeast-2.amazonaws.com/media.yagom-academy.kr/training-resources/11/20221110/aa84877e610b11eda917ed59733c203d_thumb.jpeg", currency: .krw, price: 15000.0, bargainPrice: 1000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"), Product(id: 186, vendorID: 11, name: "블랙매지션", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00")] )
     }
     
     required init?(coder: NSCoder) {
@@ -61,7 +61,7 @@ final class ProductListView: UIView {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .fractionalWidth(1.0))
+                                               heightDimension: .fractionalWidth(1/5))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                         repeatingSubitem: item,
                                                         count:1)
@@ -74,18 +74,15 @@ final class ProductListView: UIView {
     }
     
     private func configureDataSource() -> DataSource? {
-        let cellRegistration = UICollectionView.CellRegistration<ProductListViewCell, Int> { cell, indexPath, item in
+        let cellRegistration = UICollectionView.CellRegistration<ProductListViewCell, Product> { cell, indexPath, item in
             
-            cell.contentView.backgroundColor = .blue
-            if item % 2 == 0 {
-                cell.contentView.backgroundColor = .green
-            }
+            cell.configure(data: item)
         }
         guard let mainCollectionView = mainCollectionView else {
             return nil
         }
         
-        return UICollectionViewDiffableDataSource<Section, Int>(collectionView: mainCollectionView) { (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
+        return UICollectionViewDiffableDataSource<Section, Product>(collectionView: mainCollectionView) { (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
 
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
                                                                 for: indexPath,
@@ -93,7 +90,7 @@ final class ProductListView: UIView {
         }
     }
     
-    private func updateDataSource(data: [Int]) {
+    private func updateDataSource(data: [Product]) {
         var snapshot = Snapshot()
         snapshot.appendSections([.main])
         snapshot.appendItems(data)

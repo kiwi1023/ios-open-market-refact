@@ -9,15 +9,8 @@ import UIKit
 
 final class ProductListView: UIView {
 
-    private var mainCollectionView: UICollectionView?
-    private lazy var dataSource: DataSource? = configureDataSource()
+    private(set) var mainCollectionView: UICollectionView?
     
-    enum Section {
-        case main
-    }
-    
-    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
     
     //MARK: - View Initializer
     
@@ -26,7 +19,6 @@ final class ProductListView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
         configurationCollectionView()
-        updateDataSource(data: ProductListView.sampleData)
     }
     
     required init?(coder: NSCoder) {
@@ -38,7 +30,6 @@ final class ProductListView: UIView {
     
     private func configurationCollectionView() {
         mainCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createListLayout())
-        
         
         guard let mainCollectionView = mainCollectionView else {
             return
@@ -71,31 +62,6 @@ final class ProductListView: UIView {
         section.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout
-    }
-    
-    private func configureDataSource() -> DataSource? {
-        let cellRegistration = UICollectionView.CellRegistration<ProductListViewCell, Product> { cell, indexPath, item in
-            cell.configure(data: item)
-        }
-        
-        guard let mainCollectionView = mainCollectionView else {
-            return nil
-        }
-        
-        return UICollectionViewDiffableDataSource<Section, Product>(collectionView: mainCollectionView) {
-            (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
-
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
-                                                                for: indexPath,
-                                                                item: itemIdentifier)
-        }
-    }
-    
-    func updateDataSource(data: [Product]) {
-        var snapshot = Snapshot()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(data)
-        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
     }
 }
 

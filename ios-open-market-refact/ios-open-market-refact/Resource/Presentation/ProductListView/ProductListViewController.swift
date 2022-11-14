@@ -9,7 +9,7 @@ import UIKit
 
 final class ProductListViewController: UIViewController {
     
-    private let mainView = ProductListView()
+    private lazy var mainView = ProductListView()
     
     //MARK: - ViewController Initializer
     
@@ -32,8 +32,11 @@ final class ProductListViewController: UIViewController {
     //MARK: - View Default Setup Method
     
     private func setupDefault() {
+        view.backgroundColor = .systemBackground
+        
         addUIComponents()
         setupLayout()
+        setupNavigationBar()
     }
     
     private func addUIComponents() {
@@ -47,5 +50,42 @@ final class ProductListViewController: UIViewController {
             mainView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             mainView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    private func setupNavigationBar() {
+        self.navigationItem.title = "상품목록"
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .search,
+            target: self,
+            action: #selector(didTapSearchingButton)
+        )
+        
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchBar.placeholder = "검색해보세용"
+        self.navigationItem.hidesSearchBarWhenScrolling = true
+        self.navigationItem.searchController = searchController
+        searchController.searchResultsUpdater = self
+
+    }
+    
+    @objc func didTapSearchingButton() {
+        print("didTapSearchingButton!")
+    }
+}
+
+//MARK: - SearchBar Controller
+
+extension ProductListViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text?.lowercased() else { return }
+        if text == "" {
+            mainView.updateDataSource(data: ProductListView.sampleData)
+        } else {
+            mainView.updateDataSource(data: ProductListView.sampleData.filter({ product in
+                product.name.lowercased().contains(text)
+            }))
+        }
     }
 }

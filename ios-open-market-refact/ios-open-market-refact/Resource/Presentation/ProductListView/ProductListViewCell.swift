@@ -42,6 +42,7 @@ final class ProductListViewCell: UICollectionViewCell {
         let stackView = UIStackView(arrangedSubviews: [nameLabel, quantityLabel, accessoryImageView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.alignment = .center
+        stackView.distribution = .fill
         stackView.spacing = 8
         return stackView
     }()
@@ -72,7 +73,7 @@ final class ProductListViewCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: "chevron.forward", withConfiguration: UIImage.SymbolConfiguration(weight: .medium))
         imageView.tintColor = .systemGray3
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     

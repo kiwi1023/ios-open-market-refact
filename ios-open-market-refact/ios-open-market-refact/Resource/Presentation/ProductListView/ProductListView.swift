@@ -8,7 +8,7 @@
 import UIKit
 
 final class ProductListView: UIView {
-    
+
     private var mainCollectionView: UICollectionView?
     private lazy var dataSource: DataSource? = configureDataSource()
     
@@ -26,7 +26,7 @@ final class ProductListView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
         configurationCollectionView()
-        updateDataSource(data: [Product(id: 186, vendorID: 11, name: "블랙매지션", description: "마라탕", thumbnail: "https://s3.ap-northeast-2.amazonaws.com/media.yagom-academy.kr/training-resources/11/20221110/aa84877e610b11eda917ed59733c203d_thumb.jpeg", currency: .krw, price: 15000.0, bargainPrice: 1000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"), Product(id: 186, vendorID: 11, name: "블랙매지션", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00")] )
+        updateDataSource(data: ProductListView.sampleData)
     }
     
     required init?(coder: NSCoder) {
@@ -75,14 +75,15 @@ final class ProductListView: UIView {
     
     private func configureDataSource() -> DataSource? {
         let cellRegistration = UICollectionView.CellRegistration<ProductListViewCell, Product> { cell, indexPath, item in
-            
             cell.configure(data: item)
         }
+        
         guard let mainCollectionView = mainCollectionView else {
             return nil
         }
         
-        return UICollectionViewDiffableDataSource<Section, Product>(collectionView: mainCollectionView) { (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
+        return UICollectionViewDiffableDataSource<Section, Product>(collectionView: mainCollectionView) {
+            (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
 
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
                                                                 for: indexPath,
@@ -90,7 +91,7 @@ final class ProductListView: UIView {
         }
     }
     
-    private func updateDataSource(data: [Product]) {
+    func updateDataSource(data: [Product]) {
         var snapshot = Snapshot()
         snapshot.appendSections([.main])
         snapshot.appendItems(data)
@@ -104,3 +105,18 @@ extension ProductListView: UICollectionViewDelegate {
     
 }
 
+// MARK: - Mock Data
+
+extension ProductListView {
+    static var filteredData: [Product] = []
+    
+    static var sampleData = [
+        Product(id: 186, vendorID: 11, name: "블랙매지션", description: "마라탕", thumbnail: "https://s3.ap-northeast-2.amazonaws.com/media.yagom-academy.kr/training-resources/11/20221110/aa84877e610b11eda917ed59733c203d_thumb.jpeg", currency: .krw, price: 15000.0, bargainPrice: 1000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 187, vendorID: 11, name: "블랙매지션1", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 188, vendorID: 11, name: "블랙매지션2", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 189, vendorID: 11, name: "푸른눈의백룡1", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 190, vendorID: 11, name: "푸른눈의백룡2", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 191, vendorID: 11, name: "푸른눈의백룡3", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 192, vendorID: 11, name: "푸른눈의백룡4", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00")
+    ]
+}

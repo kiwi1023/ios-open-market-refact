@@ -9,6 +9,15 @@ import UIKit
 
 final class ProductListViewController: UIViewController {
     
+    enum Section {
+        case main
+    }
+    
+    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
+
+    private lazy var dataSource: DataSource? = configureDataSource()
+
     private lazy var mainView = ProductListView()
     
     //MARK: - ViewController Initializer
@@ -16,6 +25,7 @@ final class ProductListViewController: UIViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         setupDefault()
+        updateDataSource(data: ProductListView.sampleData)
     }
     
     required init?(coder: NSCoder) {
@@ -72,6 +82,34 @@ final class ProductListViewController: UIViewController {
     @objc func didTapSearchingButton() {
         print("didTapSearchingButton!")
     }
+    
+    //MARK: - Setup CollectionView Method
+    
+    private func configureDataSource() -> DataSource? {
+        guard let mainCollectionView = mainView.mainCollectionView else {
+            return nil
+        }
+        
+        let cellRegistration = UICollectionView.CellRegistration<ProductListViewCell, Product> { cell, indexPath, item in
+            cell.configure(data: item)
+        }
+        
+        let dataSource = DataSource(collectionView: mainCollectionView) {
+            (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
+
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
+                                                                for: indexPath,
+                                                                item: itemIdentifier)
+        }
+        return dataSource
+    }
+    
+    func updateDataSource(data: [Product]) {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(data)
+        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
+    }
 }
 
 //MARK: - SearchBar Controller
@@ -81,9 +119,9 @@ extension ProductListViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text?.lowercased() else { return }
         if text == "" {
-            mainView.updateDataSource(data: ProductListView.sampleData)
+            updateDataSource(data: ProductListView.sampleData)
         } else {
-            mainView.updateDataSource(data: ProductListView.sampleData.filter({ product in
+           updateDataSource(data: ProductListView.sampleData.filter({ product in
                 product.name.lowercased().contains(text)
             }))
         }

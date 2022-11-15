@@ -19,6 +19,13 @@ final class ProductListViewController: UIViewController {
     private lazy var dataSource: DataSource? = configureDataSource()
 
     private lazy var mainView = ProductListView()
+    private let registProductImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.tintColor = UIColor(red: 1, green: 126/255, blue: 55/255, alpha: 1)
+        return imageView
+    }()
     
     //MARK: - ViewController Initializer
     
@@ -43,14 +50,20 @@ final class ProductListViewController: UIViewController {
     
     private func setupDefault() {
         view.backgroundColor = .systemBackground
-        
+        mainView.mainCollectionView?.delegate = self
         addUIComponents()
         setupLayout()
         setupNavigationBar()
+        
+        registProductImageView.image = UIImage(systemName: "plus.circle.fill")
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapRegistButton))
+        registProductImageView.addGestureRecognizer(tapGesture)
+        registProductImageView.isUserInteractionEnabled = true
     }
     
     private func addUIComponents() {
         view.addSubview(mainView)
+        view.addSubview(registProductImageView)
     }
     
     private func setupLayout() {
@@ -59,6 +72,12 @@ final class ProductListViewController: UIViewController {
             mainView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             mainView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             mainView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        NSLayoutConstraint.activate([
+            registProductImageView.widthAnchor.constraint(equalToConstant: 50),
+            registProductImageView.heightAnchor.constraint(equalToConstant: 50),
+            registProductImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            registProductImageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
     
@@ -76,11 +95,14 @@ final class ProductListViewController: UIViewController {
         self.navigationItem.hidesSearchBarWhenScrolling = true
         self.navigationItem.searchController = searchController
         searchController.searchResultsUpdater = self
-
     }
     
-    @objc func didTapSearchingButton() {
+    @objc private func didTapSearchingButton() {
         print("didTapSearchingButton!")
+    }
+    
+    @objc private func didTapRegistButton() {
+        print("등록 버튼 연결")
     }
     
     //MARK: - Setup CollectionView Method
@@ -109,6 +131,15 @@ final class ProductListViewController: UIViewController {
         snapshot.appendSections([.main])
         snapshot.appendItems(data)
         dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
+    }
+}
+// MARK: - CollectionView delegate
+
+extension ProductListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let productDetailViewController = ProductDetailViewController()
+        //pushViewController(productDetailViewController, animated: true)
+        navigationController?.pushViewController(productDetailViewController, animated: true)
     }
 }
 

@@ -58,11 +58,28 @@ final class ProductDetailViewController: UIViewController {
             target: self,
             action: #selector(didTapDeleteButton)
         )
-
+        
     }
     
     @objc func didTapDeleteButton() { //TODO: 삭제 로직 추가해야함
-        print("didTapSearchingButton!")
+        let alert = UIAlertController(title: "삭제", message: "정말 삭제하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("삭제", comment: "Default action"), style: .destructive, handler: { [weak self] _ in
+            //TODO: 삭제 로직 추가, 성공시 다음코드
+            self?.removeCurrentProduct()
+            //TODO: 삭제 실패시 로직
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("취소", comment: "Default action"), style: .default, handler: { _ in
+            NSLog("The \"삭제 취소\" alert occured.")
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func removeCurrentProduct() {
+        let alert = UIAlertController(title: "삭제완료", message: "해당 상품을 삭제 완료했습니다.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("확인", comment: "Default action"), style: .default, handler: { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 

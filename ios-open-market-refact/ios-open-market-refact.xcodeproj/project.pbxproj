@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		185E225A2923B5F50016E01F /* UITextField + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185E22592923B5F50016E01F /* UITextField + Extension.swift */; };
+		18A132CB2921FB4D00E6FE34 /* ProductRegistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A132CA2921FB4D00E6FE34 /* ProductRegistViewController.swift */; };
+		18A132CD2921FD0600E6FE34 /* ProductRegistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A132CC2921FD0600E6FE34 /* ProductRegistView.swift */; };
+		18A132CF29224CE400E6FE34 /* ProductRegistCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A132CE29224CE400E6FE34 /* ProductRegistCollectionViewCell.swift */; };
 		45578592291CB20F0082A983 /* CurrencyEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45578591291CB20F0082A983 /* CurrencyEnum.swift */; };
 		4557859D291CEFC90082A983 /* NetworkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4557859C291CEFC90082A983 /* NetworkTest.swift */; };
 		455785A7291CF2FF0082A983 /* SessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785A6291CF2FF0082A983 /* SessionProtocol.swift */; };
@@ -46,6 +50,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		185E22592923B5F50016E01F /* UITextField + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField + Extension.swift"; sourceTree = "<group>"; };
+		18A132CA2921FB4D00E6FE34 /* ProductRegistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRegistViewController.swift; sourceTree = "<group>"; };
+		18A132CC2921FD0600E6FE34 /* ProductRegistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRegistView.swift; sourceTree = "<group>"; };
+		18A132CE29224CE400E6FE34 /* ProductRegistCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRegistCollectionViewCell.swift; sourceTree = "<group>"; };
 		45578591291CB20F0082A983 /* CurrencyEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyEnum.swift; sourceTree = "<group>"; };
 		4557859A291CEFC90082A983 /* ios-open-market-refact-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-open-market-refact-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4557859C291CEFC90082A983 /* NetworkTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTest.swift; sourceTree = "<group>"; };
@@ -95,6 +103,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18A132C92921FB0700E6FE34 /* ProductRegistView */ = {
+			isa = PBXGroup;
+			children = (
+				18A132CA2921FB4D00E6FE34 /* ProductRegistViewController.swift */,
+				18A132CC2921FD0600E6FE34 /* ProductRegistView.swift */,
+				18A132CE29224CE400E6FE34 /* ProductRegistCollectionViewCell.swift */,
+			);
+			path = ProductRegistView;
+			sourceTree = "<group>";
+		};
 		4557859B291CEFC90082A983 /* ios-open-market-refact-Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,6 +143,7 @@
 		455785BE291E56AE0082A983 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				18A132C92921FB0700E6FE34 /* ProductRegistView */,
 				455785BF291E56C40082A983 /* ProductListView */,
 			);
 			path = Presentation;
@@ -230,6 +249,7 @@
 				455785BA291D317F0082A983 /* UIImage + Extension.swift */,
 				4DAEADB5291E64EC0029C029 /* Double + Extension.swift */,
 				4DAEADB7291E652B0029C029 /* UILable + Extension.swift */,
+				185E22592923B5F50016E01F /* UITextField + Extension.swift */,
 			);
 			path = Extensiojn;
 			sourceTree = "<group>";
@@ -344,9 +364,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18A132CB2921FB4D00E6FE34 /* ProductRegistViewController.swift in Sources */,
 				455785B8291D0D620082A983 /* ProductDeleteKey.swift in Sources */,
 				455785A7291CF2FF0082A983 /* SessionProtocol.swift in Sources */,
 				4DAEADB8291E652B0029C029 /* UILable + Extension.swift in Sources */,
+				18A132CD2921FD0600E6FE34 /* ProductRegistView.swift in Sources */,
 				4D8B7BCA291D24EA00A6E5F2 /* Data + Extension.swift in Sources */,
 				4D8B7BC7291D031200A6E5F2 /* ProductDetail.swift in Sources */,
 				4D8B7BBF291CE09C00A6E5F2 /* APIRequestProtocol.swift in Sources */,
@@ -358,12 +380,14 @@
 				4DAEADB6291E64EC0029C029 /* Double + Extension.swift in Sources */,
 				4D8B7BBD291CE04400A6E5F2 /* HTTPMethod.swift in Sources */,
 				455785C3291E5C660082A983 /* ProductListViewCell.swift in Sources */,
+				185E225A2923B5F50016E01F /* UITextField + Extension.swift in Sources */,
 				455785BB291D317F0082A983 /* UIImage + Extension.swift in Sources */,
 				4D8B7BC1291CE3CE00A6E5F2 /* NetworkManager.swift in Sources */,
 				4D85B71C291A1D0000E41E71 /* AppDelegate.swift in Sources */,
 				4D85B71E291A1D0000E41E71 /* SceneDelegate.swift in Sources */,
 				4D8B7BC3291CE41300A6E5F2 /* OpenMarketRequest.swift in Sources */,
 				455785B6291D0C7E0082A983 /* UserInfo.swift in Sources */,
+				18A132CF29224CE400E6FE34 /* ProductRegistCollectionViewCell.swift in Sources */,
 				459EDB5F291CAE4700B1A7EB /* ProductListModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

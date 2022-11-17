@@ -13,7 +13,7 @@ final class ProductListViewCell: UICollectionViewCell {
         let stackView = UIStackView(arrangedSubviews: [productStackView, seperatorLineView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 12
         return stackView
     }()
     
@@ -22,13 +22,13 @@ final class ProductListViewCell: UICollectionViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.directionalLayoutMargins = .init(top: .zero, leading: .zero, bottom: .zero, trailing: 8)
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.spacing = 8
+        stackView.spacing = 12
         return stackView
     }()
     
     private lazy var bottomStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [priceLabel, bargainPriceLabel])
-        stackView.spacing = 8
+        stackView.spacing = 12
         return stackView
     }()
     
@@ -51,6 +51,9 @@ final class ProductListViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(data: UIImage(named: "testImage")?.compress() ?? Data())
+        imageView.layer.cornerRadius = 15
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
     

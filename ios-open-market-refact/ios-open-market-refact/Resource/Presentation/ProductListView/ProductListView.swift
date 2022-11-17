@@ -9,15 +9,7 @@ import UIKit
 
 final class ProductListView: UIView {
 
-    private var mainCollectionView: UICollectionView?
-    private lazy var dataSource: DataSource? = configureDataSource()
-    
-    enum Section {
-        case main
-    }
-    
-    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
+    private(set) var mainCollectionView: UICollectionView?
     
     //MARK: - View Initializer
     
@@ -26,7 +18,6 @@ final class ProductListView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
         configurationCollectionView()
-        updateDataSource(data: ProductListView.sampleData)
     }
     
     required init?(coder: NSCoder) {
@@ -39,12 +30,11 @@ final class ProductListView: UIView {
     private func configurationCollectionView() {
         mainCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createListLayout())
         
-        
         guard let mainCollectionView = mainCollectionView else {
             return
         }
+        mainCollectionView.showsVerticalScrollIndicator = false
         addSubview(mainCollectionView)
-        mainCollectionView.delegate = self
         mainCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mainCollectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -61,7 +51,7 @@ final class ProductListView: UIView {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .fractionalWidth(1/5))
+                                               heightDimension: .fractionalWidth(1/4))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                         repeatingSubitem: item,
                                                         count:1)
@@ -72,37 +62,6 @@ final class ProductListView: UIView {
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout
     }
-    
-    private func configureDataSource() -> DataSource? {
-        let cellRegistration = UICollectionView.CellRegistration<ProductListViewCell, Product> { cell, indexPath, item in
-            cell.configure(data: item)
-        }
-        
-        guard let mainCollectionView = mainCollectionView else {
-            return nil
-        }
-        
-        return UICollectionViewDiffableDataSource<Section, Product>(collectionView: mainCollectionView) {
-            (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
-
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
-                                                                for: indexPath,
-                                                                item: itemIdentifier)
-        }
-    }
-    
-    func updateDataSource(data: [Product]) {
-        var snapshot = Snapshot()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(data)
-        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
-    }
-}
-
-// MARK: - CollectionView delegate
-
-extension ProductListView: UICollectionViewDelegate {
-    
 }
 
 // MARK: - Mock Data
@@ -117,6 +76,9 @@ extension ProductListView {
         Product(id: 189, vendorID: 11, name: "푸른눈의백룡1", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
         Product(id: 190, vendorID: 11, name: "푸른눈의백룡2", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
         Product(id: 191, vendorID: 11, name: "푸른눈의백룡3", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
-        Product(id: 192, vendorID: 11, name: "푸른눈의백룡4", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00")
+        Product(id: 192, vendorID: 11, name: "푸른눈의백룡4", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 192, vendorID: 11, name: "푸른눈의백룡5", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 192, vendorID: 11, name: "카오스 솔져4", description: "카오스솔져", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
+        Product(id: 192, vendorID: 11, name: "카오스 솔져5", description: "마라탕", thumbnail: "", currency: .krw, price: 15000.0, bargainPrice: 15000.0, discountedPrice: 0.0, stock: 11, createdAt: "2022-11-10T00:00:00", issuedAt: "2022-11-10T00:00:00"),
     ]
 }

@@ -11,8 +11,8 @@ final class ProductDetailView: UIView {
     
     private let productDetail: ProductDetaiil?
     
-    private let mainImageView: UIImageView = {
-        let imageView = UIImageView()
+    private let mainImageView: DownloadableUIImageView = {
+        let imageView = DownloadableUIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         imageView.clipsToBounds = true

@@ -82,14 +82,8 @@ final class ProductListViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
-        self.navigationItem.title = "상품목록"
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .search,
-            target: self,
-            action: #selector(didTapSearchingButton)
-        )
-        
+        navigationItem.title = "상품목록"
+        navigationItem.largeTitleDisplayMode = .automatic
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.placeholder = "검색해보세용"
         self.navigationItem.hidesSearchBarWhenScrolling = true

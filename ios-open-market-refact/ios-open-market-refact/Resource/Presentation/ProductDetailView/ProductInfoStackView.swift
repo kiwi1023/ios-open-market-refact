@@ -13,7 +13,6 @@ final class ProductInfoStackView: UIStackView {
     
     private var isStarToggled = true
     
-    //스택뷰 [ 별 스페이싱뷰 스택뷰 [ 원래가격, 할인가격 ] 남은수량
     private let starImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "star"))
         imageView.layer.masksToBounds = false
@@ -27,7 +26,6 @@ final class ProductInfoStackView: UIStackView {
     
     private lazy var priceStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [originalPriceLabel, bargainPriceLabel])
-        //stackView.setContentCompressionResistancePriority(UILayoutPriority(100), for: .horizontal)
         stackView.setContentHuggingPriority(UILayoutPriority(100), for: .horizontal)
         stackView.axis = .vertical
         return stackView

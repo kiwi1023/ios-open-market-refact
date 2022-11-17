@@ -422,6 +422,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				454DAB8C292607B0002CC8D6 /* DownloadableUIImageView.swift in Sources */,
+				18A132CB2921FB4D00E6FE34 /* ProductRegistViewController.swift in Sources */,
 				455785B8291D0D620082A983 /* ProductDeleteKey.swift in Sources */,
 				455785A7291CF2FF0082A983 /* SessionProtocol.swift in Sources */,
 				4DAEADB8291E652B0029C029 /* UILable + Extension.swift in Sources */,

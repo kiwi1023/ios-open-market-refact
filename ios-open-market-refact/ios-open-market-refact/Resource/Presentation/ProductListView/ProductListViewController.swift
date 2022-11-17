@@ -96,7 +96,7 @@ final class ProductListViewController: UIViewController {
     }
     
     @objc private func didTapRegistButton() {
-        print("등록 버튼 연결")
+        navigationController?.pushViewController(ProductRegistViewController(), animated: true)
     }
     
     //MARK: - Setup CollectionView Method

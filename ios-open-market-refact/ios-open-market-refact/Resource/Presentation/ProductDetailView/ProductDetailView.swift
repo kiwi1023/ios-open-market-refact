@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class ProductDetailView: UIView {
+final class ProductDetailView: SuperViewSetting {
     
-    private let productDetail: ProductDetaiil?
+    private var productDetail: ProductDetaiil? = ProductDetailViewController.sampleData
     
     private let mainImageView: DownloadableUIImageView = {
         let imageView = DownloadableUIImageView()
@@ -72,25 +72,13 @@ final class ProductDetailView: UIView {
     
     private lazy var productInfoStackView = ProductInfoStackView(productDetail: productDetail)
     
-    init(productDetail: ProductDetaiil?) {
-        self.productDetail = productDetail
-        super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
-        
-        addUIComponents()
-        setupLayout()
+    //MARK: - Setup View Method
+    
+    override func setupDefault() {
         setupProductDetailViewData()
     }
     
-    required init?(coder: NSCoder) {
-        productDetail = nil
-        super.init(coder: coder)
-        debugPrint("ProductDetailView initialize Error")
-    }
-    
-    //MARK: - Setup View Method
-    
-    private func addUIComponents() {
+    override func addUIComponents() {
         addSubview(mainImageView)
         addSubview(venderStackView)
         venderStackView.addArrangedSubview(venderImageView)
@@ -101,7 +89,7 @@ final class ProductDetailView: UIView {
         addSubview(productInfoStackView)
     }
     
-    private func setupLayout() {
+    override func setupLayout() {
         let topMargin = CGFloat(20)
         let leadingMargin = CGFloat(20)
         let trailingMargin = CGFloat(-20)

@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MainViewController: UIViewController {
+final class MainViewController: SuperViewControllerSetting {
     
     enum Section {
         case main
@@ -28,27 +28,15 @@ final class MainViewController: UIViewController {
     
     private lazy var productMiniListView = ProductMiniListView()
     
-    //MARK: - ViewController Initailizer
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        setupDefaults()
-        //updateDataSource(data: ProductListView.sampleData)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     //MARK: - Setup ViewController Method
     
-    private func setupDefaults() {
+    override func setupDefault() {
         view.backgroundColor = .systemBackground
 //        productMiniListView.miniListCollectionView?.delegate = self
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.productMiniListCellSelectedDelegate = self
         addUIComponents()
         setupLayout()
-        
         guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 10) else { return }
         NetworkManager().dataTask(with: request) { result in
             switch result {
@@ -62,7 +50,6 @@ final class MainViewController: UIViewController {
                     print("!!")
                 }
             case .failure(_):
-                print("??")
                 DispatchQueue.main.async {
                     //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
                 }
@@ -70,12 +57,12 @@ final class MainViewController: UIViewController {
         }
     }
     
-    private func addUIComponents() {
+    override func addUIComponents() {
         view.addSubview(bannerView)
         view.addSubview(productMiniListView)
     }
     
-    private func setupLayout() {
+    override func setupLayout() {
         NSLayoutConstraint.activate([
             bannerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             bannerView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),

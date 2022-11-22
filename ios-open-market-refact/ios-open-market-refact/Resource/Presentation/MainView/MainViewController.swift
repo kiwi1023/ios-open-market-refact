@@ -28,7 +28,7 @@ final class MainViewController: SuperViewControllerSetting {
     override func setupDefault() {
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
-        productMiniListView.productMiniListCellSelectedDelegate = self
+        productMiniListView.miniListCollectionView?.delegate = self
         guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 10) else { return }
         NetworkManager().dataTask(with: request) { result in
             switch result {
@@ -72,8 +72,8 @@ final class MainViewController: SuperViewControllerSetting {
     override func setupLayout() {
         NSLayoutConstraint.activate([
             bannerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
-            bannerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  20),
-            bannerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            bannerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  30),
+            bannerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30),
             bannerView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.5)
         ])
         
@@ -129,16 +129,11 @@ extension MainViewController: MoreButtonTapDelegate {
     }
 }
 
-//MARK: - MiniListViewController Cell select delegate
+//MARK: - MiniListViewController delegate
 
-protocol ProductMiniListCellSelectedDelegate {
-    func selectCell(product: Product)
-}
-
-extension MainViewController: ProductMiniListCellSelectedDelegate {
-    func selectCell(product: Product) {
-        //TODO: 여기서 id 로 디테일 가져와서 그걸로 이니셜라이징
-        let productDetailViewController = ProductDetailViewController()
-        navigationController?.pushViewController(productDetailViewController, animated: true)
+extension MainViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailViewController = ProductDetailViewController()
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 }

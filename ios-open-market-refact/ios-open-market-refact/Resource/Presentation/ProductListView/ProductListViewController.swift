@@ -15,10 +15,11 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
-
+    
     private lazy var dataSource: DataSource? = configureDataSource()
-
+    
     private lazy var mainView = ProductListView()
+    
     private let registProductImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -72,11 +73,23 @@ final class ProductListViewController: SuperViewControllerSetting {
     private func setupNavigationBar() {
         navigationItem.title = "상품목록"
         navigationItem.largeTitleDisplayMode = .automatic
+        
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.placeholder = "검색해보세용"
-        self.navigationItem.hidesSearchBarWhenScrolling = true
-        self.navigationItem.searchController = searchController
         searchController.searchResultsUpdater = self
+        searchController.delegate = self
+        
+        navigationItem.searchController = searchController
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationItem.hidesSearchBarWhenScrolling = true
     }
     
     @objc private func didTapSearchingButton() {
@@ -100,7 +113,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         
         let dataSource = DataSource(collectionView: mainCollectionView) {
             (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
-
+            
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
                                                                 for: indexPath,
                                                                 item: itemIdentifier)
@@ -134,9 +147,13 @@ extension ProductListViewController: UISearchResultsUpdating {
         if text == "" {
             updateDataSource(data: ProductListView.sampleData)
         } else {
-           updateDataSource(data: ProductListView.sampleData.filter({ product in
+            updateDataSource(data: ProductListView.sampleData.filter({ product in
                 product.name.lowercased().contains(text)
             }))
         }
     }
+}
+
+extension ProductListViewController: UISearchControllerDelegate  {
+    
 }

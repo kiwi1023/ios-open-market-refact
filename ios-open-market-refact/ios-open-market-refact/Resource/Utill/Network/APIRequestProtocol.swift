@@ -7,36 +7,6 @@
 
 import Foundation
 
-enum URLHost {
-    case openMarket
-    
-    var url: String {
-        switch self {
-        case .openMarket:
-            return "https://openmarket.yagom-academy.kr"
-        }
-    }
-}
-
-enum URLAdditionalPath {
-    case healthChecker
-    case product
-    
-    var value: String {
-        switch self {
-        case .healthChecker:
-            return "/healthChecker"
-        case .product:
-            return "/api/products"
-        }
-    }
-}
-
-enum HTTPBody {
-    case multiPartForm(_ form: MultiPartForm)
-    case json(_ json: Data)
-}
-
 struct MultiPartForm {
     let boundary: String
     let jsonData: Data
@@ -52,16 +22,16 @@ struct ProductImage {
 protocol APIRequest {
     var method: HTTPMethod { get }
     var baseURL: String { get }
-    var headers: [String: String]? { get }
-    var query: [String: String]? { get }
+    var headers: HTTPHeader? { get }
+    var query: HTTPQuery? { get }
     var body: HTTPBody? { get }
-    var path: String { get }
+    var path: HTTPPath { get }
 }
 
 extension APIRequest {
     var url: URL? {        
-        var urlComponents = URLComponents(string: baseURL + path)
-        urlComponents?.queryItems = query?.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
+        var urlComponents = URLComponents(string: baseURL + path.value)
+        urlComponents?.queryItems = query?.quary.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
         return urlComponents?.url
     }
     
@@ -74,7 +44,7 @@ extension APIRequest {
         
         urlRequest.httpBody = createHTTPBody()
         urlRequest.httpMethod = method.type
-        headers?.forEach {
+        headers?.header.forEach {
             urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)
         }
         
@@ -108,7 +78,7 @@ extension APIRequest {
         }
         
         requestBody.append("\(lineBreak)--\(form.boundary)--\(lineBreak)")
-        //print(String(decoding: requestBody, as: UTF8.self))
+        
         return requestBody
     }
     

@@ -19,12 +19,7 @@ final class MainViewController: SuperViewControllerSetting {
     private lazy var dataSource: DataSource? = configureDataSource()
     
     
-    private let bannerView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray6
-        return view
-    }()
+    private let bannerView = MainBannerView()
     
     private lazy var productMiniListView = ProductMiniListView()
     
@@ -32,11 +27,8 @@ final class MainViewController: SuperViewControllerSetting {
     
     override func setupDefault() {
         view.backgroundColor = .systemBackground
-//        productMiniListView.miniListCollectionView?.delegate = self
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.productMiniListCellSelectedDelegate = self
-        addUIComponents()
-        setupLayout()
         guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 10) else { return }
         NetworkManager().dataTask(with: request) { result in
             switch result {
@@ -57,24 +49,39 @@ final class MainViewController: SuperViewControllerSetting {
         }
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupDefault()
+        addUIComponents()
+        setupLayout()
+        setupNavigationBar()
+    }
+    
     override func addUIComponents() {
         view.addSubview(bannerView)
         view.addSubview(productMiniListView)
     }
     
+    private func setupNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.sizeToFit()
+        navigationItem.title = "키위마켓 🥝"
+    }
+    
     override func setupLayout() {
         NSLayoutConstraint.activate([
-            bannerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            bannerView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            bannerView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.7),
-            bannerView.heightAnchor.constraint(equalTo: bannerView.widthAnchor)
+            bannerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
+            bannerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  20),
+            bannerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            bannerView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.5)
         ])
         
         NSLayoutConstraint.activate([
-            productMiniListView.topAnchor.constraint(equalTo: bannerView.bottomAnchor, constant: 50),
             productMiniListView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             productMiniListView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            productMiniListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            productMiniListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            productMiniListView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.4)
         ])
     }
 }

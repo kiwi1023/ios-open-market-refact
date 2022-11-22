@@ -34,14 +34,14 @@ class SuperViewControllerSetting: UIViewController , ViewSettingProtocol {
     
     required init() {
         super.init(nibName: nil, bundle: nil)
-        setupDefault()
-        addUIComponents()
-        setupLayout()
     }
    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        setupDefault()
+        addUIComponents()
+        setupLayout()
     }
     
     func setupDefault() {

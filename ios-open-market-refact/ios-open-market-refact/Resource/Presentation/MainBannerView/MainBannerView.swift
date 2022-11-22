@@ -7,10 +7,10 @@
 
 import UIKit
 
-class MainBannerView: UIView {
+final class MainBannerView: UIView {
     let scrollView = UIScrollView()
     let pageControl = UIPageControl()
-    let images = [UIImage(named: "image1")!, UIImage(named: "image2")!, UIImage(named: "image3")!]
+    let images = [UIImage(named: "defaultBanner3")!, UIImage(named: "defaultBanner2")!, UIImage(named: "defaultBanner1")!]
     var imageViews: [UIImageView] = []
     var timer = Timer()
     
@@ -18,6 +18,7 @@ class MainBannerView: UIView {
         super.init(frame: .zero)
         self.layer.cornerRadius = 20
         self.layer.masksToBounds = true
+        translatesAutoresizingMaskIntoConstraints = false
         configureLayout()
         setupPageControl()
         setupScrollView()

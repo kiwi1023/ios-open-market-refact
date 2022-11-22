@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ProductListViewController: UIViewController {
+final class ProductListViewController: SuperViewControllerSetting {
     
     enum Section {
         case main
@@ -27,28 +27,16 @@ final class ProductListViewController: UIViewController {
         return imageView
     }()
     
-    //MARK: - ViewController Initializer
-    
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        setupDefault()
-        updateDataSource(data: ProductListView.sampleData)
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: NSCoder())
-        debugPrint("ProductListViewController Initialize error")
-    }
-    
     //MARK: - View LifeCycle Method
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateDataSource(data: ProductListView.sampleData)
     }
     
     //MARK: - View Default Setup Method
     
-    private func setupDefault() {
+    override func setupDefault() {
         view.backgroundColor = .systemBackground
         mainView.mainCollectionView?.delegate = self
         addUIComponents()
@@ -61,12 +49,12 @@ final class ProductListViewController: UIViewController {
         registProductImageView.isUserInteractionEnabled = true
     }
     
-    private func addUIComponents() {
+    override func addUIComponents() {
         view.addSubview(mainView)
         view.addSubview(registProductImageView)
     }
     
-    private func setupLayout() {
+    override func setupLayout() {
         NSLayoutConstraint.activate([
             mainView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mainView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

@@ -7,41 +7,24 @@
 
 import UIKit
 
-final class ProductDetailViewController: UIViewController {
+final class ProductDetailViewController: SuperViewControllerSetting {
     
     private var product: ProductDetaiil? // TODO: 오타 수정해야함
     
-    private lazy var productDetailView = ProductDetailView(productDetail: self.product)
-    
-    //MARK: - View Initializer
-    
-    init() {
-        self.product = ProductDetailViewController.sampleData
-        super.init(nibName: nil, bundle: nil)
-        addUIComponents()
-        setypLayout()
-        setupNavigationBar()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        debugPrint("ProductDetailViewController Initialize Error")
-    }
-    
-    //MARK: - View Life Cycle Method
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-    }
+    private lazy var productDetailView = ProductDetailView()
     
     //MARK: - Setup ViewController method
     
-    private func addUIComponents() {
+    override func setupDefault() {
+        self.product = ProductDetailViewController.sampleData
+        setupNavigationBar()
+    }
+    
+    override func addUIComponents() {
         view.addSubview(productDetailView)
     }
     
-    private func setypLayout() {
+    override func setupLayout() {
         NSLayoutConstraint.activate([
             productDetailView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             productDetailView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

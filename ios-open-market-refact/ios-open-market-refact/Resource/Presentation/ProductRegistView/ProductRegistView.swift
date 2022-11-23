@@ -12,7 +12,7 @@ final class ProductRegistView: UIView {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 10
         stackView.distribution = .fill
         stackView.alignment = .fill
         return stackView
@@ -53,6 +53,7 @@ final class ProductRegistView: UIView {
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
+        textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
     
@@ -63,6 +64,7 @@ final class ProductRegistView: UIView {
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
+        textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
     
@@ -73,6 +75,7 @@ final class ProductRegistView: UIView {
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
+        textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
     
@@ -83,6 +86,7 @@ final class ProductRegistView: UIView {
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
+        textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
     
@@ -135,7 +139,7 @@ final class ProductRegistView: UIView {
     
     private func setupLayout() {
         NSLayoutConstraint.activate([
-            mainScrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            mainScrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             mainScrollView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),
             mainScrollView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -10),
             mainScrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10)
@@ -147,12 +151,11 @@ final class ProductRegistView: UIView {
             mainStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
             mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor),
             mainStackView.heightAnchor.constraint(greaterThanOrEqualTo: mainScrollView.heightAnchor)
-            
         ])
         
         NSLayoutConstraint.activate([
             registCollectionView.widthAnchor.constraint(equalTo: mainScrollView.widthAnchor),
-            registCollectionView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.23)
+            registCollectionView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.21)
         ])
     }
     

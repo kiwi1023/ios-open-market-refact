@@ -77,6 +77,7 @@ final class ProductRegistView: UIView {
         textView.isScrollEnabled = false
         textView.text = textViewPlaceHolder
         textView.textColor = UIColor.lightGray.withAlphaComponent(0.7)
+        textView.setContentHuggingPriority(UILayoutPriority(50), for: .vertical)
         return textView
     }()
     
@@ -122,7 +123,7 @@ final class ProductRegistView: UIView {
         ])
         
         NSLayoutConstraint.activate([
-            registCollectionView.topAnchor.constraint(equalTo: mainScrollView.topAnchor),
+            registCollectionView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor),
             registCollectionView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
             registCollectionView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
             registCollectionView.widthAnchor.constraint(equalTo: mainScrollView.widthAnchor),
@@ -133,8 +134,12 @@ final class ProductRegistView: UIView {
             mainStackView.topAnchor.constraint(equalTo: registCollectionView.bottomAnchor),
             mainStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 10),
             mainStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -10),
-            mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.bottomAnchor)
+            mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor),
         ])
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.mainStackView.heightAnchor.constraint(greaterThanOrEqualToConstant:
+                                                            (self?.safeAreaLayoutGuide.layoutFrame.height)!-(self?.registCollectionView.frame.height)!).isActive = true
+        }
     }
     
     private func createCollectionViewLayout() -> UICollectionViewLayout {

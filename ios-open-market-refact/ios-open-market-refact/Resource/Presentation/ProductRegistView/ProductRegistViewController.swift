@@ -16,13 +16,10 @@ final class ProductRegistViewController: UIViewController {
     private let registView = ProductRegistView()
     private let imagePicker = UIImagePickerController()
     
-    //    private var productImages = [UIImage(systemName: "plus") ?? UIImage()]
-    //    private var imageButtonTag = [0]
-    
-    //    private var selectedImageNumber: Int?
     private var appendable = true
     
     private lazy var dataSource: DataSource = configureDataSource()
+    private lazy var snapshot: Snapshot = configureSnapshot()
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, UIImage>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, UIImage>
@@ -51,7 +48,7 @@ final class ProductRegistViewController: UIViewController {
         setupLayout()
         setupNavigationBar()
         configureImagePicker()
-        updateDataSource(data: [UIImage(systemName: "plus") ?? UIImage()])
+        updateDataSource(data: [UIImage(named: "iconCamera.png") ?? UIImage()])
         
         registView.registCollectionView.delegate = self
     }
@@ -110,20 +107,20 @@ final class ProductRegistViewController: UIViewController {
         return dataSource
     }
     
+    private func configureSnapshot() -> Snapshot {
+        Snapshot()
+    }
+    
     private func updateDataSource(data: [UIImage]) {
-        var snapshot = Snapshot()
         snapshot.appendSections([.image])
         snapshot.appendItems(data)
         DispatchQueue.main.async {
-            self.dataSource.apply(snapshot, animatingDifferences: false)
+            self.dataSource.apply(self.snapshot, animatingDifferences: false)
         }
     }
     
-    private func insertDataSource(data: UIImage) {
-        var snapshot = dataSource.snapshot()
-        if let first = snapshot.itemIdentifiers.first {
-            snapshot.insertItems([data], afterItem: first)
-        }
+    private func appendDataSource(data: UIImage) {
+        snapshot.appendItems([data])
         
         if snapshot.numberOfItems > 5 {
             guard let first = snapshot.itemIdentifiers.first else { return }
@@ -132,35 +129,30 @@ final class ProductRegistViewController: UIViewController {
         }
         
         DispatchQueue.main.async {
-            self.dataSource.apply(snapshot, animatingDifferences: false)
+            self.dataSource.apply(self.snapshot, animatingDifferences: false)
         }
     }
     
     private func deleteDataSource(image: UIImage) {
-        var snapshot = dataSource.snapshot()
         snapshot.deleteItems([image])
         
         if !appendable {
             guard let first = snapshot.itemIdentifiers.first else { return }
-            let insertImage = UIImage(systemName: "plus") ?? UIImage()
+            let insertImage = UIImage(named: "iconCamera.png") ?? UIImage()
             snapshot.insertItems([insertImage], beforeItem: first)
             appendable = true
         }
         
         DispatchQueue.main.async {
-            self.dataSource.apply(snapshot, animatingDifferences: false)
+            self.dataSource.apply(self.snapshot, animatingDifferences: false)
         }
-    }
-    
-    private func insertImage(image: UIImage) {
-        insertDataSource(data: image)
     }
     
     @objc private func didTapCloseButton() {
         self.navigationController?.popViewController(animated: true)
     }
     
-    @objc func didTapDoneButton() {
+    @objc private func didTapDoneButton() {
         print("didTapDoneButton!")
     }
 }
@@ -170,7 +162,7 @@ final class ProductRegistViewController: UIViewController {
 extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let selectedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
-        insertImage(image: selectedImage)
+        appendDataSource(data: selectedImage)
         dismiss(animated: true)
     }
 }

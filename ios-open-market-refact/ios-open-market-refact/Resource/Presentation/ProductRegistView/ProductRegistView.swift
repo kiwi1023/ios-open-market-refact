@@ -8,6 +8,15 @@
 import UIKit
 
 final class ProductRegistView: UIView {
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        return stackView
+    }()
     
     private let mainScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -19,6 +28,7 @@ final class ProductRegistView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(ProductRegistCollectionViewCell.self, forCellWithReuseIdentifier: ProductRegistCollectionViewCell.reuseIdentifier)
+        collectionView.isScrollEnabled = false
         return collectionView
     }()
     
@@ -39,36 +49,44 @@ final class ProductRegistView: UIView {
     private let productNameTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "상품명"
+        textField.placeholder = " 상품명"
         textField.addLeftPadding()
+        textField.layer.borderWidth = 0.1
+        textField.layer.cornerRadius = 5
         return textField
     }()
     
     private let productPriceTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "판매 가격"
+        textField.placeholder = " 판매 가격"
         textField.addLeftPadding()
+        textField.layer.borderWidth = 0.1
+        textField.layer.cornerRadius = 5
         return textField
     }()
     
     private let productSaleTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "할인 금액"
+        textField.placeholder = " 할인 금액"
         textField.addLeftPadding()
+        textField.layer.borderWidth = 0.1
+        textField.layer.cornerRadius = 5
         return textField
     }()
     
     private let productStockTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "재고 수량"
+        textField.placeholder = " 재고 수량"
         textField.addLeftPadding()
+        textField.layer.borderWidth = 0.1
+        textField.layer.cornerRadius = 5
         return textField
     }()
     
-    private let textViewPlaceHolder = "텍스트를 입력하세요"
+    private let textViewPlaceHolder = " 텍스트를 입력하세요"
     
     private lazy var productDescriptionTextView: UITextView = {
         let textView = UITextView()
@@ -77,6 +95,9 @@ final class ProductRegistView: UIView {
         textView.isScrollEnabled = false
         textView.text = textViewPlaceHolder
         textView.textColor = UIColor.lightGray.withAlphaComponent(0.7)
+        textView.layer.borderWidth = 0.1
+        textView.layer.cornerRadius = 5
+        textView.setContentHuggingPriority(UILayoutPriority(50), for: .vertical)
         return textView
     }()
     
@@ -98,8 +119,12 @@ final class ProductRegistView: UIView {
     private func addUIComponents() {
         addSubview(mainScrollView)
         
-        mainScrollView.addSubview(registCollectionView)
-        mainScrollView.addSubview(mainStackView)
+        mainScrollView.addSubview(stackView)
+        
+        stackView.addArrangedSubview(registCollectionView)
+        stackView.addArrangedSubview(mainStackView)
+//        mainScrollView.addSubview(registCollectionView)
+//        mainScrollView.addSubview(mainStackView)
         
         productNameTextField.delegate = self
         productSaleTextField.delegate = self
@@ -111,29 +136,35 @@ final class ProductRegistView: UIView {
     // MARK: - Setup Collection View Method
     
     private func setupLayout() {
-        registCollectionView.isScrollEnabled = false
-        //        registCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
         NSLayoutConstraint.activate([
-            mainScrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            mainScrollView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            mainScrollView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            mainScrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+            mainScrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            mainScrollView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            mainScrollView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            mainScrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
-            registCollectionView.topAnchor.constraint(equalTo: mainScrollView.topAnchor),
-            registCollectionView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
-            registCollectionView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor),
+            stackView.heightAnchor.constraint(greaterThanOrEqualTo: mainScrollView.heightAnchor)
+            
+        ])
+        
+        NSLayoutConstraint.activate([
+//            registCollectionView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor),
+//            registCollectionView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
+//            registCollectionView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
             registCollectionView.widthAnchor.constraint(equalTo: mainScrollView.widthAnchor),
-            registCollectionView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3)
+            registCollectionView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.23)
         ])
         
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: registCollectionView.bottomAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 10),
-            mainStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -10),
-            mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.bottomAnchor)
+//            mainStackView.topAnchor.constraint(equalTo: registCollectionView.bottomAnchor),
+//            mainStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 10),
+//            mainStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -10),
+//            mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor)
         ])
     }
     

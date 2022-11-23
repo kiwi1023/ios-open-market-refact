@@ -11,19 +11,21 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "registCell"
     
-    private var registImageButton: UIButton = {
+    private let registImageButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .systemGroupedBackground
         button.isUserInteractionEnabled = false
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
         return button
     }()
     
-    var deleteImageButton: UIButton = {
+    private let deleteImageButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "xmark"), for: .normal)
-        //        button.isUserInteractionEnabled = false
+        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
+        button.tintColor = .red
         return button
     }()
     

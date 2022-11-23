@@ -33,13 +33,11 @@ final class MainViewController: SuperViewControllerSetting {
         NetworkManager().dataTask(with: request) { result in
             switch result {
             case .success(let data):
-                do {
-                    let productList = try JSONDecoder().decode(ProductList.self, from: data)
-                    DispatchQueue.main.async { [weak self] in
-                        self?.updateDataSource(data: productList.pages)
-                    }
-                } catch {
-                    print("!!")
+                guard let productList = JsonDecoderManager.shared.decode(from: data, to: ProductList.self) else {
+                    return
+                }
+                DispatchQueue.main.async { [weak self] in
+                    self?.updateDataSource(data: productList.pages)
                 }
             case .failure(_):
                 DispatchQueue.main.async {
@@ -89,7 +87,7 @@ final class MainViewController: SuperViewControllerSetting {
 
 //MARK: - Setup CollectionView Method
 extension MainViewController {
-
+    
     private func configureDataSource() -> DataSource? {
         guard let miniListCollectionView = productMiniListView.miniListCollectionView else {
             return nil

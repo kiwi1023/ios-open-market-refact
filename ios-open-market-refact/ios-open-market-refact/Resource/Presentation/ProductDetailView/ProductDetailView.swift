@@ -11,8 +11,8 @@ final class ProductDetailView: SuperViewSetting {
     
     private var productDetail: ProductDetaiil? = ProductDetailViewController.sampleData
     
-    private let mainImageView: DownloadableUIImageView = {
-        let imageView = DownloadableUIImageView()
+    private let mainImageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         imageView.clipsToBounds = true
@@ -138,10 +138,14 @@ final class ProductDetailView: SuperViewSetting {
     }
     
     private func setupProductDetailViewData() {
-        guard let productDetail = productDetail else {
+        guard let productDetail = productDetail,
+              let nsURL = NSURL(string: productDetail.thumbnail) else {
             return
         }
-        mainImageView.setImageUrl(productDetail.thumbnail)
+        ImageCache.shared.load(url: nsURL) { image in
+            self.mainImageView.image = image
+        }
+        //mainImageView.setImageUrl(productDetail.thumbnail)
         venderImageView.image = UIImage(systemName: "person.circle")
         venderNameLabel.text = productDetail.vendors.name
         titleLabel.text = productDetail.name

@@ -29,7 +29,7 @@ final class MainViewController: SuperViewControllerSetting {
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
-        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 10) else { return }
+        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 100) else { return }
         NetworkManager().dataTask(with: request) { result in
             switch result {
             case .success(let data):

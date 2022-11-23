@@ -41,6 +41,16 @@ final class ProductRegistViewController: UIViewController {
         setupDefault()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     private func setupDefault() {
         view.backgroundColor = .systemBackground
         
@@ -167,7 +177,7 @@ extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavig
     }
 }
 
-// MARK: - UICOllectionViewDelegate Function
+// MARK: - UICollectionViewDelegate Function
 
 extension ProductRegistViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -176,3 +186,29 @@ extension ProductRegistViewController: UICollectionViewDelegate {
         }
     }
 }
+
+// MARK: - KeyBoard Objc Functions
+
+extension ProductRegistViewController {
+    @objc func keyboardUp(notification:NSNotification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
+            return
+        }
+        
+        let contentInset = UIEdgeInsets(
+            top: 0.0,
+            left: 0.0,
+            bottom: keyboardFrame.size.height,
+            right: 0.0)
+        registView.mainScrollView.contentInset = contentInset
+        registView.mainScrollView.scrollIndicatorInsets = contentInset
+    }
+    
+    @objc func keyboardDown() {
+        let contentInset = UIEdgeInsets.zero
+        registView.mainScrollView.contentInset = contentInset
+        registView.mainScrollView.scrollIndicatorInsets = contentInset
+    }
+}
+

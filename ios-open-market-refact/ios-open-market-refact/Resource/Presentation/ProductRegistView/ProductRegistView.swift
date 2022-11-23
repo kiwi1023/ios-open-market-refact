@@ -8,7 +8,7 @@
 import UIKit
 
 final class ProductRegistView: UIView {
-    private let stackView: UIStackView = {
+    private let mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -18,7 +18,7 @@ final class ProductRegistView: UIView {
         return stackView
     }()
     
-    private let mainScrollView: UIScrollView = {
+     let mainScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
@@ -32,7 +32,7 @@ final class ProductRegistView: UIView {
         return collectionView
     }()
     
-    private lazy var mainStackView: UIStackView = {
+    private lazy var productInfoStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [productNameTextField,
                                                        productPriceTextField,
                                                        productSaleTextField,
@@ -119,12 +119,10 @@ final class ProductRegistView: UIView {
     private func addUIComponents() {
         addSubview(mainScrollView)
         
-        mainScrollView.addSubview(stackView)
+        mainScrollView.addSubview(mainStackView)
         
-        stackView.addArrangedSubview(registCollectionView)
-        stackView.addArrangedSubview(mainStackView)
-//        mainScrollView.addSubview(registCollectionView)
-//        mainScrollView.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(registCollectionView)
+        mainStackView.addArrangedSubview(productInfoStackView)
         
         productNameTextField.delegate = self
         productSaleTextField.delegate = self
@@ -144,27 +142,17 @@ final class ProductRegistView: UIView {
         ])
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor),
-            stackView.heightAnchor.constraint(greaterThanOrEqualTo: mainScrollView.heightAnchor)
+            mainStackView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
+            mainStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
+            mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor),
+            mainStackView.heightAnchor.constraint(greaterThanOrEqualTo: mainScrollView.heightAnchor)
             
         ])
         
         NSLayoutConstraint.activate([
-//            registCollectionView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor),
-//            registCollectionView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
-//            registCollectionView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
             registCollectionView.widthAnchor.constraint(equalTo: mainScrollView.widthAnchor),
             registCollectionView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.23)
-        ])
-        
-        NSLayoutConstraint.activate([
-//            mainStackView.topAnchor.constraint(equalTo: registCollectionView.bottomAnchor),
-//            mainStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 10),
-//            mainStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -10),
-//            mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor)
         ])
     }
     

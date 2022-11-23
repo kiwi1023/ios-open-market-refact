@@ -16,12 +16,13 @@ final class ProductRegistViewController: UIViewController {
     private let registView = ProductRegistView()
     private let imagePicker = UIImagePickerController()
     
-    private var productImages = [UIImage(systemName: "plus") ?? UIImage()]
+    //    private var productImages = [UIImage(systemName: "plus") ?? UIImage()]
+    //    private var imageButtonTag = [0]
     
-    private var selectedImageNumber: Int?
+    //    private var selectedImageNumber: Int?
+    private var appendable = true
     
     private lazy var dataSource: DataSource = configureDataSource()
-    private var snapshot = Snapshot()
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, UIImage>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, UIImage>
@@ -50,9 +51,8 @@ final class ProductRegistViewController: UIViewController {
         setupLayout()
         setupNavigationBar()
         configureImagePicker()
-        updateDataSource(data: productImages)
-        setupLongGestureRecognizerOnCollection()
-
+        updateDataSource(data: [UIImage(systemName: "plus") ?? UIImage()])
+        
         registView.registCollectionView.delegate = self
     }
     
@@ -92,45 +92,68 @@ final class ProductRegistViewController: UIViewController {
     }
     
     private func configureDataSource() -> DataSource {
-        let cellRegistration = UICollectionView.CellRegistration<ProductRegistCollectionViewCell, UIImage> { cell, indexPath, item in
-            cell.configure(data: item)
-        }
         
-        return UICollectionViewDiffableDataSource<Section, UIImage>(collectionView: registView.registCollectionView) {
+        let dataSource = UICollectionViewDiffableDataSource<Section, UIImage>(collectionView: registView.registCollectionView) {
             (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
             
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
-                                                                for: indexPath,
-                                                                item: itemIdentifier)
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductRegistCollectionViewCell.reuseIdentifier, for: indexPath) as? ProductRegistCollectionViewCell else { return UICollectionViewCell() }
+            
+            cell.removeImage = {
+                self.deleteDataSource(image: itemIdentifier)
+            }
+            if self.appendable && indexPath.row == 0 {
+                cell.hideDeleteImageButton()
+            }
+            cell.configureImage(data: itemIdentifier)
+            return cell
         }
+        return dataSource
     }
     
     private func updateDataSource(data: [UIImage]) {
-        snapshot.deleteAllItems()
+        var snapshot = Snapshot()
         snapshot.appendSections([.image])
-        if data.count > 5 {
-            var justData: [UIImage] = []
-            for index in 1...data.count-1 {
-                justData.append(data[index])
-            }
-            snapshot.appendItems(justData)
-        } else {
-            snapshot.appendItems(data)
-        }
+        snapshot.appendItems(data)
         DispatchQueue.main.async {
-            self.dataSource.apply(self.snapshot, animatingDifferences: false)
+            self.dataSource.apply(snapshot, animatingDifferences: false)
         }
     }
     
-    private func appendImage(image: UIImage) {
-        productImages.insert(image, at: 1)
-        updateDataSource(data: productImages)
+    private func insertDataSource(data: UIImage) {
+        var snapshot = dataSource.snapshot()
+        if let first = snapshot.itemIdentifiers.first {
+            snapshot.insertItems([data], afterItem: first)
+        }
+        
+        if snapshot.numberOfItems > 5 {
+            guard let first = snapshot.itemIdentifiers.first else { return }
+            snapshot.deleteItems([first])
+            appendable = false
+        }
+        
+        DispatchQueue.main.async {
+            self.dataSource.apply(snapshot, animatingDifferences: false)
+        }
     }
     
-    private func changeImage(image: UIImage) {
-        guard let index = selectedImageNumber else { return }
-        productImages[index] = image
-        updateDataSource(data: productImages)
+    private func deleteDataSource(image: UIImage) {
+        var snapshot = dataSource.snapshot()
+        snapshot.deleteItems([image])
+        
+        if !appendable {
+            guard let first = snapshot.itemIdentifiers.first else { return }
+            let insertImage = UIImage(systemName: "plus") ?? UIImage()
+            snapshot.insertItems([insertImage], beforeItem: first)
+            appendable = true
+        }
+        
+        DispatchQueue.main.async {
+            self.dataSource.apply(snapshot, animatingDifferences: false)
+        }
+    }
+    
+    private func insertImage(image: UIImage) {
+        insertDataSource(data: image)
     }
     
     @objc private func didTapCloseButton() {
@@ -147,11 +170,7 @@ final class ProductRegistViewController: UIViewController {
 extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let selectedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
-        if selectedImageNumber == 0 {
-            appendImage(image: selectedImage)
-        } else {
-            changeImage(image: selectedImage)
-        }
+        insertImage(image: selectedImage)
         dismiss(animated: true)
     }
 }
@@ -160,46 +179,8 @@ extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavig
 
 extension ProductRegistViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedImageNumber = indexPath.row
-        self.present(imagePicker, animated: true)
-    }
-}
-
-// MARK: - UIGestureRecognizerDelegate Function
-
-extension ProductRegistViewController: UIGestureRecognizerDelegate {
-    private func setupLongGestureRecognizerOnCollection() {
-        let longPressedGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
-        longPressedGesture.minimumPressDuration = 1
-        longPressedGesture.delegate = self
-        longPressedGesture.delaysTouchesBegan = true
-        registView.registCollectionView.addGestureRecognizer(longPressedGesture)
-    }
-    
-    @objc private func handleLongPress(_ guesture: UILongPressGestureRecognizer) {
-        let point = guesture.location(in: registView.registCollectionView)
-        guard let indexPath = registView.registCollectionView.indexPathForItem(at: point) else { return }
-        if guesture.state == UIGestureRecognizer.State.began && indexPath.row != 0 {
-            longPressAction(index: indexPath.item, sourceView: guesture.view)
+        if indexPath.row == 0 && appendable {
+            self.present(imagePicker, animated: true)
         }
     }
-    
-    private func longPressAction(index: Int, sourceView: UIView?) {
-        let alertController = UIAlertController(title: "알림", message: "삭제하시겠습니까?", preferredStyle: .alert)
-        alertController.modalPresentationStyle = .popover
-        
-        let cancelAction = UIAlertAction(title: "취소",
-                                         style: .default)
-        let deleteAction = UIAlertAction(title: "삭제",
-                                         style: .destructive) { [weak self] _ in
-            guard let self = self else { return }
-            self.productImages.remove(at: index)
-            self.updateDataSource(data: self.productImages)
-        }
-        alertController.addAction(cancelAction)
-        alertController.addAction(deleteAction)
-        
-        present(alertController, animated: true)
-    }
 }
-

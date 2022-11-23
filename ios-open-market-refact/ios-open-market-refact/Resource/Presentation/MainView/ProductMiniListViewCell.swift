@@ -27,6 +27,7 @@ final class ProductMiniListViewCell: UICollectionViewCell {
         label.font = .systemFont(ofSize: 21, weight: .bold)
         label.setContentHuggingPriority(.defaultLow, for: .horizontal)
         label.setContentCompressionResistancePriority(UILayoutPriority(100), for: .horizontal)
+        label.textAlignment = .center
         return label
     }()
 

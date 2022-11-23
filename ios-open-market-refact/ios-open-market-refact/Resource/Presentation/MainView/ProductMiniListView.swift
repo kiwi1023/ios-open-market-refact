@@ -7,39 +7,29 @@
 
 import UIKit
 
-final class ProductMiniListView: UIView {
+final class ProductMiniListView: SuperViewSetting {
     
-    var productMiniListCellSelectedDelegate: ProductMiniListCellSelectedDelegate?
+//    var productMiniListCellSelectedDelegate: ProductMiniListCellSelectedDelegate?
     
     var titleStackView = ProductMiniListTitleStackView()
     private(set) var miniListCollectionView: UICollectionView?
     
-    //MARK: - PoductMiniListView Initializer
-    init() {
-        super.init(frame: .zero)
-        setupDefaults()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
     //MARK: - Setup ProductMiniListView Method
     
-    private func setupDefaults() {
+    override func setupDefault() {
         translatesAutoresizingMaskIntoConstraints = false
         addUIComponents()
         setupLayout()
         configureCollectionView()
     }
     
-    private func addUIComponents() {
+    override func addUIComponents() {
         addSubview(titleStackView)
     }
     
-    private func setupLayout() {
+    override func setupLayout() {
         NSLayoutConstraint.activate([
-            titleStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            titleStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
             titleStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),
             titleStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -10)
         ])
@@ -50,16 +40,14 @@ final class ProductMiniListView: UIView {
         guard let miniListCollectionView = miniListCollectionView else {
             return
         }
-        miniListCollectionView.delegate = self
         addSubview(miniListCollectionView)
         miniListCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         miniListCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        
         NSLayoutConstraint.activate([
-            miniListCollectionView.topAnchor.constraint(equalTo: titleStackView.bottomAnchor, constant: 20),
+            miniListCollectionView.topAnchor.constraint(equalTo: titleStackView.bottomAnchor, constant: 10),
             miniListCollectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             miniListCollectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            miniListCollectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            miniListCollectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: 0)
         ])
     }
     
@@ -79,17 +67,5 @@ final class ProductMiniListView: UIView {
         
 
         return layout
-    }
-}
-//MARK: - CollectionView delegate
-
-extension ProductMiniListView: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? ProductMiniListViewCell,
-              let product = cell.product
-        else {
-            return
-        }
-        productMiniListCellSelectedDelegate?.selectCell(product: product)
     }
 }

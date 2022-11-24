@@ -9,12 +9,17 @@ import UIKit
 
 final class ProductRegistViewController: UIViewController {
     
+    enum ViewMode {
+        case add, edit
+    }
+    
     enum Section: Int {
         case image
     }
     
     private let registView = ProductRegistView()
     private let imagePicker = UIImagePickerController()
+    private var viewMode = ViewMode.add
     
     private var appendable = true
     
@@ -77,13 +82,12 @@ final class ProductRegistViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
-        self.navigationItem.title = "상품 등록"
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .close,
-            target: self,
-            action: #selector(didTapCloseButton)
-        )
+        switch viewMode {
+        case .add:
+            self.navigationItem.title = "상품 등록"
+        case .edit:
+            self.navigationItem.title = "상품 수정"
+        }
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .done,
@@ -172,6 +176,7 @@ final class ProductRegistViewController: UIViewController {
             case .success:
                 DispatchQueue.main.async {
                     print("성공")
+                    self.navigationController?.popViewController(animated: true)
                 }
             case .failure:
                 DispatchQueue.main.async {
@@ -182,13 +187,21 @@ final class ProductRegistViewController: UIViewController {
         }
     }
     
-    @objc private func didTapCloseButton() {
-        self.navigationController?.popViewController(animated: true)
+    func changeToEditMode() {
+        viewMode = .edit
     }
     
     @objc private func didTapDoneButton() {
-        let product = registView.makeProduct()
-        postProduct(input: product)
+        switch viewMode {
+        case .add:
+            let product = registView.makeProduct()
+            postProduct(input: product)
+        case .edit:
+//            let product = registView.makeProduct()
+//            patchProduct(input: product)
+            print("patch기능 추가해주세요~!")
+        }
+        
     }
 }
 

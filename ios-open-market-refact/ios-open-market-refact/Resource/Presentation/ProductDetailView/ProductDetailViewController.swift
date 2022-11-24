@@ -45,16 +45,19 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     }
     
     @objc func didTapDeleteButton() { //TODO: 삭제 로직 추가해야함
-        let alert = UIAlertController(title: "삭제", message: "정말 삭제하시겠습니까?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("삭제", comment: "Default action"), style: .destructive, handler: { [weak self] _ in
-            //TODO: 삭제 로직 추가, 성공시 다음코드
-            self?.removeCurrentProduct()
-            //TODO: 삭제 실패시 로직
-        }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("취소", comment: "Default action"), style: .default, handler: { _ in
-            NSLog("The \"삭제 취소\" alert occured.")
-        }))
-        self.present(alert, animated: true, completion: nil)
+//        let alert = UIAlertController(title: "삭제", message: "정말 삭제하시겠습니까?", preferredStyle: .alert)
+//        alert.addAction(UIAlertAction(title: NSLocalizedString("삭제", comment: "Default action"), style: .destructive, handler: { [weak self] _ in
+//            //TODO: 삭제 로직 추가, 성공시 다음코드
+//            self?.removeCurrentProduct()
+//            //TODO: 삭제 실패시 로직
+//        }))
+//        alert.addAction(UIAlertAction(title: NSLocalizedString("취소", comment: "Default action"), style: .default, handler: { _ in
+//            NSLog("The \"삭제 취소\" alert occured.")
+//        }))
+//        self.present(alert, animated: true, completion: nil)
+        let registView = ProductRegistViewController()
+        registView.changeToEditMode()
+        self.navigationController?.pushViewController(registView, animated: true)
     }
     
     private func removeCurrentProduct() {

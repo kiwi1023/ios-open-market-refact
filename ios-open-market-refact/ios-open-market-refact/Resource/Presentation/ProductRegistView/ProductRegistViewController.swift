@@ -158,12 +158,37 @@ final class ProductRegistViewController: UIViewController {
         }
     }
     
+    private func postProduct(input: RegistrationProduct) {
+        var images = snapshot.itemIdentifiers
+        if appendable {
+            images.removeFirst()
+        }
+        let productImages = images.map {
+            ProductImage(name: $0.description, data: $0.compress() ?? Data(), type: "png")
+        }
+        guard let request = OpenMarketRequestDirector().createPostRequest(product: input, images: productImages) else { return }
+        NetworkManager().dataTask(with: request) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    print("성공")
+                }
+            case .failure:
+                DispatchQueue.main.async {
+                    //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
+                    print("실패")
+                }
+            }
+        }
+    }
+    
     @objc private func didTapCloseButton() {
         self.navigationController?.popViewController(animated: true)
     }
     
     @objc private func didTapDoneButton() {
-        print("didTapDoneButton!")
+        let product = registView.makeProduct()
+        postProduct(input: product)
     }
 }
 

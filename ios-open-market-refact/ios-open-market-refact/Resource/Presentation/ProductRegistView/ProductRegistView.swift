@@ -172,6 +172,16 @@ final class ProductRegistView: UIView {
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout
     }
+    
+    func makeProduct() -> RegistrationProduct {
+        return RegistrationProduct(name: productNameTextField.text ?? "",
+                                   description: productDescriptionTextView.text ?? "",
+                                   price: Double(productPriceTextField.text ?? "0") ?? 0,
+                                   currency: "KRW",
+                                   discountedPrice: Double(productSaleTextField.text ?? "0") ?? 0,
+                                   stock: Int(productStockTextField.text ?? "0") ?? 0,
+                                   secret: UserInfo.secret.text)
+    }
 }
 
 extension ProductRegistView: UITextFieldDelegate {

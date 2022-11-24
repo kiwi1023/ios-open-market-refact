@@ -64,7 +64,6 @@ final class ProductRegistViewController: UIViewController {
         setupNavigationBar()
         configureImagePicker()
         updateDataSource(data: [UIImage(named: "iconCamera.png") ?? UIImage()])
-        
         registView.registCollectionView.delegate = self
     }
     
@@ -189,6 +188,16 @@ final class ProductRegistViewController: UIViewController {
     
     func changeToEditMode() {
         viewMode = .edit
+    }
+    
+    func configureProduct(product: ProductDetaiil) {
+        registView.configureProduct(product: product)
+        DispatchQueue.main.async {
+            guard let url = URL(string: product.thumbnail),
+                  let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else { return }
+            self.appendDataSource(data: image)
+        }
     }
     
     @objc private func didTapDoneButton() {

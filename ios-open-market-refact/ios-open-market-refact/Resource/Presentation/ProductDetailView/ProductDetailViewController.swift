@@ -57,6 +57,7 @@ final class ProductDetailViewController: SuperViewControllerSetting {
 //        self.present(alert, animated: true, completion: nil)
         let registView = ProductRegistViewController()
         registView.changeToEditMode()
+        registView.configureProduct(product: ProductDetailViewController.sampleData)
         self.navigationController?.pushViewController(registView, animated: true)
     }
     

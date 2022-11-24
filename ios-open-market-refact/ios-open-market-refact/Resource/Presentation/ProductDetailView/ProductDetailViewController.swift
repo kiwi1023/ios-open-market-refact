@@ -17,7 +17,7 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     override func setupDefault() {
         self.product = ProductDetailViewController.sampleData
-        setupNavigationBar()
+        configureNavigationBar()
     }
     
     override func addUIComponents() {
@@ -33,18 +33,24 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         ])
     }
     
-    private func setupNavigationBar() {
-        self.navigationItem.title = "상품목록"
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .trash,
-            target: self,
-            action: #selector(didTapDeleteButton)
-        )
-        
-    }
+    private func configureNavigationBar() {
+        if product?.vendorID == UserInfo.id {
+                navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(editButtonDidTapped))
+            }
+        navigationItem.title = product?.name
+        }
     
-    @objc func didTapDeleteButton() { //TODO: 삭제 로직 추가해야함
+    @objc private func editButtonDidTapped() {
+           AlertDirector(viewController: self).createProductEditActionSheet { [weak self] _ in
+               guard let self = self else { return }
+               
+              print("편집뷰")
+           } deleteAction: { [weak self] _ in
+               self?.didTapDeleteButton()
+           }
+       }
+    
+    func didTapDeleteButton() { //TODO: 삭제 로직 추가해야함
         let alert = UIAlertController(title: "삭제", message: "정말 삭제하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("삭제", comment: "Default action"), style: .destructive, handler: { [weak self] _ in
             //TODO: 삭제 로직 추가, 성공시 다음코드

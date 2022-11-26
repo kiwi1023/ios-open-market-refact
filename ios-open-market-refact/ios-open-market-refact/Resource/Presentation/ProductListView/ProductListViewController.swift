@@ -97,7 +97,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     @objc private func didTapRegistButton() {
-        navigationController?.pushViewController(ProductRegistViewController(), animated: true)
+        navigationController?.pushViewController(ProductRegistViewController(product: nil), animated: true)
     }
     
     //MARK: - Setup CollectionView Method

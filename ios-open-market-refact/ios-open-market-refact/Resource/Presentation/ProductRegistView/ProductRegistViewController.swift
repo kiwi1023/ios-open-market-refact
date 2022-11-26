@@ -8,6 +8,7 @@
 import UIKit
 
 final class ProductRegistViewController: UIViewController {
+    private var product: ProductDetail?
     
     enum ViewMode {
         case add, edit
@@ -31,9 +32,9 @@ final class ProductRegistViewController: UIViewController {
     
     //MARK: - ViewController Initializer
     
-    init() {
+    init(product: ProductDetail?) {
+        self.product = product
         super.init(nibName: nil, bundle: nil)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -58,7 +59,7 @@ final class ProductRegistViewController: UIViewController {
     
     private func setupDefault() {
         view.backgroundColor = .systemBackground
-        
+        configureProduct()
         addUIComponents()
         setupLayout()
         setupNavigationBar()
@@ -186,18 +187,36 @@ final class ProductRegistViewController: UIViewController {
         }
     }
     
-    func changeToEditMode() {
-        viewMode = .edit
+    private func patchProduct(input: RegistrationProduct) {
+        guard let product = product else { return }
+        guard let request = OpenMarketRequestDirector().createPatchRequest(product: input,
+                                                                           productNumber: product.id) else { return }
+        
+        NetworkManager().dataTask(with: request) { result in
+            switch result {
+            case .success(let success):
+                print(String(decoding: success, as: UTF8.self))
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+                break
+            }
+        }
     }
     
-    func configureProduct(product: ProductDetaiil) {
-        registView.configureProduct(product: product)
-        DispatchQueue.main.async {
-            guard let url = URL(string: product.thumbnail),
-                  let data = try? Data(contentsOf: url),
-                  let image = UIImage(data: data) else { return }
-            self.appendDataSource(data: image)
-        }
+    private func configureProduct() {
+        guard let product = product else { return }
+            registView.configureProduct(product: product)
+            viewMode = .edit
+            
+            DispatchQueue.main.async {
+                guard let url = URL(string: product.thumbnail),
+                      let data = try? Data(contentsOf: url),
+                      let image = UIImage(data: data) else { return }
+                self.appendDataSource(data: image)
+            }
     }
     
     @objc private func didTapDoneButton() {
@@ -206,14 +225,11 @@ final class ProductRegistViewController: UIViewController {
             let product = registView.makeProduct()
             postProduct(input: product)
         case .edit:
-//            let product = registView.makeProduct()
-//            patchProduct(input: product)
-            print("patch기능 추가해주세요~!")
+            let product = registView.makeProduct()
+            patchProduct(input: product)
         }
-        
     }
 }
-
 // MARK: - UIImagePicker & UINavigation ControllerDelegate Function
 
 extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
@@ -258,4 +274,3 @@ extension ProductRegistViewController {
         registView.mainScrollView.scrollIndicatorInsets = contentInset
     }
 }
-

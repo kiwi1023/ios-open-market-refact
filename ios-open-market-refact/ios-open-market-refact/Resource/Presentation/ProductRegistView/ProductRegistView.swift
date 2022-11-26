@@ -187,12 +187,12 @@ final class ProductRegistView: UIView {
                                    currency: "KRW",
                                    discountedPrice: Double(productSaleTextField.text ?? "0") ?? 0,
                                    stock: Int(productStockTextField.text ?? "0") ?? 0,
-                                   secret: UserInfo.secret.text)
+                                   secret: UserInfo.secret)
     }
     
-    func configureProduct(product: ProductDetaiil) {
+    func configureProduct(product: ProductDetail) {
         productNameTextField.text = product.name
-        productDescriptionTextView.text = product.productDetaiilDescription
+        productDescriptionTextView.text = product.description
         productPriceTextField.text = "\(product.price)"
         productSaleTextField.text = "\(product.discountedPrice)"
         productStockTextField.text = "\(product.stock)"

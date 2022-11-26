@@ -49,14 +49,6 @@ final class ProductDetailView: SuperViewSetting {
         return view
     }()
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.setContentHuggingPriority(UILayoutPriority(750), for: .vertical)
-        label.font = .preferredFont(forTextStyle: .title2, compatibleWith: .none).bold()
-        return label
-    }()
-    
     private let descriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -78,9 +70,7 @@ final class ProductDetailView: SuperViewSetting {
         venderStackView.addArrangedSubview(venderImageView)
         venderStackView.addArrangedSubview(venderNameLabel)
         addSubview(spacingView)
-        addSubview(titleLabel)
         addSubview(descriptionLabel)
-        
     }
     
     override func setupLayout() {
@@ -112,13 +102,7 @@ final class ProductDetailView: SuperViewSetting {
         ])
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: spacingView.bottomAnchor, constant: topMargin),
-            titleLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: leadingMargin),
-            titleLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin)
-        ])
-        
-        NSLayoutConstraint.activate([
-            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            descriptionLabel.topAnchor.constraint(equalTo: spacingView.bottomAnchor, constant: 10),
             descriptionLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: leadingMargin),
             descriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin)
         ])
@@ -126,26 +110,24 @@ final class ProductDetailView: SuperViewSetting {
       
     }
     
-    private func getProductInfoStackViewData(productDetail: ProductDetail) {
+    private func setUpProductInfoStackViewLayout(productDetail: ProductDetail) {
         let productInfoStackView = ProductInfoStackView(productDetail: productDetail)
         
         addSubview(productInfoStackView)
         
         NSLayoutConstraint.activate([
             productInfoStackView.heightAnchor.constraint(equalToConstant: 50),
-            productInfoStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: CGFloat(20)),
-            productInfoStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: CGFloat(-20)),
+            productInfoStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            productInfoStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -20),
             productInfoStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])
     }
     
     func getProductDetailData(productDetail: ProductDetail) {
-       
-        mainImageView.setImageUrl(productDetail.thumbnail)
-        venderImageView.image = UIImage(systemName: "person.circle")
-        venderNameLabel.text = productDetail.vendors.name
-        titleLabel.text = productDetail.name
-        descriptionLabel.text = productDetail.description
-        getProductInfoStackViewData(productDetail: productDetail)
+            mainImageView.setImageUrl(productDetail.thumbnail)
+            venderImageView.image = UIImage(systemName: "person.circle")
+            venderNameLabel.text = productDetail.vendors.name
+            descriptionLabel.text = productDetail.description
+            setUpProductInfoStackViewLayout(productDetail: productDetail)
     }
 }

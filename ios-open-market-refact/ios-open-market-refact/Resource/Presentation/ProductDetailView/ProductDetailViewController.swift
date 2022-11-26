@@ -9,6 +9,7 @@ import UIKit
 
 final class ProductDetailViewController: SuperViewControllerSetting {
     
+    private var productDetail: ProductDetail?
     private var productNumber: Int?
     private lazy var productDetailView = ProductDetailView()
     
@@ -40,16 +41,17 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     @objc private func editButtonDidTapped() {
         AlertDirector(viewController: self).createProductEditActionSheet { [weak self] _ in
-            guard let self = self else { return }
-            
-            print("편집뷰")
+            self?.convertToEditView()
         } deleteAction: { [weak self] _ in
             self?.didTapDeleteButton()
         }
     }
     
-    func receiveProductNumber(productNumber: Int) {
-        self.productNumber = productNumber
+    
+    private func convertToEditView() {
+        guard let productDetail = self.productDetail else { return }
+        
+        navigationController?.pushViewController(ProductRegistViewController(product: productDetail), animated: true)
     }
     
     func didTapDeleteButton() { //TODO: 삭제 로직 추가해야함
@@ -72,6 +74,10 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         }))
         self.present(alert, animated: true, completion: nil)
     }
+    
+    func receiveProductNumber(productNumber: Int) {
+        self.productNumber = productNumber
+    }
 }
 
 //MARK: - ProductDetail View Mock Data
@@ -81,10 +87,11 @@ extension ProductDetailViewController {
         guard let productNumber = productNumber else { return }
         guard let detailRequest = OpenMarketRequestDirector().createGetDetailRequest(productNumber) else { return }
         
-        NetworkManager().dataTask(with: detailRequest) { result in
+        NetworkManager().dataTask(with: detailRequest) { [self] result in
             switch result {
             case .success(let data):
-                let productDetail: ProductDetail? = JSONDecoder.decodeJson(jsonData: data)
+                productDetail = JSONDecoder.decodeJson(jsonData: data)
+               
                 guard let productDetail = productDetail else { return }
                 
                 DispatchQueue.main.async { [self] in

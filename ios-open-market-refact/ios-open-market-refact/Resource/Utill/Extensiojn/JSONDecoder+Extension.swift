@@ -8,15 +8,12 @@
 import Foundation
 
 extension JSONDecoder {
-    static func decodeJson<T: Codable>(jsonName: String) -> T? {
+    static func decodeJson<T: Decodable>(jsonData: Data) -> T? {
         let decoder = JSONDecoder()
         
-        guard let fileLocation = Bundle.main.url(forResource: jsonName, withExtension: "json") else { return nil }
-        
         do {
-            let data = try Data(contentsOf: fileLocation)
-            let expoInfo =  try decoder.decode(T.self, from: data)
-            return expoInfo
+            let safeData =  try decoder.decode(T.self, from: jsonData)
+            return safeData
         } catch {
             print(error)
             return nil

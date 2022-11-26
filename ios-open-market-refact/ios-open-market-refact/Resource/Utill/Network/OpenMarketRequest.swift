@@ -144,7 +144,7 @@ struct OpenMarketRequestDirector {
     
     func createDeleteRequest(with deleteURI: String) -> OpenMarketRequest? {
         let deleteRequest = builder.setMethod(.delete)
-            .setPath(URLAdditionalPath.product.value + "/\(deleteURI)/")
+            .setPath(deleteURI)
             .setHeaders(["identifier": UserInfo.identifier])
             .buildRequest()
         

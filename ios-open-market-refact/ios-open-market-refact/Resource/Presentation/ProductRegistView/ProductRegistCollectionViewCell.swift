@@ -11,13 +11,25 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "registCell"
     
-    private(set) var registImageButton: UIButton = {
+    private let registImageButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .systemGroupedBackground
         button.isUserInteractionEnabled = false
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
         return button
     }()
+    
+    private let deleteImageButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
+        button.tintColor = .red
+        return button
+    }()
+    
+    var removeImage: (() -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,6 +50,7 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
     
     private func addUIComponents() {
         contentView.addSubview(registImageButton)
+        contentView.addSubview(deleteImageButton)
     }
     
     private func setupLayout() {
@@ -45,15 +58,36 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
             registImageButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             registImageButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             registImageButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            registImageButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            registImageButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor )
+        ])
+        
+        NSLayoutConstraint.activate([
+            deleteImageButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+            deleteImageButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            deleteImageButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.2),
+            deleteImageButton.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.2)
         ])
     }
     
-    func configure(data: UIImage) {
+    func configureImage(data: UIImage) {
         registImageButton.setImage(data, for: .normal)
+        deleteImageButton.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
     }
     
-    func addTargetToImageButton(_ target: Any?, action: Selector, for controlEvents: UIControl.Event) {
-        registImageButton.addTarget(target, action: action, for: controlEvents)
+    func changeInteraction() {
+        registImageButton.isUserInteractionEnabled = false
+    }
+    
+    func hideDeleteImageButton() {
+        deleteImageButton.isHidden = true
+    }
+    
+    override func prepareForReuse() {
+        registImageButton.imageView?.image = nil
+        deleteImageButton.isHidden = false
+    }
+    
+    @objc private func didTapRemoveButton() {
+        removeImage?()
     }
 }

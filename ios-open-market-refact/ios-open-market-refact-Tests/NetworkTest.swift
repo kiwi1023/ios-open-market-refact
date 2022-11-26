@@ -46,7 +46,7 @@ final class NetworkTest: XCTestCase {
                                           currency: "KRW",
                                           discountedPrice: 0.0,
                                           stock: 1,
-                                          secret: UserInfo.secret.text)
+                                          secret: UserInfo.secret)
         let networkManager = NetworkManager()
         guard let assetImage = UIImage(named: "testImage") else { return }
         guard let jpegData = assetImage.compress() else { return }
@@ -77,7 +77,7 @@ final class NetworkTest: XCTestCase {
                                           currency: "USD",
                                           discountedPrice: 0.0,
                                           stock: 33,
-                                          secret: UserInfo.secret.text)
+                                          secret: UserInfo.secret)
         let networkManager = NetworkManager()
        
         guard let request = OpenMarketRequestDirector().createPatchRequest(product: product, productNumber: 189) else { return }

@@ -28,19 +28,17 @@ final class MainViewController: SuperViewControllerSetting {
     override func setupDefault() {
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
-        productMiniListView.productMiniListCellSelectedDelegate = self
+        productMiniListView.miniListCollectionView?.delegate = self
         guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 10) else { return }
         NetworkManager().dataTask(with: request) { result in
             switch result {
             case .success(let data):
-                do {
-                    let productList = try JSONDecoder().decode(ProductList.self, from: data)
+                let productList: ProductList? = JSONDecoder.decodeJson(jsonData: data)
+                guard let productList = productList else { return }
+                
                     DispatchQueue.main.async { [weak self] in
                         self?.updateDataSource(data: productList.pages)
                     }
-                } catch {
-                    print("!!")
-                }
             case .failure(_):
                 DispatchQueue.main.async {
                     //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
@@ -72,8 +70,8 @@ final class MainViewController: SuperViewControllerSetting {
     override func setupLayout() {
         NSLayoutConstraint.activate([
             bannerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
-            bannerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  20),
-            bannerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            bannerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  30),
+            bannerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30),
             bannerView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.5)
         ])
         
@@ -129,16 +127,13 @@ extension MainViewController: MoreButtonTapDelegate {
     }
 }
 
-//MARK: - MiniListViewController Cell select delegate
+//MARK: - MiniListViewController delegate
 
-protocol ProductMiniListCellSelectedDelegate {
-    func selectCell(product: Product)
-}
-
-extension MainViewController: ProductMiniListCellSelectedDelegate {
-    func selectCell(product: Product) {
-        //TODO: 여기서 id 로 디테일 가져와서 그걸로 이니셜라이징
+extension MainViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let productDetailViewController = ProductDetailViewController()
+        productDetailViewController.receiveProductNumber(productNumber: 182)
+        
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }
 }

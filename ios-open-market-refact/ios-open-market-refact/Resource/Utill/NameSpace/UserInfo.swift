@@ -8,15 +8,7 @@
 import Foundation
 
 enum UserInfo {
-    case identifier
-    case secret
-    
-    var text: String {
-        switch self {
-        case .identifier:
-            return "25a1ab60-4aa3-11ed-a200-058d51faf231"
-        case .secret:
-            return "n333s9ajdpdjf11"
-        }
-    }
+    static let identifier = "25a1ab60-4aa3-11ed-a200-058d51faf231"
+    static let secret = "n333s9ajdpdjf11"
+    static let id = 11
 }

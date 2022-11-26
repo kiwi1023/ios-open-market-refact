@@ -9,7 +9,7 @@ import UIKit
 
 final class ProductInfoStackView: UIStackView {
     
-    private let productDetail: ProductDetaiil?
+    private let productDetail: ProductDetail?
     
     private var isStarToggled = true
     
@@ -49,7 +49,7 @@ final class ProductInfoStackView: UIStackView {
         return label
     }()
     
-    init(productDetail: ProductDetaiil?) {
+    init(productDetail: ProductDetail?) {
         self.productDetail = productDetail
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false

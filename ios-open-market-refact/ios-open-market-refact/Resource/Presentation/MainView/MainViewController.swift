@@ -33,14 +33,12 @@ final class MainViewController: SuperViewControllerSetting {
         NetworkManager().dataTask(with: request) { result in
             switch result {
             case .success(let data):
-                do {
-                    let productList = try JSONDecoder().decode(ProductList.self, from: data)
+                let productList: ProductList? = JSONDecoder.decodeJson(jsonData: data)
+                guard let productList = productList else { return }
+                
                     DispatchQueue.main.async { [weak self] in
                         self?.updateDataSource(data: productList.pages)
                     }
-                } catch {
-                    print("!!")
-                }
             case .failure(_):
                 DispatchQueue.main.async {
                     //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
@@ -133,7 +131,9 @@ extension MainViewController: MoreButtonTapDelegate {
 
 extension MainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailViewController = ProductDetailViewController()
-        navigationController?.pushViewController(detailViewController, animated: true)
+        let productDetailViewController = ProductDetailViewController()
+        productDetailViewController.receiveProductNumber(productNumber: 182)
+        
+        navigationController?.pushViewController(productDetailViewController, animated: true)
     }
 }

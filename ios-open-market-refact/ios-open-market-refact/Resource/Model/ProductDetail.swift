@@ -8,16 +8,16 @@
 import Foundation
 
 // MARK: - ProductDetaiil
-struct ProductDetaiil: Codable {
+struct ProductDetail: Decodable {
     let id: Int
     let vendorID: Int
     let name: String
     let thumbnail: String
-    let currency: String
-    let price: Int
-    let productDetaiilDescription: String
-    let bargainPrice: Int
-    let discountedPrice: Int
+    let currency: Currency
+    let price: Double
+    let description: String
+    let bargainPrice: Double
+    let discountedPrice: Double
     let stock: Int
     let createdAt: String
     let issuedAt: String
@@ -31,7 +31,7 @@ struct ProductDetaiil: Codable {
         case thumbnail
         case currency
         case price
-        case productDetaiilDescription = "description"
+        case description
         case bargainPrice = "bargain_price"
         case discountedPrice = "discounted_price"
         case stock
@@ -47,14 +47,12 @@ struct Image: Codable {
     let id: Int
     let url: String
     let thumbnailURL: String
-    let succeed: Bool
     let issuedAt: String
 
     enum CodingKeys: String, CodingKey {
         case id
         case url
         case thumbnailURL = "thumbnail_url"
-        case succeed
         case issuedAt = "issued_at"
     }
 }

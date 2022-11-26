@@ -133,6 +133,7 @@ final class ProductListViewController: SuperViewControllerSetting {
 extension ProductListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let productDetailViewController = ProductDetailViewController()
+        productDetailViewController.receiveProductNumber(productNumber: 182)
         //pushViewController(productDetailViewController, animated: true)
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }

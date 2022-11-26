@@ -108,7 +108,7 @@ struct OpenMarketRequestDirector {
                                                           jsonData: productData,
                                                           images: images)))
             .setHeaders(["Content-Type": "multipart/form-data; boundary=\(boundary)",
-                         "identifier": UserInfo.identifier.text])
+                         "identifier": UserInfo.identifier])
             .buildRequest()
 
         return postRequest
@@ -119,7 +119,7 @@ struct OpenMarketRequestDirector {
         
         let patchRequest = builder.setMethod(.patch)
             .setPath(URLAdditionalPath.product.value + "/\(productNumber)/")
-            .setHeaders(["identifier": UserInfo.identifier.text,
+            .setHeaders(["identifier": UserInfo.identifier,
                         "Content-Type": "application/json"])
             .setBody(HTTPBody.json(productData))
             .buildRequest()
@@ -128,14 +128,14 @@ struct OpenMarketRequestDirector {
     }
     
     func createDeleteURIRequest(productNumber: Int) -> OpenMarketRequest? {
-        let body = ProductDeleteKey(secret: UserInfo.secret.text)
+        let body = ProductDeleteKey(secret: UserInfo.secret)
         
         guard let data = try? JSONEncoder().encode(body) else { return nil }
 
         let deleteURIRequest = builder.setMethod(.post)
             .setPath(URLAdditionalPath.product.value + "/\(productNumber)/archived")
             .setHeaders(["Content-Type": "application/json",
-                         "identifier": UserInfo.identifier.text])
+                         "identifier": UserInfo.identifier])
             .setBody(HTTPBody.json(data))
             .buildRequest()
         
@@ -145,7 +145,7 @@ struct OpenMarketRequestDirector {
     func createDeleteRequest(with deleteURI: String) -> OpenMarketRequest? {
         let deleteRequest = builder.setMethod(.delete)
             .setPath(URLAdditionalPath.product.value + "/\(deleteURI)/")
-            .setHeaders(["identifier": UserInfo.identifier.text])
+            .setHeaders(["identifier": UserInfo.identifier])
             .buildRequest()
         
         return deleteRequest

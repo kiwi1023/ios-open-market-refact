@@ -131,7 +131,7 @@ struct OpenMarketRequestDirector {
     }
     
     func createDeleteURIRequest(productNumber: Int) -> OpenMarketRequest? {
-        let body = ProductDeleteKey(secret: UserInfo.secret.text)
+        let body = ProductDeleteKey(secret: UserInfo.secret)
         
         guard let data = try? JSONEncoder().encode(body) else { return nil }
         
@@ -145,10 +145,12 @@ struct OpenMarketRequestDirector {
         return deleteURIRequest
     }
     
-    func createDeleteRequest(with deleteURI: String) -> OpenMarketRequest? {
+    func createDeleteRequest(with deleteURI: Data) -> OpenMarketRequest? {
+        let deleteURI = String(data: deleteURI, encoding: .utf8)
+        
         let deleteRequest = builder
             .setMethod(.delete)
-            .setPath(.delete(deleteURI))
+            .setPath(.delete(deleteURI ?? ""))
             .setHeaders(.delete)
             .buildRequest()
         

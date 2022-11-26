@@ -60,13 +60,13 @@ enum HTTPHeader {
     var header: [String: String] {
         switch self {
         case .delete:
-            return ["identifier": UserInfo.identifier.text]
+            return ["identifier": UserInfo.identifier]
         case .json:
             return ["Content-Type": "application/json",
-                    "identifier": UserInfo.identifier.text]
+                    "identifier": UserInfo.identifier]
         case .multiPartForm(let boundary):
             return ["Content-Type": "multipart/form-data; boundary=\(boundary)",
-                    "identifier": UserInfo.identifier.text]
+                    "identifier": UserInfo.identifier]
         }
     }
 }
@@ -89,7 +89,7 @@ enum HTTPPath {
         case .getDeleteURI(let productNumber):
             return "/api/products/\(productNumber)/archived"
         case .delete(let deleteURI):
-            return"/api/products/\(deleteURI)/"
+            return"\(deleteURI)"
         }
     }
 }

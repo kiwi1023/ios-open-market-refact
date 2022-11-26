@@ -89,8 +89,8 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         NetworkManager().dataTask(with: deleteURIRequest) { result in
             switch result {
             case .success(let data):
-                guard let deleteURI = String(data: data, encoding: .utf8) else { return }
-                guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(with: deleteURI) else { return }
+               
+                guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(with: data) else { return }
                 
                 NetworkManager().dataTask(with: deleteRequest) { result in
                     switch result {

@@ -74,14 +74,14 @@ final class ProductDetailView: SuperViewSetting {
     }
     
     override func setupLayout() {
-        let topMargin = CGFloat(20)
+        let topMargin = CGFloat(10)
         let leadingMargin = CGFloat(20)
         let trailingMargin = CGFloat(-20)
         
         NSLayoutConstraint.activate([
             mainImageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: topMargin),
+            mainImageView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
             mainImageView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 40),
-            mainImageView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -40),
             mainImageView.heightAnchor.constraint(equalTo: mainImageView.widthAnchor)
         ])
         
@@ -91,8 +91,9 @@ final class ProductDetailView: SuperViewSetting {
             venderStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin)
         ])
         
-        venderImageView.widthAnchor.constraint(equalTo: venderStackView.widthAnchor, multiplier: 0.1).isActive = true
-        venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor).isActive = true
+        NSLayoutConstraint.activate([
+        venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor)
+        ])
         
         NSLayoutConstraint.activate([
             spacingView.topAnchor.constraint(equalTo: venderStackView.bottomAnchor, constant: topMargin),

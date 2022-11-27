@@ -28,6 +28,7 @@ final class ProductInfoStackView: UIStackView {
         let stackView = UIStackView(arrangedSubviews: [originalPriceLabel, bargainPriceLabel])
         stackView.setContentHuggingPriority(UILayoutPriority(100), for: .horizontal)
         stackView.axis = .vertical
+        stackView.distribution = .fillEqually
         return stackView
     }()
     

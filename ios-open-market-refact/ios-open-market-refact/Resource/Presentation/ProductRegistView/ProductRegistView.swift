@@ -18,7 +18,7 @@ final class ProductRegistView: UIView {
         return stackView
     }()
     
-     let mainScrollView: UIScrollView = {
+    let mainScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
@@ -97,8 +97,6 @@ final class ProductRegistView: UIView {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.font = .preferredFont(forTextStyle: .body)
         textView.isScrollEnabled = false
-        textView.text = textViewPlaceHolder
-        textView.textColor = UIColor.lightGray.withAlphaComponent(0.7)
         textView.layer.borderWidth = 0.1
         textView.layer.cornerRadius = 5
         textView.setContentHuggingPriority(UILayoutPriority(50), for: .vertical)
@@ -113,6 +111,7 @@ final class ProductRegistView: UIView {
         backgroundColor = .systemBackground
         addUIComponents()
         setupLayout()
+        textViewDefault()
     }
     
     required init?(coder: NSCoder) {
@@ -171,6 +170,35 @@ final class ProductRegistView: UIView {
         section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout
+    }
+    
+    private func textViewDefault() {
+        let text = productDescriptionTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if text == "" {
+            productDescriptionTextView.text = textViewPlaceHolder
+            productDescriptionTextView.textColor = UIColor.lightGray.withAlphaComponent(0.7)
+        }
+    }
+    
+    func makeProduct() -> RegistrationProduct {
+        return RegistrationProduct(name: productNameTextField.text ?? "",
+                                   description: productDescriptionTextView.text ?? "",
+                                   price: Double(productPriceTextField.text ?? "0") ?? 0,
+                                   currency: "KRW",
+                                   discountedPrice: Double(productSaleTextField.text ?? "0") ?? 0,
+                                   stock: Int(productStockTextField.text ?? "0") ?? 0,
+                                   secret: UserInfo.secret)
+    }
+    
+    func configureProduct(product: ProductDetail) {
+        productNameTextField.text = product.name
+        productDescriptionTextView.text = product.description
+        productPriceTextField.text = "\(product.price)"
+        productSaleTextField.text = "\(product.discountedPrice)"
+        productStockTextField.text = "\(product.stock)"
+        if !productDescriptionTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            productDescriptionTextView.textColor = .black
+        }
     }
 }
 

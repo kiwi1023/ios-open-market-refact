@@ -8,6 +8,11 @@
 import UIKit
 
 final class ProductRegistViewController: UIViewController {
+    private var product: ProductDetail?
+    
+    enum ViewMode {
+        case add, edit
+    }
     
     enum Section: Int {
         case image
@@ -15,6 +20,7 @@ final class ProductRegistViewController: UIViewController {
     
     private let registView = ProductRegistView()
     private let imagePicker = UIImagePickerController()
+    private var viewMode = ViewMode.add
     
     private var appendable = true
     
@@ -26,9 +32,9 @@ final class ProductRegistViewController: UIViewController {
     
     //MARK: - ViewController Initializer
     
-    init() {
+    init(product: ProductDetail?) {
+        self.product = product
         super.init(nibName: nil, bundle: nil)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -53,13 +59,12 @@ final class ProductRegistViewController: UIViewController {
     
     private func setupDefault() {
         view.backgroundColor = .systemBackground
-        
+        configureProduct()
         addUIComponents()
         setupLayout()
         setupNavigationBar()
         configureImagePicker()
         updateDataSource(data: [UIImage(named: "iconCamera.png") ?? UIImage()])
-        
         registView.registCollectionView.delegate = self
     }
     
@@ -77,13 +82,12 @@ final class ProductRegistViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
-        self.navigationItem.title = "상품 등록"
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .close,
-            target: self,
-            action: #selector(didTapCloseButton)
-        )
+        switch viewMode {
+        case .add:
+            self.navigationItem.title = "상품 등록"
+        case .edit:
+            self.navigationItem.title = "상품 수정"
+        }
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .done,
@@ -158,15 +162,74 @@ final class ProductRegistViewController: UIViewController {
         }
     }
     
-    @objc private func didTapCloseButton() {
-        self.navigationController?.popViewController(animated: true)
+    private func postProduct(input: RegistrationProduct) {
+        var images = snapshot.itemIdentifiers
+        if appendable {
+            images.removeFirst()
+        }
+        let productImages = images.map {
+            ProductImage(name: $0.description, data: $0.compress() ?? Data(), type: "png")
+        }
+        guard let request = OpenMarketRequestDirector().createPostRequest(product: input, images: productImages) else { return }
+        NetworkManager().dataTask(with: request) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    print("성공")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            case .failure:
+                DispatchQueue.main.async {
+                    //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
+                    print("실패")
+                }
+            }
+        }
+    }
+    
+    private func patchProduct(input: RegistrationProduct) {
+        guard let product = product else { return }
+        guard let request = OpenMarketRequestDirector().createPatchRequest(product: input,
+                                                                           productNumber: product.id) else { return }
+        
+        NetworkManager().dataTask(with: request) { result in
+            switch result {
+            case .success(let success):
+                print(String(decoding: success, as: UTF8.self))
+                DispatchQueue.main.async {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+                break
+            }
+        }
+    }
+    
+    private func configureProduct() {
+        guard let product = product else { return }
+            registView.configureProduct(product: product)
+            viewMode = .edit
+            
+            DispatchQueue.main.async {
+                guard let url = URL(string: product.thumbnail),
+                      let data = try? Data(contentsOf: url),
+                      let image = UIImage(data: data) else { return }
+                self.appendDataSource(data: image)
+            }
     }
     
     @objc private func didTapDoneButton() {
-        print("didTapDoneButton!")
+        switch viewMode {
+        case .add:
+            let product = registView.makeProduct()
+            postProduct(input: product)
+        case .edit:
+            let product = registView.makeProduct()
+            patchProduct(input: product)
+        }
     }
 }
-
 // MARK: - UIImagePicker & UINavigation ControllerDelegate Function
 
 extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
@@ -211,4 +274,3 @@ extension ProductRegistViewController {
         registView.mainScrollView.scrollIndicatorInsets = contentInset
     }
 }
-

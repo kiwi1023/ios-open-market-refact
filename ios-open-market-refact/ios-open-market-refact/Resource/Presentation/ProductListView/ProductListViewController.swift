@@ -97,7 +97,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     @objc private func didTapRegistButton() {
-        navigationController?.pushViewController(ProductRegistViewController(), animated: true)
+        navigationController?.pushViewController(ProductRegistViewController(product: nil), animated: true)
     }
     
     //MARK: - Setup CollectionView Method
@@ -133,6 +133,7 @@ final class ProductListViewController: SuperViewControllerSetting {
 extension ProductListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let productDetailViewController = ProductDetailViewController()
+        productDetailViewController.receiveProductNumber(productNumber: 182)
         //pushViewController(productDetailViewController, animated: true)
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }

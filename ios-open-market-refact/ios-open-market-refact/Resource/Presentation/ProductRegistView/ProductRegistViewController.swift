@@ -110,7 +110,12 @@ final class ProductRegistViewController: UIViewController {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductRegistCollectionViewCell.reuseIdentifier, for: indexPath) as? ProductRegistCollectionViewCell else { return UICollectionViewCell() }
             
             cell.removeImage = {
-                self.deleteDataSource(image: itemIdentifier)
+                switch self.viewMode {
+                case .add:
+                    self.deleteDataSource(image: itemIdentifier)
+                case .edit:
+                    AlertDirector(viewController: self).createErrorAlert(message: "사진은 수정이 불가합니다.")
+                }
             }
             if self.appendable && indexPath.row == 0 {
                 cell.hideDeleteImageButton()
@@ -215,10 +220,12 @@ final class ProductRegistViewController: UIViewController {
         viewMode = .edit
         
         DispatchQueue.main.async {
-            guard let url = URL(string: product.thumbnail),
-                  let data = try? Data(contentsOf: url),
-                  let image = UIImage(data: data) else { return }
-            self.appendDataSource(data: image)
+            product.images.forEach { image in
+                guard let url = URL(string: image.url),
+                      let data = try? Data(contentsOf: url),
+                      let seletedImage = UIImage(data: data) else { return }
+                self.appendDataSource(data: seletedImage)
+            }
         }
     }
     
@@ -265,7 +272,12 @@ extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavig
 extension ProductRegistViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.row == 0 && appendable {
-            self.present(imagePicker, animated: true)
+            switch viewMode {
+            case .add:
+                self.present(imagePicker, animated: true)
+            case .edit:
+                AlertDirector(viewController: self).createErrorAlert(message: "사진은 수정이 불가합니다.")
+            }
         }
     }
 }

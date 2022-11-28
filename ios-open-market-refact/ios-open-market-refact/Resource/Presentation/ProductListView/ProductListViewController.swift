@@ -122,7 +122,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.placeholder = "검색해보세용"
         searchController.searchResultsUpdater = self
-        searchController.delegate = self
+        //searchController.delegate = self
         
         navigationItem.searchController = searchController
     }
@@ -176,6 +176,17 @@ final class ProductListViewController: SuperViewControllerSetting {
         snapshot.appendItems(data)
         dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
     }
+    
+    private func createSpinnerFooter() -> UIView {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
+        
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        
+        return footerView
+    }
 }
 // MARK: - CollectionView delegate
 
@@ -185,6 +196,20 @@ extension ProductListViewController: UICollectionViewDelegate {
         productDetailViewController.receiveProductNumber(productNumber: 182)
         //pushViewController(productDetailViewController, animated: true)
         navigationController?.pushViewController(productDetailViewController, animated: true)
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let position = scrollView.contentOffset.y
+        guard let height = mainView.mainCollectionView?.contentSize.height,
+              let boundHeight = mainView.mainCollectionView?.bounds.size.height else {
+            return
+        }
+        print("position : \(position)")
+        if position > (height - boundHeight + 100) {
+            pageInfo.itemsPerPage += 10
+            
+            fetchedProductList()
+        }
     }
 }
 
@@ -202,8 +227,4 @@ extension ProductListViewController: UISearchResultsUpdating {
             }))
         }
     }
-}
-
-extension ProductListViewController: UISearchControllerDelegate  {
-    
 }

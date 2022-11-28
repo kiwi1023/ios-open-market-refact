@@ -30,6 +30,8 @@ final class ProductRegistViewController: UIViewController {
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, UIImage>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, UIImage>
     
+    var refreshList: (() -> Void)?
+    
     //MARK: - ViewController Initializer
     
     init(product: ProductDetail?) {
@@ -204,6 +206,7 @@ final class ProductRegistViewController: UIViewController {
                 print(String(decoding: success, as: UTF8.self))
                 DispatchQueue.main.async {
                     AlertDirector(viewController: self).createProductPatchSuccessAlert(message: "해당 상품을 수정 완료했습니다.")
+                    self.refreshList?()
                     self.navigationController?.popViewController(animated: true)
                 }
             case .failure(let error):

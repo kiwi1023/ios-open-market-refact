@@ -50,8 +50,11 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     private func convertToEditView() {
         guard let productDetail = self.productDetail else { return }
-        
-        navigationController?.pushViewController(ProductRegistViewController(product: productDetail), animated: true)
+        let registView = ProductRegistViewController(product: productDetail)
+        registView.refreshList = {
+            self.receiveDetailData()
+        }
+        navigationController?.pushViewController(registView, animated: true)
     }
     
     func didTapDeleteButton() {
@@ -68,7 +71,6 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     func receiveProductNumber(productNumber: Int) {
         self.productNumber = productNumber
     }
-    
     
     private func deleteProduct() {
         guard let productNumber = productNumber else { return }

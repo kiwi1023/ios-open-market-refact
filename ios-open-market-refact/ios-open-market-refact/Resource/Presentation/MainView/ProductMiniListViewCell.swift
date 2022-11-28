@@ -11,8 +11,8 @@ final class ProductMiniListViewCell: UICollectionViewCell {
     
     var product: Product?
     
-    private let thumbnailImageView: DownloadableUIImageView = {
-        let imageView = DownloadableUIImageView()
+    private let thumbnailImageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(data: UIImage(named: "testImage")?.compress() ?? Data())
         imageView.layer.cornerRadius = 15
@@ -68,13 +68,25 @@ final class ProductMiniListViewCell: UICollectionViewCell {
     }
     
     func configure(data: Product) {
-        thumbnailImageView.setImageUrl(data.thumbnail)
+        guard let nsURL = NSURL(string: data.thumbnail) else {
+            return
+        }
+        
+        ImageCache.shared.load(url: nsURL) {  image in
+            self.thumbnailImageView.image = image
+        }
+        
+        //thumbnailImageView.setImageUrl(data.thumbnail)
         nameLabel.text = data.name
         product = data
     }
     
     override func prepareForReuse() {
-        thumbnailImageView.cancelImageDownload()
-        
+        guard let product = product,
+              let nsURL = NSURL(string: product.thumbnail) else {
+            return
+        }
+        ImageCache.shared.cancel(url: nsURL)
+        thumbnailImageView.image = UIImage()
     }
 }

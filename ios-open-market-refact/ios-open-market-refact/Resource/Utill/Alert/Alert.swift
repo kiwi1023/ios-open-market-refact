@@ -150,18 +150,7 @@ struct AlertDirector {
             .setOkButton()
             .show()
     }
-    
-    func createImageSelectActionSheet(albumAction: @escaping (UIAlertAction) -> Void, cameraAction: @escaping (UIAlertAction) -> Void) {
-        AlertBuilder(viewController: viewController)
-            .setAlertStyle(.actionSheet)
-            .setFirstActionTitle("앨범")
-            .setFirstAction(albumAction)
-            .setSecondActionTitle("카메라")
-            .setSecondAction(cameraAction)
-            .setCancelButton()
-            .show()
-    }
-    
+
     func createProductEditActionSheet(editAction: @escaping (UIAlertAction) -> Void, deleteAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
             .setAlertStyle(.actionSheet)
@@ -171,6 +160,24 @@ struct AlertDirector {
             .setSecondAction(deleteAction)
             .setSecondActionStyle(.destructive)
             .setCancelButton()
+            .show()
+    }
+    
+    func createProductDeleteAlert(deleteAction: @escaping (UIAlertAction) -> Void) {
+        AlertBuilder(viewController: viewController)
+            .setFirstActionTitle("삭제")
+            .setMessage("정말 삭제하시겠습니까?")
+            .setFirstAction(deleteAction)
+            .setFirstActionStyle(.destructive)
+            .setCancelButton()
+            .show()
+    }
+    
+    func createProductDeleteSuccessAlert(message: String) {
+        AlertBuilder(viewController: viewController)
+            .setTitle("삭제완료")
+            .setMessage(message)
+            .setOkButton()
             .show()
     }
 }

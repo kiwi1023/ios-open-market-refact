@@ -54,26 +54,15 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         navigationController?.pushViewController(ProductRegistViewController(product: productDetail), animated: true)
     }
     
-    func didTapDeleteButton() { //TODO: 삭제 로직 추가해야함
-        let alert = UIAlertController(title: "삭제", message: "정말 삭제하시겠습니까?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("삭제", comment: "Default action"), style: .destructive, handler: { [weak self] _ in
-            //TODO: 삭제 로직 추가, 성공시 다음코드
+    func didTapDeleteButton() {
+        AlertDirector(viewController: self).createProductDeleteAlert { [weak self] _ in
             self?.deleteProduct()
             self?.removeCurrentProduct()
-            //TODO: 삭제 실패시 로직
-        }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("취소", comment: "Default action"), style: .default, handler: { _ in
-            NSLog("The \"삭제 취소\" alert occured.")
-        }))
-        self.present(alert, animated: true, completion: nil)
+        }
     }
     
     private func removeCurrentProduct() {
-        let alert = UIAlertController(title: "삭제완료", message: "해당 상품을 삭제 완료했습니다.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("확인", comment: "Default action"), style: .default, handler: { [weak self] _ in
-            self?.navigationController?.popViewController(animated: true)
-        }))
-        self.present(alert, animated: true, completion: nil)
+        AlertDirector(viewController: self).createProductDeleteSuccessAlert(message: "해당 상품을 삭제 완료했습니다.")
     }
     
     func receiveProductNumber(productNumber: Int) {
@@ -89,7 +78,7 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         NetworkManager().dataTask(with: deleteURIRequest) { result in
             switch result {
             case .success(let data):
-               
+                
                 guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(with: data) else { return }
                 
                 NetworkManager().dataTask(with: deleteRequest) { result in
@@ -119,7 +108,7 @@ extension ProductDetailViewController {
             switch result {
             case .success(let data):
                 productDetail = JSONDecoder.decodeJson(jsonData: data)
-               
+                
                 guard let productDetail = productDetail else { return }
                 
                 DispatchQueue.main.async { [self] in

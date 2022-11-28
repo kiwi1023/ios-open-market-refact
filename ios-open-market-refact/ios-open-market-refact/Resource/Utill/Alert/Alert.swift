@@ -108,12 +108,12 @@ final class AlertBuilder: AlertBuilderable {
         cancelAction.style = .cancel
         return self
     }
-
+    
     func show() {
         guard validAlert() else { return }
         
         let alert = UIAlertController(title: alert.title, message: alert.message, preferredStyle: alert.style)
-
+        
         [firstAction, secondAction, okAction, cancelAction].forEach { actionButton in
             if actionButton.title != nil {
                 let action = UIAlertAction(title: actionButton.title, style: actionButton.style, handler: actionButton.action)
@@ -132,7 +132,7 @@ final class AlertBuilder: AlertBuilderable {
             .count
         
         return (alert.style == .actionSheet && numberOfActions >= 1) ||
-                (alert.style == .alert && numberOfActions >= 1 && (alert.title != nil || alert.message != nil))
+        (alert.style == .alert && numberOfActions >= 1 && (alert.title != nil || alert.message != nil))
     }
 }
 
@@ -150,7 +150,7 @@ struct AlertDirector {
             .setOkButton()
             .show()
     }
-
+    
     func createProductEditActionSheet(editAction: @escaping (UIAlertAction) -> Void, deleteAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
             .setAlertStyle(.actionSheet)
@@ -179,5 +179,30 @@ struct AlertDirector {
             .setMessage(message)
             .setOkButton()
             .show()
+    }
+    
+    func createProductPostSuccessAlert(message: String) {
+        AlertBuilder(viewController: viewController)
+            .setTitle("상품 등록 완료")
+            .setMessage(message)
+            .setOkButton()
+            .show()
+    }
+}
+
+enum ProductTextConditionAlert {
+    case invalidName, invalidPrice, invalidStock, success
+    
+    var message: String {
+        switch self {
+        case .invalidName:
+            return "이름을 올바르게 입력해 주세요"
+        case .invalidPrice:
+            return "가격을 올바르게 입력해 주세요"
+        case .invalidStock:
+            return "재고를 올바르게 입력해 주세요"
+        case .success:
+            return "상품 등록 완료"
+        }
     }
 }

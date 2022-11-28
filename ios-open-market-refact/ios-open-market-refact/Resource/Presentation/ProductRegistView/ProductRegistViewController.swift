@@ -175,13 +175,14 @@ final class ProductRegistViewController: UIViewController {
             switch result {
             case .success:
                 DispatchQueue.main.async {
-                    print("성공")
+                    AlertDirector(viewController: self).createProductPostSuccessAlert(message: "해당 상품을 등록 완료했습니다.")
                     self.navigationController?.popViewController(animated: true)
                 }
             case .failure:
                 DispatchQueue.main.async {
-                    //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
-                    print("실패")
+                    if images.isEmpty {
+                        AlertDirector(viewController: self).createErrorAlert(message: "사진을 등록해 주세요")
+                    }
                 }
             }
         }
@@ -196,10 +197,12 @@ final class ProductRegistViewController: UIViewController {
             switch result {
             case .success(let success):
                 print(String(decoding: success, as: UTF8.self))
+                // 성공 alert
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
                 }
             case .failure(let error):
+                // 실패
                 print(error.localizedDescription)
                 break
             }
@@ -223,11 +226,23 @@ final class ProductRegistViewController: UIViewController {
         switch viewMode {
         case .add:
             let product = registView.makeProduct()
-            postProduct(input: product)
+            if checkTextIsEmpty(product: product) == .success {
+                postProduct(input: product)
+            } else {
+             let condition = checkTextIsEmpty(product: product).message
+                AlertDirector(viewController: self).createErrorAlert(message: condition)
+            }
         case .edit:
             let product = registView.makeProduct()
             patchProduct(input: product)
         }
+    }
+    
+    private func checkTextIsEmpty(product: RegistrationProduct) -> ProductTextConditionAlert {
+        guard product.name != "" else { return ProductTextConditionAlert.invalidName }
+        guard product.price != 0 else  { return ProductTextConditionAlert.invalidPrice }
+        guard product.stock != 0 else  { return ProductTextConditionAlert.invalidStock }
+        return ProductTextConditionAlert.success
     }
 }
 // MARK: - UIImagePicker & UINavigation ControllerDelegate Function

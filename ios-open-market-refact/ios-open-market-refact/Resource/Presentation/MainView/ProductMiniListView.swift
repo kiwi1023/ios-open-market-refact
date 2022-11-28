@@ -21,6 +21,7 @@ final class ProductMiniListView: SuperViewSetting {
         addUIComponents()
         setupLayout()
         configureCollectionView()
+        miniListCollectionView?.isScrollEnabled = false
     }
     
     override func addUIComponents() {

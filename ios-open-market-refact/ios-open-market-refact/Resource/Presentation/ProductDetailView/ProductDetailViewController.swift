@@ -58,6 +58,7 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         let alert = UIAlertController(title: "삭제", message: "정말 삭제하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("삭제", comment: "Default action"), style: .destructive, handler: { [weak self] _ in
             //TODO: 삭제 로직 추가, 성공시 다음코드
+            self?.deleteProduct()
             self?.removeCurrentProduct()
             //TODO: 삭제 실패시 로직
         }))
@@ -78,8 +79,35 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     func receiveProductNumber(productNumber: Int) {
         self.productNumber = productNumber
     }
+    
+    
+    private func deleteProduct() {
+        guard let productNumber = productNumber else { return }
+        guard let deleteURIRequest = OpenMarketRequestDirector().createDeleteURIRequest(productNumber: productNumber) else { return }
+        
+        
+        NetworkManager().dataTask(with: deleteURIRequest) { result in
+            switch result {
+            case .success(let data):
+               
+                guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(with: data) else { return }
+                
+                NetworkManager().dataTask(with: deleteRequest) { result in
+                    switch result {
+                    case .success(_):
+                        DispatchQueue.main.async {
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .failure(_):
+                        AlertDirector(viewController: self).createErrorAlert(message: "제품을 삭제하지 못했습니다.")
+                    }
+                }
+            case .failure(_):
+                AlertDirector(viewController: self).createErrorAlert(message: "비밀번호가 틀렸습니다")
+            }
+        }
+    }
 }
-
 //MARK: - ProductDetail View Mock Data
 
 extension ProductDetailViewController {

@@ -145,6 +145,14 @@ final class ProductListViewCell: UICollectionViewCell {
     }
     
     func configure(data: Product) {
+        guard let nsURL = NSURL(string: data.thumbnail) else {
+            return
+        }
+        
+        ImageCache.shared.load(url: nsURL) { image in
+            self.thumbnailImageView.image = image
+        }
+        
         nameLabel.text = data.name
         
         priceLabel.text = data.price.priceFormat(currency: data.currency.rawValue)
@@ -161,5 +169,6 @@ final class ProductListViewCell: UICollectionViewCell {
         
         quantityLabel.textColor = data.stock == .zero ? .systemOrange : .systemGray3
         quantityLabel.text = data.stock == .zero ? "품절" : "잔여수량: \(data.stock)"
+        
     }
 }

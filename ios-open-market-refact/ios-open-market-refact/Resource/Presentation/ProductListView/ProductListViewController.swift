@@ -9,6 +9,8 @@ import UIKit
 
 final class ProductListViewController: SuperViewControllerSetting {
     
+    private var pageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
+    
     enum Section {
         case main
     }
@@ -17,6 +19,14 @@ final class ProductListViewController: SuperViewControllerSetting {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
     
     private lazy var dataSource: DataSource? = configureDataSource()
+    
+    //MARK: View
+    private lazy var refreshController: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        //refreshControl.addTarget(self, action: #selector(refreshList) , for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(refreshList), for: .valueChanged)
+        return refreshControl
+    }()
     
     private lazy var mainView = ProductListView()
     
@@ -32,7 +42,45 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateDataSource(data: ProductListView.sampleData)
+        //updateDataSource(data: ProductListView.sampleData)
+        fetchedProductList()
+    }
+    
+    private func fetchedProductList() {
+        guard let productListGetRequest = OpenMarketRequestDirector()
+            .createGetRequest(
+                pageNumber: pageInfo.pageNumber,
+                itemsPerPage: pageInfo.itemsPerPage
+            ) else {
+            return
+        }
+        
+        NetworkManager().dataTask(with: productListGetRequest) { result in
+            switch result {
+            case .success(let data):
+                guard let fetchedList = JsonDecoderManager.shared.decode(from: data, to: ProductList.self) else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.updateDataSource(data: fetchedList.pages)
+                }
+                
+            case .failure(_):
+                AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
+            }
+        }
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchedProductList()
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationItem.hidesSearchBarWhenScrolling = true
     }
     
     //MARK: - View Default Setup Method
@@ -40,14 +88,11 @@ final class ProductListViewController: SuperViewControllerSetting {
     override func setupDefault() {
         view.backgroundColor = .systemBackground
         mainView.mainCollectionView?.delegate = self
+        mainView.mainCollectionView?.refreshControl = refreshController
         addUIComponents()
         setupLayout()
         setupNavigationBar()
-        
-        registProductImageView.image = UIImage(systemName: "plus.circle.fill")
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapRegistButton))
-        registProductImageView.addGestureRecognizer(tapGesture)
-        registProductImageView.isUserInteractionEnabled = true
+        setupImageViewGesture()
     }
     
     override func addUIComponents() {
@@ -82,14 +127,11 @@ final class ProductListViewController: SuperViewControllerSetting {
         navigationItem.searchController = searchController
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationItem.hidesSearchBarWhenScrolling = false
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationItem.hidesSearchBarWhenScrolling = true
+    private func setupImageViewGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapRegistButton))
+        registProductImageView.image = UIImage(systemName: "plus.circle.fill")
+        registProductImageView.addGestureRecognizer(tapGesture)
+        registProductImageView.isUserInteractionEnabled = true
     }
     
     @objc private func didTapSearchingButton() {
@@ -98,6 +140,13 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     @objc private func didTapRegistButton() {
         navigationController?.pushViewController(ProductRegistViewController(product: nil), animated: true)
+    }
+    
+    @objc private func refreshList() {
+        print("새로고침띠")
+        pageInfo = (1,10)
+        fetchedProductList()
+        refreshController.endRefreshing() // 새로고침 이벤트 종료
     }
     
     //MARK: - Setup CollectionView Method

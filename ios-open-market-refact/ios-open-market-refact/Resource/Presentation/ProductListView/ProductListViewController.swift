@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ProductListViewController: UIViewController {
+final class ProductListViewController: SuperViewControllerSetting {
     
     enum Section {
         case main
@@ -15,72 +15,89 @@ final class ProductListViewController: UIViewController {
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
-
+    
     private lazy var dataSource: DataSource? = configureDataSource()
-
+    
     private lazy var mainView = ProductListView()
     
-    //MARK: - ViewController Initializer
-    
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        setupDefault()
-        updateDataSource(data: ProductListView.sampleData)
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: NSCoder())
-        debugPrint("ProductListViewController Initialize error")
-    }
+    private let registProductImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.tintColor = UIColor(red: 1, green: 126/255, blue: 55/255, alpha: 1)
+        return imageView
+    }()
     
     //MARK: - View LifeCycle Method
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateDataSource(data: ProductListView.sampleData)
     }
     
     //MARK: - View Default Setup Method
     
-    private func setupDefault() {
+    override func setupDefault() {
         view.backgroundColor = .systemBackground
-        
+        mainView.mainCollectionView?.delegate = self
         addUIComponents()
         setupLayout()
         setupNavigationBar()
+        
+        registProductImageView.image = UIImage(systemName: "plus.circle.fill")
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapRegistButton))
+        registProductImageView.addGestureRecognizer(tapGesture)
+        registProductImageView.isUserInteractionEnabled = true
     }
     
-    private func addUIComponents() {
+    override func addUIComponents() {
         view.addSubview(mainView)
+        view.addSubview(registProductImageView)
     }
     
-    private func setupLayout() {
+    override func setupLayout() {
         NSLayoutConstraint.activate([
             mainView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mainView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             mainView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             mainView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+        NSLayoutConstraint.activate([
+            registProductImageView.widthAnchor.constraint(equalToConstant: 50),
+            registProductImageView.heightAnchor.constraint(equalToConstant: 50),
+            registProductImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            registProductImageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+        ])
     }
     
     private func setupNavigationBar() {
-        self.navigationItem.title = "상품목록"
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .search,
-            target: self,
-            action: #selector(didTapSearchingButton)
-        )
+        navigationItem.title = "상품목록"
+        navigationItem.largeTitleDisplayMode = .automatic
         
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.placeholder = "검색해보세용"
-        self.navigationItem.hidesSearchBarWhenScrolling = true
-        self.navigationItem.searchController = searchController
         searchController.searchResultsUpdater = self
-
+        searchController.delegate = self
+        
+        navigationItem.searchController = searchController
     }
     
-    @objc func didTapSearchingButton() {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationItem.hidesSearchBarWhenScrolling = true
+    }
+    
+    @objc private func didTapSearchingButton() {
         print("didTapSearchingButton!")
+    }
+    
+    @objc private func didTapRegistButton() {
+        navigationController?.pushViewController(ProductRegistViewController(product: nil), animated: true)
     }
     
     //MARK: - Setup CollectionView Method
@@ -96,7 +113,7 @@ final class ProductListViewController: UIViewController {
         
         let dataSource = DataSource(collectionView: mainCollectionView) {
             (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
-
+            
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
                                                                 for: indexPath,
                                                                 item: itemIdentifier)
@@ -111,6 +128,16 @@ final class ProductListViewController: UIViewController {
         dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
     }
 }
+// MARK: - CollectionView delegate
+
+extension ProductListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let productDetailViewController = ProductDetailViewController()
+        productDetailViewController.receiveProductNumber(productNumber: 182)
+        //pushViewController(productDetailViewController, animated: true)
+        navigationController?.pushViewController(productDetailViewController, animated: true)
+    }
+}
 
 //MARK: - SearchBar Controller
 
@@ -121,9 +148,13 @@ extension ProductListViewController: UISearchResultsUpdating {
         if text == "" {
             updateDataSource(data: ProductListView.sampleData)
         } else {
-           updateDataSource(data: ProductListView.sampleData.filter({ product in
+            updateDataSource(data: ProductListView.sampleData.filter({ product in
                 product.name.lowercased().contains(text)
             }))
         }
     }
+}
+
+extension ProductListViewController: UISearchControllerDelegate  {
+    
 }

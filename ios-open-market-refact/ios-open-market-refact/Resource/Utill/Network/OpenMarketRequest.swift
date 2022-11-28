@@ -10,19 +10,19 @@ import Foundation
 struct OpenMarketRequest: APIRequest {
     var method: HTTPMethod
     var baseURL: String
-    var headers: [String : String]?
-    var query: [String : String]?
+    var headers: HTTPHeader?
+    var query: HTTPQuery?
     var body: HTTPBody?
-    var path: String
+    var path: HTTPPath
 }
 
 final class OpenMarketRequestBuilder {
     private var method: HTTPMethod?
     private var baseURL: String
-    private var headers: [String : String]?
-    private var query: [String : String]?
+    private var headers: HTTPHeader?
+    private var query: HTTPQuery?
     private var body: HTTPBody?
-    private var path: String?
+    private var path: HTTPPath?
     
     init() {
         self.baseURL = URLHost.openMarket.url
@@ -38,12 +38,12 @@ final class OpenMarketRequestBuilder {
         return self
     }
     
-    func setPath(_ path: String) -> OpenMarketRequestBuilder {
+    func setPath(_ path: HTTPPath) -> OpenMarketRequestBuilder {
         self.path = path
         return self
     }
     
-    func setQuery(_ query: [String : String]) -> OpenMarketRequestBuilder {
+    func setQuery(_ query: HTTPQuery) -> OpenMarketRequestBuilder {
         self.query = query
         return self
     }
@@ -53,15 +53,15 @@ final class OpenMarketRequestBuilder {
         return self
     }
     
-    func setHeaders(_ headers: [String: String]) -> OpenMarketRequestBuilder {
+    func setHeaders(_ headers: HTTPHeader) -> OpenMarketRequestBuilder {
         self.headers = headers
         return self
     }
     
     func buildRequest() -> OpenMarketRequest? {
         guard let method = method, let path = path else {
-                    return nil
-                }
+            return nil
+        }
         
         let marketRequest = OpenMarketRequest(method: method,
                                               baseURL: baseURL,
@@ -81,18 +81,20 @@ struct OpenMarketRequestDirector {
         self.builder = builder
     }
     
-   func createGetRequest(pageNumber: Int, itemsPerPage: Int) -> OpenMarketRequest? {
-        let getRequest = builder.setMethod(.get)
-            .setPath(URLAdditionalPath.product.value)
-            .setQuery(["page_no": "\(pageNumber)", "items_per_page": "\(itemsPerPage)"])
+    func createGetRequest(pageNumber: Int, itemsPerPage: Int) -> OpenMarketRequest? {
+        let getRequest = builder
+            .setMethod(.get)
+            .setPath(.product)
+            .setQuery(.getProducts(pageNumber, itemsPerPage))
             .buildRequest()
         
         return getRequest
     }
     
     func createGetDetailRequest(_ productNumber: Int) -> OpenMarketRequest? {
-        let getDetailRequest = builder.setMethod(.get)
-            .setPath(URLAdditionalPath.product.value + "/\(productNumber)")
+        let getDetailRequest = builder
+            .setMethod(.get)
+            .setPath(.productDetail(productNumber))
             .buildRequest()
         
         return getDetailRequest
@@ -100,52 +102,56 @@ struct OpenMarketRequestDirector {
     
     func createPostRequest(product: RegistrationProduct, images: [ProductImage]) -> OpenMarketRequest? {
         guard let productData = try? JSONEncoder().encode(product) else { return nil }
-
+        
         let boundary = "Boundary-\(UUID().uuidString)"
-        let postRequest = builder.setMethod(.post)
-            .setPath(URLAdditionalPath.product.value)
-            .setBody(HTTPBody.multiPartForm(MultiPartForm(boundary: boundary,
-                                                          jsonData: productData,
-                                                          images: images)))
-            .setHeaders(["Content-Type": "multipart/form-data; boundary=\(boundary)",
-                         "identifier": UserInfo.identifier.text])
+        
+        let postRequest = builder
+            .setMethod(.post)
+            .setPath(.product)
+            .setBody(.multiPartForm(MultiPartForm(boundary: boundary,
+                                                  jsonData: productData,
+                                                  images: images)))
+            .setHeaders(.multiPartForm(boundary))
             .buildRequest()
-
+        
         return postRequest
     }
     
     func createPatchRequest(product: RegistrationProduct, productNumber: Int) -> OpenMarketRequest? {
         guard let productData = try? JSONEncoder().encode(product) else { return nil }
         
-        let patchRequest = builder.setMethod(.patch)
-            .setPath(URLAdditionalPath.product.value + "/\(productNumber)/")
-            .setHeaders(["identifier": UserInfo.identifier.text,
-                        "Content-Type": "application/json"])
-            .setBody(HTTPBody.json(productData))
+        let patchRequest = builder
+            .setMethod(.patch)
+            .setPath(.productDetail(productNumber))
+            .setHeaders(.json)
+            .setBody(.json(productData))
             .buildRequest()
         
         return patchRequest
     }
     
     func createDeleteURIRequest(productNumber: Int) -> OpenMarketRequest? {
-        let body = ProductDeleteKey(secret: UserInfo.secret.text)
+        let body = ProductDeleteKey(secret: UserInfo.secret)
         
         guard let data = try? JSONEncoder().encode(body) else { return nil }
-
-        let deleteURIRequest = builder.setMethod(.post)
-            .setPath(URLAdditionalPath.product.value + "/\(productNumber)/archived")
-            .setHeaders(["Content-Type": "application/json",
-                         "identifier": UserInfo.identifier.text])
-            .setBody(HTTPBody.json(data))
+        
+        let deleteURIRequest = builder
+            .setMethod(.post)
+            .setPath(.getDeleteURI(productNumber))
+            .setHeaders(.json)
+            .setBody(.json(data))
             .buildRequest()
         
         return deleteURIRequest
     }
     
-    func createDeleteRequest(with deleteURI: String) -> OpenMarketRequest? {
-        let deleteRequest = builder.setMethod(.delete)
-            .setPath(URLAdditionalPath.product.value + "/\(deleteURI)/")
-            .setHeaders(["identifier": UserInfo.identifier.text])
+    func createDeleteRequest(with deleteURI: Data) -> OpenMarketRequest? {
+        let deleteURI = String(data: deleteURI, encoding: .utf8)
+        
+        let deleteRequest = builder
+            .setMethod(.delete)
+            .setPath(.delete(deleteURI ?? ""))
+            .setHeaders(.delete)
             .buildRequest()
         
         return deleteRequest

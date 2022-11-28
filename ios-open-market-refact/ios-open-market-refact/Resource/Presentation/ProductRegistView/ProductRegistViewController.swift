@@ -197,12 +197,12 @@ final class ProductRegistViewController: UIViewController {
             switch result {
             case .success(let success):
                 print(String(decoding: success, as: UTF8.self))
-                // 성공 alert
                 DispatchQueue.main.async {
+                    AlertDirector(viewController: self).createProductPatchSuccessAlert(message: "해당 상품을 수정 완료했습니다.")
                     self.navigationController?.popViewController(animated: true)
                 }
             case .failure(let error):
-                // 실패
+                AlertDirector(viewController: self).createErrorAlert(message: "상품 수정에 실패하였습니다.")
                 print(error.localizedDescription)
                 break
             }
@@ -211,15 +211,15 @@ final class ProductRegistViewController: UIViewController {
     
     private func configureProduct() {
         guard let product = product else { return }
-            registView.configureProduct(product: product)
-            viewMode = .edit
-            
-            DispatchQueue.main.async {
-                guard let url = URL(string: product.thumbnail),
-                      let data = try? Data(contentsOf: url),
-                      let image = UIImage(data: data) else { return }
-                self.appendDataSource(data: image)
-            }
+        registView.configureProduct(product: product)
+        viewMode = .edit
+        
+        DispatchQueue.main.async {
+            guard let url = URL(string: product.thumbnail),
+                  let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else { return }
+            self.appendDataSource(data: image)
+        }
     }
     
     @objc private func didTapDoneButton() {
@@ -229,12 +229,17 @@ final class ProductRegistViewController: UIViewController {
             if checkTextIsEmpty(product: product) == .success {
                 postProduct(input: product)
             } else {
-             let condition = checkTextIsEmpty(product: product).message
+                let condition = checkTextIsEmpty(product: product).message
                 AlertDirector(viewController: self).createErrorAlert(message: condition)
             }
         case .edit:
             let product = registView.makeProduct()
-            patchProduct(input: product)
+            if checkTextIsEmpty(product: product) == .success {
+                patchProduct(input: product)
+            } else {
+                let condition = checkTextIsEmpty(product: product).message
+                AlertDirector(viewController: self).createErrorAlert(message: condition)
+            }
         }
     }
     

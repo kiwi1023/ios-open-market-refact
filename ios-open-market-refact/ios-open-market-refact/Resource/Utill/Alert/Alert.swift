@@ -188,6 +188,14 @@ struct AlertDirector {
             .setOkButton()
             .show()
     }
+    
+    func createProductPatchSuccessAlert(message: String) {
+        AlertBuilder(viewController: viewController)
+            .setTitle("상품 수정 완료")
+            .setMessage(message)
+            .setOkButton()
+            .show()
+    }
 }
 
 enum ProductTextConditionAlert {

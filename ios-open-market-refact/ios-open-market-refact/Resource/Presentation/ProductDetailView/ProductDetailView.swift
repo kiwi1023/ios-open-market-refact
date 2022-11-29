@@ -65,6 +65,8 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         return label
     }()
     
+    private let productInfoStackView = ProductInfoStackView()
+    
     //MARK: - Setup View Method
     
     override func setupDefault() {
@@ -138,7 +140,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     }
     
     private func setUpProductInfoStackViewLayout(productDetail: ProductDetail) {
-        let productInfoStackView = ProductInfoStackView(productDetail: productDetail)
+        productInfoStackView.setupProductDetail(productDetail: productDetail)
         
         addSubview(productInfoStackView)
         

@@ -224,10 +224,11 @@ final class ProductRegistViewController: UIViewController {
         
         DispatchQueue.main.async {
             product.images.forEach { image in
-                guard let url = URL(string: image.url),
-                      let data = try? Data(contentsOf: url),
-                      let seletedImage = UIImage(data: data) else { return }
-                self.appendDataSource(data: seletedImage)
+                guard let url = NSURL(string: image.url) else { return }
+                ImageCache.shared.load(url: url) { image in
+                    guard let image = image else { return }
+                    self.appendDataSource(data: image)
+                }
             }
         }
     }

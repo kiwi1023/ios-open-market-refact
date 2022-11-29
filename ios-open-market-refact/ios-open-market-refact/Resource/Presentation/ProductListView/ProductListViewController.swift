@@ -45,12 +45,12 @@ final class ProductListViewController: SuperViewControllerSetting {
         super.viewDidLoad()
         //updateDataSource(data: ProductListView.sampleData)
         fetchedProductList()
+//        snapshot.appendSections([.main])
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        snapshot.appendSections([.main])
-        fetchedProductList()
+//        fetchedProductList()
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     
@@ -126,7 +126,7 @@ final class ProductListViewController: SuperViewControllerSetting {
             ) else {
             return
         }
-        
+
         NetworkManager().dataTask(with: productListGetRequest) { result in
             switch result {
             case .success(let data):
@@ -136,7 +136,7 @@ final class ProductListViewController: SuperViewControllerSetting {
                 DispatchQueue.main.async {
                     self.updateDataSource(data: fetchedList.pages)
                 }
-                
+
             case .failure(_):
                 AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
             }
@@ -169,13 +169,17 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     func updateDataSource(data: [Product]) {
+        snapshot.deleteAllItems()
+        snapshot.appendSections([.main])
         snapshot.appendItems(data)
         dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
     }
     
     func appendDataSource(data: [Product]) {
         snapshot.appendItems(data)
-        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
+        DispatchQueue.main.async {
+            self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
+        }
     }
     
     @objc private func refreshList() {
@@ -226,7 +230,10 @@ final class ProductListViewController: SuperViewControllerSetting {
 extension ProductListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let productDetailViewController = ProductDetailViewController()
-        productDetailViewController.receiveProductNumber(productNumber: 182)
+        guard let productId = dataSource?.itemIdentifier(for: indexPath)?.id else {
+            return
+        }
+        productDetailViewController.receiveProductNumber(productNumber: productId)
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }
     
@@ -251,9 +258,9 @@ extension ProductListViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text?.lowercased() else { return }
         if text == "" {
-            updateDataSource(data: ProductListView.sampleData)
+            appendDataSource(data: ProductListView.sampleData)
         } else {
-            updateDataSource(data: ProductListView.sampleData.filter({ product in
+            appendDataSource(data: ProductListView.sampleData.filter({ product in
                 product.name.lowercased().contains(text)
             }))
         }

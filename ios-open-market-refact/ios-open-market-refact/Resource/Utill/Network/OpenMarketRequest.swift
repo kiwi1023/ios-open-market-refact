@@ -104,13 +104,14 @@ struct OpenMarketRequestDirector {
         guard let productData = try? JSONEncoder().encode(product) else { return nil }
         
         let boundary = "Boundary-\(UUID().uuidString)"
-        
+        let avd = MultiPartForm(boundary: boundary,
+                                jsonData: productData,
+                                images: images)
+        print(avd)
         let postRequest = builder
             .setMethod(.post)
             .setPath(.product)
-            .setBody(.multiPartForm(MultiPartForm(boundary: boundary,
-                                                  jsonData: productData,
-                                                  images: images)))
+            .setBody(.multiPartForm(avd))
             .setHeaders(.multiPartForm(boundary))
             .buildRequest()
         

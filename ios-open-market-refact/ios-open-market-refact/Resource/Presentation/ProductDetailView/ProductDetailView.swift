@@ -158,10 +158,11 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         }
         
         for (index, image) in productDetail.images.enumerated() {
-            guard let url = URL(string: image.url),
-                  let data = try? Data(contentsOf: url),
-                  let seletedImage = UIImage(data: data) else { return }
-            let imageView = UIImageView(image: seletedImage)
+            let imageView = UIImageView()
+            guard let url = NSURL(string: image.url) else { return }
+            ImageCache.shared.load(url: url) { image in
+                imageView.image = image
+            }
             
             DispatchQueue.main.async { [self] in
                 imageView.frame = productScrollview.bounds

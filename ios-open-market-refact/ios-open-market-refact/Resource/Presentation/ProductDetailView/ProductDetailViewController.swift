@@ -69,6 +69,7 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     private func removeCurrentProduct() {
         AlertDirector(viewController: self).createProductDeleteSuccessAlert(message: "해당 상품을 삭제 완료했습니다.")
+        navigationController?.popViewController(animated: true)
     }
     
     func receiveProductNumber(productNumber: Int) {

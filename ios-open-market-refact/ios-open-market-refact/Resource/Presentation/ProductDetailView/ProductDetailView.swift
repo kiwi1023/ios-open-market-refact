@@ -107,7 +107,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         ])
         
         NSLayoutConstraint.activate([
-        venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor)
+            venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -123,7 +123,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
             descriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin)
         ])
         
-      
+        
     }
     
     private func setupProductScrollview() {

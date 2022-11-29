@@ -132,7 +132,11 @@ extension MainViewController: MoreButtonTapDelegate {
 extension MainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let productDetailViewController = ProductDetailViewController()
-        productDetailViewController.receiveProductNumber(productNumber: 182)
+        guard let productId = dataSource?.itemIdentifier(for: indexPath)?.id else {
+            return
+        }
+        
+        productDetailViewController.receiveProductNumber(productNumber: productId)
         
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }

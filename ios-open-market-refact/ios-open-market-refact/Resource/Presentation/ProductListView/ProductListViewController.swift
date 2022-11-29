@@ -19,6 +19,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
     
     private lazy var dataSource: DataSource? = configureDataSource()
+    private lazy var snapshot: Snapshot = configureSnapshot()
     
     //MARK: View
     private lazy var refreshController: UIRefreshControl = {
@@ -46,34 +47,9 @@ final class ProductListViewController: SuperViewControllerSetting {
         fetchedProductList()
     }
     
-    private func fetchedProductList() {
-        guard let productListGetRequest = OpenMarketRequestDirector()
-            .createGetRequest(
-                pageNumber: pageInfo.pageNumber,
-                itemsPerPage: pageInfo.itemsPerPage
-            ) else {
-            return
-        }
-        
-        NetworkManager().dataTask(with: productListGetRequest) { result in
-            switch result {
-            case .success(let data):
-                guard let fetchedList = JsonDecoderManager.shared.decode(from: data, to: ProductList.self) else {
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.updateDataSource(data: fetchedList.pages)
-                }
-                
-            case .failure(_):
-                AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
-            }
-        }
-    }
-    
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        snapshot.appendSections([.main])
         fetchedProductList()
         navigationItem.hidesSearchBarWhenScrolling = false
     }
@@ -142,6 +118,66 @@ final class ProductListViewController: SuperViewControllerSetting {
         navigationController?.pushViewController(ProductRegistViewController(product: nil), animated: true)
     }
     
+    private func fetchedProductList() {
+        guard let productListGetRequest = OpenMarketRequestDirector()
+            .createGetRequest(
+                pageNumber: pageInfo.pageNumber,
+                itemsPerPage: pageInfo.itemsPerPage
+            ) else {
+            return
+        }
+        
+        NetworkManager().dataTask(with: productListGetRequest) { result in
+            switch result {
+            case .success(let data):
+                guard let fetchedList = JsonDecoderManager.shared.decode(from: data, to: ProductList.self) else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.updateDataSource(data: fetchedList.pages)
+                }
+                
+            case .failure(_):
+                AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
+            }
+        }
+    }
+    
+    private func addingProductList() {
+        guard let productListGetRequest = OpenMarketRequestDirector()
+            .createGetRequest(
+                pageNumber: pageInfo.pageNumber,
+                itemsPerPage: pageInfo.itemsPerPage
+            ) else {
+            return
+        }
+        
+        NetworkManager().dataTask(with: productListGetRequest) { result in
+            switch result {
+            case .success(let data):
+                guard let fetchedList = JsonDecoderManager.shared.decode(from: data, to: ProductList.self) else {
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.appendDataSource(data: fetchedList.pages)
+                }
+                
+            case .failure(_):
+                AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
+            }
+        }
+    }
+    
+    func updateDataSource(data: [Product]) {
+        snapshot.appendItems(data)
+        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
+    }
+    
+    func appendDataSource(data: [Product]) {
+        snapshot.appendItems(data)
+        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
+    }
+    
     @objc private func refreshList() {
         print("새로고침띠")
         pageInfo = (1,10)
@@ -150,6 +186,10 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     //MARK: - Setup CollectionView Method
+    
+    private func configureSnapshot() -> Snapshot {
+        Snapshot()
+    }
     
     private func configureDataSource() -> DataSource? {
         guard let mainCollectionView = mainView.mainCollectionView else {
@@ -170,13 +210,6 @@ final class ProductListViewController: SuperViewControllerSetting {
         return dataSource
     }
     
-    func updateDataSource(data: [Product]) {
-        var snapshot = Snapshot()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(data)
-        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
-    }
-    
     private func createSpinnerFooter() -> UIView {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
         
@@ -194,7 +227,6 @@ extension ProductListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let productDetailViewController = ProductDetailViewController()
         productDetailViewController.receiveProductNumber(productNumber: 182)
-        //pushViewController(productDetailViewController, animated: true)
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }
     
@@ -206,9 +238,8 @@ extension ProductListViewController: UICollectionViewDelegate {
         }
         print("position : \(position)")
         if position > (height - boundHeight + 100) {
-            pageInfo.itemsPerPage += 10
-            
-            fetchedProductList()
+            pageInfo.pageNumber += 1
+            addingProductList()
         }
     }
 }

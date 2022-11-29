@@ -9,6 +9,8 @@ import UIKit
 
 final class ProductListViewCell: UICollectionViewCell {
     
+    private(set) var product: Product?
+    
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [productStackView, seperatorLineView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -145,6 +147,7 @@ final class ProductListViewCell: UICollectionViewCell {
     }
     
     func configure(data: Product) {
+        self.product = data
         guard let nsURL = NSURL(string: data.thumbnail) else {
             return
         }
@@ -170,5 +173,14 @@ final class ProductListViewCell: UICollectionViewCell {
         quantityLabel.textColor = data.stock == .zero ? .systemOrange : .systemGray3
         quantityLabel.text = data.stock == .zero ? "품절" : "잔여수량: \(data.stock)"
         
+    }
+    
+    override func prepareForReuse() {
+        guard let product = product,
+              let nsURL = NSURL(string: product.thumbnail) else {
+            return
+        }
+        ImageCache.shared.cancel(url: nsURL)
+        thumbnailImageView.image = nil
     }
 }

@@ -22,6 +22,7 @@ public class ImageCache {
     final func load(url: NSURL, completion: @escaping (UIImage?) -> Void) {
         // Cache에 저장된 이미지가 있는 경우
         if let cachedImage = image(url: url) {
+            print("cache hit")
             DispatchQueue.main.async {
                 completion(cachedImage)
             }
@@ -55,7 +56,7 @@ public class ImageCache {
             return
         }
         dataTasks[url] = task
-        task.resume()
+        dataTasks[url]?.resume()
     }
     
     final func cancel(url: NSURL) {

@@ -14,7 +14,7 @@ final class ProductMiniListViewCell: UICollectionViewCell {
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(data: UIImage(named: "testImage")?.compress() ?? Data())
+        imageView.image = UIImage(data: UIImage().compress() ?? Data())
         imageView.layer.cornerRadius = 15
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -86,6 +86,6 @@ final class ProductMiniListViewCell: UICollectionViewCell {
             return
         }
         ImageCache.shared.cancel(url: nsURL)
-        thumbnailImageView.image = UIImage()
+        thumbnailImageView.image = nil
     }
 }

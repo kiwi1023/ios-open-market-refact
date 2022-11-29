@@ -9,7 +9,7 @@ import UIKit
 
 final class ProductInfoStackView: UIStackView {
     
-    private let productDetail: ProductDetail?
+    private var productDetail: ProductDetail?
     
     private var isStarToggled = true
     
@@ -50,8 +50,7 @@ final class ProductInfoStackView: UIStackView {
         return label
     }()
     
-    init(productDetail: ProductDetail?) {
-        self.productDetail = productDetail
+    init() {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         setupDefault()
@@ -135,6 +134,12 @@ final class ProductInfoStackView: UIStackView {
             originalPriceLabel.attributedText = originalAttributedString
             bargainPriceLabel.attributedText = bargainAttributedString
         }
+    }
+    
+    func setupProductDetail(productDetail: ProductDetail) {
+        self.productDetail = productDetail
+        setupProductDetailViewData()
+        setupPriceLabelAttribute()
     }
     
     //MARK: - Star ImageView Touch Event

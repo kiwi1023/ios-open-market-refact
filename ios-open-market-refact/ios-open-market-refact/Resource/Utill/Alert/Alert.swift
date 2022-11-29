@@ -108,12 +108,12 @@ final class AlertBuilder: AlertBuilderable {
         cancelAction.style = .cancel
         return self
     }
-
+    
     func show() {
         guard validAlert() else { return }
         
         let alert = UIAlertController(title: alert.title, message: alert.message, preferredStyle: alert.style)
-
+        
         [firstAction, secondAction, okAction, cancelAction].forEach { actionButton in
             if actionButton.title != nil {
                 let action = UIAlertAction(title: actionButton.title, style: actionButton.style, handler: actionButton.action)
@@ -132,7 +132,7 @@ final class AlertBuilder: AlertBuilderable {
             .count
         
         return (alert.style == .actionSheet && numberOfActions >= 1) ||
-                (alert.style == .alert && numberOfActions >= 1 && (alert.title != nil || alert.message != nil))
+        (alert.style == .alert && numberOfActions >= 1 && (alert.title != nil || alert.message != nil))
     }
 }
 
@@ -151,17 +151,6 @@ struct AlertDirector {
             .show()
     }
     
-    func createImageSelectActionSheet(albumAction: @escaping (UIAlertAction) -> Void, cameraAction: @escaping (UIAlertAction) -> Void) {
-        AlertBuilder(viewController: viewController)
-            .setAlertStyle(.actionSheet)
-            .setFirstActionTitle("앨범")
-            .setFirstAction(albumAction)
-            .setSecondActionTitle("카메라")
-            .setSecondAction(cameraAction)
-            .setCancelButton()
-            .show()
-    }
-    
     func createProductEditActionSheet(editAction: @escaping (UIAlertAction) -> Void, deleteAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
             .setAlertStyle(.actionSheet)
@@ -172,5 +161,56 @@ struct AlertDirector {
             .setSecondActionStyle(.destructive)
             .setCancelButton()
             .show()
+    }
+    
+    func createProductDeleteAlert(deleteAction: @escaping (UIAlertAction) -> Void) {
+        AlertBuilder(viewController: viewController)
+            .setFirstActionTitle("삭제")
+            .setMessage("정말 삭제하시겠습니까?")
+            .setFirstAction(deleteAction)
+            .setFirstActionStyle(.destructive)
+            .setCancelButton()
+            .show()
+    }
+    
+    func createProductDeleteSuccessAlert(message: String) {
+        AlertBuilder(viewController: viewController)
+            .setTitle("삭제완료")
+            .setMessage(message)
+            .setOkButton()
+            .show()
+    }
+    
+    func createProductPostSuccessAlert(message: String) {
+        AlertBuilder(viewController: viewController)
+            .setTitle("상품 등록 완료")
+            .setMessage(message)
+            .setOkButton()
+            .show()
+    }
+    
+    func createProductPatchSuccessAlert(message: String) {
+        AlertBuilder(viewController: viewController)
+            .setTitle("상품 수정 완료")
+            .setMessage(message)
+            .setOkButton()
+            .show()
+    }
+}
+
+enum ProductTextConditionAlert {
+    case invalidName, invalidPrice, invalidStock, success
+    
+    var message: String {
+        switch self {
+        case .invalidName:
+            return "이름을 올바르게 입력해 주세요"
+        case .invalidPrice:
+            return "가격을 올바르게 입력해 주세요"
+        case .invalidStock:
+            return "재고를 올바르게 입력해 주세요"
+        case .success:
+            return "상품 등록 완료"
+        }
     }
 }

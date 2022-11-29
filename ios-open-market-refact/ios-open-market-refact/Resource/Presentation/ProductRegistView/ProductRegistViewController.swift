@@ -30,6 +30,8 @@ final class ProductRegistViewController: UIViewController {
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, UIImage>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, UIImage>
     
+    var refreshList: (() -> Void)?
+    
     //MARK: - ViewController Initializer
     
     init(product: ProductDetail?) {
@@ -110,7 +112,12 @@ final class ProductRegistViewController: UIViewController {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductRegistCollectionViewCell.reuseIdentifier, for: indexPath) as? ProductRegistCollectionViewCell else { return UICollectionViewCell() }
             
             cell.removeImage = {
-                self.deleteDataSource(image: itemIdentifier)
+                switch self.viewMode {
+                case .add:
+                    self.deleteDataSource(image: itemIdentifier)
+                case .edit:
+                    AlertDirector(viewController: self).createErrorAlert(message: "사진은 수정이 불가합니다.")
+                }
             }
             if self.appendable && indexPath.row == 0 {
                 cell.hideDeleteImageButton()
@@ -175,13 +182,14 @@ final class ProductRegistViewController: UIViewController {
             switch result {
             case .success:
                 DispatchQueue.main.async {
-                    print("성공")
+                    AlertDirector(viewController: self).createProductPostSuccessAlert(message: "해당 상품을 등록 완료했습니다.")
                     self.navigationController?.popViewController(animated: true)
                 }
             case .failure:
                 DispatchQueue.main.async {
-                    //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
-                    print("실패")
+                    if images.isEmpty {
+                        AlertDirector(viewController: self).createErrorAlert(message: "사진을 등록해 주세요")
+                    }
                 }
             }
         }
@@ -197,9 +205,12 @@ final class ProductRegistViewController: UIViewController {
             case .success(let success):
                 print(String(decoding: success, as: UTF8.self))
                 DispatchQueue.main.async {
+                    AlertDirector(viewController: self).createProductPatchSuccessAlert(message: "해당 상품을 수정 완료했습니다.")
+                    self.refreshList?()
                     self.navigationController?.popViewController(animated: true)
                 }
             case .failure(let error):
+                AlertDirector(viewController: self).createErrorAlert(message: "상품 수정에 실패하였습니다.")
                 print(error.localizedDescription)
                 break
             }
@@ -208,26 +219,45 @@ final class ProductRegistViewController: UIViewController {
     
     private func configureProduct() {
         guard let product = product else { return }
-            registView.configureProduct(product: product)
-            viewMode = .edit
-            
-            DispatchQueue.main.async {
-                guard let url = URL(string: product.thumbnail),
+        registView.configureProduct(product: product)
+        viewMode = .edit
+        
+        DispatchQueue.main.async {
+            product.images.forEach { image in
+                guard let url = URL(string: image.url),
                       let data = try? Data(contentsOf: url),
-                      let image = UIImage(data: data) else { return }
-                self.appendDataSource(data: image)
+                      let seletedImage = UIImage(data: data) else { return }
+                self.appendDataSource(data: seletedImage)
             }
+        }
     }
     
     @objc private func didTapDoneButton() {
         switch viewMode {
         case .add:
             let product = registView.makeProduct()
-            postProduct(input: product)
+            if checkTextIsEmpty(product: product) == .success {
+                postProduct(input: product)
+            } else {
+                let condition = checkTextIsEmpty(product: product).message
+                AlertDirector(viewController: self).createErrorAlert(message: condition)
+            }
         case .edit:
             let product = registView.makeProduct()
-            patchProduct(input: product)
+            if checkTextIsEmpty(product: product) == .success {
+                patchProduct(input: product)
+            } else {
+                let condition = checkTextIsEmpty(product: product).message
+                AlertDirector(viewController: self).createErrorAlert(message: condition)
+            }
         }
+    }
+    
+    private func checkTextIsEmpty(product: RegistrationProduct) -> ProductTextConditionAlert {
+        guard product.name != "" else { return ProductTextConditionAlert.invalidName }
+        guard product.price != 0 else  { return ProductTextConditionAlert.invalidPrice }
+        guard product.stock != 0 else  { return ProductTextConditionAlert.invalidStock }
+        return ProductTextConditionAlert.success
     }
 }
 // MARK: - UIImagePicker & UINavigation ControllerDelegate Function
@@ -245,7 +275,12 @@ extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavig
 extension ProductRegistViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.row == 0 && appendable {
-            self.present(imagePicker, animated: true)
+            switch viewMode {
+            case .add:
+                self.present(imagePicker, animated: true)
+            case .edit:
+                AlertDirector(viewController: self).createErrorAlert(message: "사진은 수정이 불가합니다.")
+            }
         }
     }
 }

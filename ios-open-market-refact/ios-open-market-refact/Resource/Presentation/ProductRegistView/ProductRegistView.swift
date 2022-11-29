@@ -193,8 +193,8 @@ final class ProductRegistView: UIView {
     func configureProduct(product: ProductDetail) {
         productNameTextField.text = product.name
         productDescriptionTextView.text = product.description
-        productPriceTextField.text = "\(product.price)"
-        productSaleTextField.text = "\(product.discountedPrice)"
+        productPriceTextField.text = "\(Int(product.price))"
+        productSaleTextField.text = "\(Int(product.discountedPrice))"
         productStockTextField.text = "\(product.stock)"
         if !productDescriptionTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             productDescriptionTextView.textColor = .black

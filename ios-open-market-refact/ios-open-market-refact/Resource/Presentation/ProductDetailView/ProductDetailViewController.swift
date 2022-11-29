@@ -17,6 +17,9 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     override func setupDefault() {
         receiveDetailData()
+        productDetailView.changeCurrentPage = { [self] in
+            receiveDetailData()
+        }
     }
     
     override func addUIComponents() {

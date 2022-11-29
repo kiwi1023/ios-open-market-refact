@@ -51,7 +51,6 @@
 		4D8C78D129322F8600514D80 /* JSONDecoder+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8C78D029322F8600514D80 /* JSONDecoder+Extension.swift */; };
 		4DAEADB6291E64EC0029C029 /* Double + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAEADB5291E64EC0029C029 /* Double + Extension.swift */; };
 		4DAEADB8291E652B0029C029 /* UILable + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAEADB7291E652B0029C029 /* UILable + Extension.swift */; };
-		4DD10D7E292C923C00A00EAC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD10D7C292C923C00A00EAC /* ViewController.swift */; };
 		4DD10D7F292C923C00A00EAC /* MainBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD10D7D292C923C00A00EAC /* MainBannerView.swift */; };
 /* End PBXBuildFile section */
 
@@ -113,7 +112,6 @@
 		4D8C78D029322F8600514D80 /* JSONDecoder+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Extension.swift"; sourceTree = "<group>"; };
 		4DAEADB5291E64EC0029C029 /* Double + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double + Extension.swift"; sourceTree = "<group>"; };
 		4DAEADB7291E652B0029C029 /* UILable + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILable + Extension.swift"; sourceTree = "<group>"; };
-		4DD10D7C292C923C00A00EAC /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4DD10D7D292C923C00A00EAC /* MainBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBannerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -353,7 +351,6 @@
 			isa = PBXGroup;
 			children = (
 				4DD10D7D292C923C00A00EAC /* MainBannerView.swift */,
-				4DD10D7C292C923C00A00EAC /* ViewController.swift */,
 			);
 			path = MainBannerView;
 			sourceTree = "<group>";
@@ -487,7 +484,6 @@
 				455785BD291E55A20082A983 /* ProductListViewController.swift in Sources */,
 				454DAB7429221428002CC8D6 /* ProductDetailViewController.swift in Sources */,
 				4D16B49A292F4833002647D7 /* Alert.swift in Sources */,
-				4DD10D7E292C923C00A00EAC /* ViewController.swift in Sources */,
 				455785C1291E57910082A983 /* ProductListView.swift in Sources */,
 				45578592291CB20F0082A983 /* CurrencyEnum.swift in Sources */,
 				4D8C78D129322F8600514D80 /* JSONDecoder+Extension.swift in Sources */,

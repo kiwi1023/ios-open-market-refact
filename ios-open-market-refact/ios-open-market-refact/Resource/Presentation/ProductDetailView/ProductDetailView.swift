@@ -9,8 +9,8 @@ import UIKit
 
 final class ProductDetailView: SuperViewSetting {
     
-    private let mainImageView: DownloadableUIImageView = {
-        let imageView = DownloadableUIImageView()
+    private let mainImageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         imageView.clipsToBounds = true
@@ -60,7 +60,7 @@ final class ProductDetailView: SuperViewSetting {
         return label
     }()
     
-   
+    
     
     //MARK: - Setup View Method
     
@@ -92,7 +92,7 @@ final class ProductDetailView: SuperViewSetting {
         ])
         
         NSLayoutConstraint.activate([
-        venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor)
+            venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -108,7 +108,7 @@ final class ProductDetailView: SuperViewSetting {
             descriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin)
         ])
         
-      
+        
     }
     
     private func setUpProductInfoStackViewLayout(productDetail: ProductDetail) {
@@ -125,10 +125,15 @@ final class ProductDetailView: SuperViewSetting {
     }
     
     func getProductDetailData(productDetail: ProductDetail) {
-            mainImageView.setImageUrl(productDetail.thumbnail)
-            venderImageView.image = UIImage(systemName: "person.circle")
-            venderNameLabel.text = productDetail.vendors.name
-            descriptionLabel.text = productDetail.description
-            setUpProductInfoStackViewLayout(productDetail: productDetail)
+        guard let nsURL = NSURL(string: productDetail.thumbnail) else {
+            return
+        }
+        ImageCache.shared.load(url: nsURL) { image in
+            self.mainImageView.image = image
+        }
+        venderImageView.image = UIImage(systemName: "person.circle")
+        venderNameLabel.text = productDetail.vendors.name
+        descriptionLabel.text = productDetail.description
+        setUpProductInfoStackViewLayout(productDetail: productDetail)
     }
 }

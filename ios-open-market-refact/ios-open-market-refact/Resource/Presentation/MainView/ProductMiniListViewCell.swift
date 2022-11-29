@@ -71,7 +71,6 @@ final class ProductMiniListViewCell: UICollectionViewCell {
         guard let nsURL = NSURL(string: data.thumbnail) else {
             return
         }
-        
         ImageCache.shared.load(url: nsURL) {  image in
             self.thumbnailImageView.image = image
         }

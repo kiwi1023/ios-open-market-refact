@@ -150,7 +150,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         ])
     }
     
-    func getProductDetailData(productDetail: ProductDetail) {
+    private func configureImageView(_ productDetail: ProductDetail) {
         DispatchQueue.main.async { [self] in
             productScrollview.contentSize = CGSize(width: productScrollview.bounds.width * CGFloat(productDetail.images.count), height: productScrollview.bounds.height)
         }
@@ -166,9 +166,13 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
                 imageView.frame.origin.x = productScrollview.bounds.width * CGFloat(index)
                 imageView.contentMode = .scaleToFill
             }
-
+            
             productScrollview.addSubview(imageView)
         }
+    }
+    
+    func getProductDetailData(productDetail: ProductDetail) {
+        configureImageView(productDetail)
         photoIndexLabel.text = "\(currentPage) / \(productDetail.images.count)"
         venderImageView.image = UIImage(systemName: "person.circle")
         venderNameLabel.text = productDetail.vendors.name

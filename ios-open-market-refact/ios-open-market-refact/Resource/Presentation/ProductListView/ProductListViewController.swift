@@ -10,6 +10,7 @@ import UIKit
 final class ProductListViewController: SuperViewControllerSetting {
     
     private var pageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
+    private var productList: [Product] = []
     
     enum Section {
         case main
@@ -169,6 +170,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     func updateDataSource(data: [Product]) {
+        productList = data
         snapshot.deleteAllItems()
         snapshot.appendSections([.main])
         snapshot.appendItems(data)
@@ -176,10 +178,18 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     func appendDataSource(data: [Product]) {
+        productList += data
         snapshot.appendItems(data)
         DispatchQueue.main.async {
             self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
         }
+    }
+    
+    func filteredDataSource(data: [Product]) {
+        snapshot.deleteAllItems()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(data)
+        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
     }
     
     @objc private func refreshList() {
@@ -258,11 +268,15 @@ extension ProductListViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text?.lowercased() else { return }
         if text == "" {
-            appendDataSource(data: ProductListView.sampleData)
+            fetchedProductList()
         } else {
-            appendDataSource(data: ProductListView.sampleData.filter({ product in
-                product.name.lowercased().contains(text)
-            }))
+            sortingProduct(text: text)
         }
+    }
+    
+    private func sortingProduct(text: String) {
+        filteredDataSource(data: productList.filter({ product in
+            product.name.lowercased().contains(text)
+        }))
     }
 }

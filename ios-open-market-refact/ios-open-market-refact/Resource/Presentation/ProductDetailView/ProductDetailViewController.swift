@@ -60,7 +60,7 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         navigationController?.pushViewController(registView, animated: true)
     }
     
-    func didTapDeleteButton() {
+    private func didTapDeleteButton() {
         AlertDirector(viewController: self).createProductDeleteAlert { [weak self] _ in
             self?.deleteProduct()
             self?.removeCurrentProduct()
@@ -68,8 +68,9 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     }
     
     private func removeCurrentProduct() {
-        AlertDirector(viewController: self).createProductDeleteSuccessAlert(message: "해당 상품을 삭제 완료했습니다.")
-        navigationController?.popViewController(animated: true)
+        AlertDirector(viewController: self).createProductDeleteSuccessAlert(message: "해당 상품을 삭제 완료했습니다.") { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
     }
     
     func receiveProductNumber(productNumber: Int) {

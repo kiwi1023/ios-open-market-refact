@@ -42,16 +42,9 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     //MARK: - View LifeCycle Method
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        //updateDataSource(data: ProductListView.sampleData)
-        fetchedProductList()
-//        snapshot.appendSections([.main])
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        fetchedProductList()
+        fetchedProductList()
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     

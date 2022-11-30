@@ -173,27 +173,30 @@ struct AlertDirector {
             .show()
     }
     
-    func createProductDeleteSuccessAlert(message: String) {
+    func createProductDeleteSuccessAlert(message: String, successAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
-            .setTitle("삭제완료")
+            .setFirstActionTitle("확인")
             .setMessage(message)
-            .setOkButton()
+            .setFirstAction(successAction)
+            .setFirstActionStyle(.default)
             .show()
     }
     
-    func createProductPostSuccessAlert(message: String) {
+    func createProductPostSuccessAlert(message: String, successAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
-            .setTitle("상품 등록 완료")
+            .setFirstActionTitle("확인")
             .setMessage(message)
-            .setOkButton()
+            .setFirstAction(successAction)
+            .setFirstActionStyle(.default)
             .show()
     }
     
-    func createProductPatchSuccessAlert(message: String) {
+    func createProductPatchSuccessAlert(message: String, successAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
-            .setTitle("상품 수정 완료")
+            .setFirstActionTitle("확인")
             .setMessage(message)
-            .setOkButton()
+            .setFirstAction(successAction)
+            .setFirstActionStyle(.default)
             .show()
     }
 }

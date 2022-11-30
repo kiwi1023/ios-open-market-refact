@@ -182,8 +182,9 @@ final class ProductRegistViewController: UIViewController {
             switch result {
             case .success:
                 DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createProductPostSuccessAlert(message: "해당 상품을 등록 완료했습니다.")
-                    self.navigationController?.popViewController(animated: true)
+                    AlertDirector(viewController: self).createProductPostSuccessAlert(message: "해당 상품을 등록 완료했습니다.") { [weak self] _ in
+                        self?.navigationController?.popViewController(animated: true)
+                    }
                 }
             case .failure:
                 DispatchQueue.main.async {
@@ -205,9 +206,10 @@ final class ProductRegistViewController: UIViewController {
             case .success(let success):
                 print(String(decoding: success, as: UTF8.self))
                 DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createProductPatchSuccessAlert(message: "해당 상품을 수정 완료했습니다.")
-                    self.refreshList?()
-                    self.navigationController?.popViewController(animated: true)
+                    AlertDirector(viewController: self).createProductPatchSuccessAlert(message: "해당 상품을 수정 완료했습니다.") { [weak self] _ in
+                        self?.refreshList?()
+                        self?.navigationController?.popViewController(animated: true)
+                    }
                 }
             case .failure(let error):
                 AlertDirector(viewController: self).createErrorAlert(message: "상품 수정에 실패하였습니다.")

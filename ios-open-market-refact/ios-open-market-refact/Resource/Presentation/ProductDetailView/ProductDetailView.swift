@@ -22,6 +22,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setContentHuggingPriority(UILayoutPriority(750), for: .horizontal)
         label.font = .preferredFont(forTextStyle: .body, compatibleWith: .none)
+        label.textAlignment = .center
         return label
     }()
     
@@ -94,14 +95,14 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         mainScrollView.contentSize.width = self.bounds.width
         
         NSLayoutConstraint.activate([
-            mainScrollView.topAnchor.constraint(equalTo: self.topAnchor),
-            mainScrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            mainScrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            mainScrollView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -60)
+            mainScrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            mainScrollView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            mainScrollView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            mainScrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -60)
         ])
         
         NSLayoutConstraint.activate([
-            productScrollView.topAnchor.constraint(equalTo: mainScrollView.topAnchor, constant: topMargin),
+            productScrollView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor, constant: topMargin),
             productScrollView.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
             productScrollView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 40),
             productScrollView.heightAnchor.constraint(equalTo: productScrollView.widthAnchor)
@@ -109,31 +110,34 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         
         NSLayoutConstraint.activate([
             photoIndexLabel.topAnchor.constraint(equalTo: productScrollView.bottomAnchor),
+            photoIndexLabel.leadingAnchor.constraint(equalTo: productScrollView.leadingAnchor),
+            photoIndexLabel.trailingAnchor.constraint(equalTo: productScrollView.trailingAnchor),
             photoIndexLabel.centerXAnchor.constraint(equalTo: productScrollView.centerXAnchor)
         ])
         
         NSLayoutConstraint.activate([
             venderStackView.topAnchor.constraint(equalTo: photoIndexLabel.bottomAnchor, constant: topMargin),
-            venderStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: leadingMargin),
-            venderStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin)
+            venderStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: leadingMargin),
+            venderStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: trailingMargin)
         ])
         
         NSLayoutConstraint.activate([
-            venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor)
+            venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor),
+            venderImageView.widthAnchor.constraint(equalToConstant: 50)
         ])
         
         NSLayoutConstraint.activate([
             spacingView.topAnchor.constraint(equalTo: venderStackView.bottomAnchor, constant: topMargin),
-            spacingView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: leadingMargin),
-            spacingView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin),
+            spacingView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: leadingMargin),
+            spacingView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: trailingMargin),
             spacingView.heightAnchor.constraint(equalToConstant: 1)
         ])
         
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor.constraint(equalTo: spacingView.bottomAnchor, constant: 10),
-            descriptionLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: leadingMargin),
-            descriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin),
-            descriptionLabel.bottomAnchor.constraint(equalTo: mainScrollView.bottomAnchor)
+            descriptionLabel.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: leadingMargin),
+            descriptionLabel.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: trailingMargin),
+            descriptionLabel.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor)
         ])
     }
     

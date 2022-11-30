@@ -9,8 +9,9 @@ import UIKit
 
 final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     
-    private let productScrollview = UIScrollView()
-    private var currentPage = 0 {
+    private let mainScrollView = UIScrollView()
+    private let productScrollView = UIScrollView()
+    private var currentPage = 1 {
         didSet {
             changeCurrentPage?()
         }
@@ -74,13 +75,14 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     }
     
     override func addUIComponents() {
-        addSubview(productScrollview)
-        addSubview(photoIndexLabel)
-        addSubview(venderStackView)
+        addSubview(mainScrollView)
+        mainScrollView.addSubview(productScrollView)
+        mainScrollView.addSubview(photoIndexLabel)
+        mainScrollView.addSubview(venderStackView)
         venderStackView.addArrangedSubview(venderImageView)
         venderStackView.addArrangedSubview(venderNameLabel)
-        addSubview(spacingView)
-        addSubview(descriptionLabel)
+        mainScrollView.addSubview(spacingView)
+        mainScrollView.addSubview(descriptionLabel)
     }
     
     override func setupLayout() {
@@ -88,16 +90,26 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         let leadingMargin = CGFloat(20)
         let trailingMargin = CGFloat(-20)
         
+        mainScrollView.translatesAutoresizingMaskIntoConstraints = false
+        mainScrollView.contentSize.width = self.bounds.width
+        
         NSLayoutConstraint.activate([
-            productScrollview.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: topMargin),
-            productScrollview.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
-            productScrollview.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 40),
-            productScrollview.heightAnchor.constraint(equalTo: productScrollview.widthAnchor)
+            mainScrollView.topAnchor.constraint(equalTo: self.topAnchor),
+            mainScrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            mainScrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            mainScrollView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -60)
         ])
         
         NSLayoutConstraint.activate([
-            photoIndexLabel.topAnchor.constraint(equalTo: productScrollview.bottomAnchor),
-            photoIndexLabel.centerXAnchor.constraint(equalTo: productScrollview.centerXAnchor)
+            productScrollView.topAnchor.constraint(equalTo: mainScrollView.topAnchor, constant: topMargin),
+            productScrollView.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
+            productScrollView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 40),
+            productScrollView.heightAnchor.constraint(equalTo: productScrollView.widthAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            photoIndexLabel.topAnchor.constraint(equalTo: productScrollView.bottomAnchor),
+            photoIndexLabel.centerXAnchor.constraint(equalTo: productScrollView.centerXAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -120,23 +132,24 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor.constraint(equalTo: spacingView.bottomAnchor, constant: 10),
             descriptionLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: leadingMargin),
-            descriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin)
+            descriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin),
+            descriptionLabel.bottomAnchor.constraint(equalTo: mainScrollView.bottomAnchor)
         ])
         
         
     }
     
     private func setupProductScrollview() {
-        productScrollview.translatesAutoresizingMaskIntoConstraints = false
-        productScrollview.delegate = self // scroll범위에 따라 pageControl의 값을 바꾸어주기 위한 delegate
-        productScrollview.alwaysBounceVertical = false
-        productScrollview.showsHorizontalScrollIndicator = false
-        productScrollview.showsVerticalScrollIndicator = false
-        productScrollview.isScrollEnabled = true
-        productScrollview.isPagingEnabled = true
-        productScrollview.bounces = false // 경계지점에서
-        productScrollview.clipsToBounds = true
-        productScrollview.layer.cornerRadius = 15
+        productScrollView.translatesAutoresizingMaskIntoConstraints = false
+        productScrollView.delegate = self // scroll범위에 따라 pageControl의 값을 바꾸어주기 위한 delegate
+        productScrollView.alwaysBounceVertical = false
+        productScrollView.showsHorizontalScrollIndicator = false
+        productScrollView.showsVerticalScrollIndicator = false
+        productScrollView.isScrollEnabled = true
+        productScrollView.isPagingEnabled = true
+        productScrollView.bounces = false // 경계지점에서
+        productScrollView.clipsToBounds = true
+        productScrollView.layer.cornerRadius = 15
     }
     
     private func setUpProductInfoStackViewLayout(productDetail: ProductDetail) {
@@ -154,7 +167,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     
     private func configureImageView(_ productDetail: ProductDetail) {
         DispatchQueue.main.async { [self] in
-            productScrollview.contentSize = CGSize(width: productScrollview.bounds.width * CGFloat(productDetail.images.count), height: productScrollview.bounds.height)
+            productScrollView.contentSize = CGSize(width: productScrollView.bounds.width * CGFloat(productDetail.images.count), height: productScrollView.bounds.height)
         }
         
         for (index, image) in productDetail.images.enumerated() {
@@ -165,12 +178,12 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
             }
             
             DispatchQueue.main.async { [self] in
-                imageView.frame = productScrollview.bounds
-                imageView.frame.origin.x = productScrollview.bounds.width * CGFloat(index)
+                imageView.frame = productScrollView.bounds
+                imageView.frame.origin.x = productScrollView.bounds.width * CGFloat(index)
                 imageView.contentMode = .scaleToFill
             }
             
-            productScrollview.addSubview(imageView)
+            productScrollView.addSubview(imageView)
         }
     }
     
@@ -189,7 +202,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
 extension ProductDetailView {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         DispatchQueue.main.async { [self] in
-            self.currentPage = Int(round(scrollView.contentOffset.x / productScrollview.bounds.width)) + 1
+            self.currentPage = Int(round(scrollView.contentOffset.x / productScrollView.bounds.width)) + 1
         }
     }
 }

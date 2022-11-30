@@ -135,8 +135,6 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
             descriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: trailingMargin),
             descriptionLabel.bottomAnchor.constraint(equalTo: mainScrollView.bottomAnchor)
         ])
-        
-        
     }
     
     private func setupProductScrollview() {

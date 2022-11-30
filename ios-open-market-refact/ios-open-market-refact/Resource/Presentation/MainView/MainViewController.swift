@@ -29,22 +29,7 @@ final class MainViewController: SuperViewControllerSetting {
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
-        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 100) else { return }
-        NetworkManager().dataTask(with: request) { result in
-            switch result {
-            case .success(let data):
-                let productList: ProductList? = JSONDecoder.decodeJson(jsonData: data)
-                guard let productList = productList else { return }
-                
-                    DispatchQueue.main.async { [weak self] in
-                        self?.updateDataSource(data: productList.pages)
-                    }
-            case .failure(_):
-                DispatchQueue.main.async {
-                    //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
-                }
-            }
-        }
+        fetchProductList()
     }
     
     override func viewDidLoad() {
@@ -53,6 +38,10 @@ final class MainViewController: SuperViewControllerSetting {
         addUIComponents()
         setupLayout()
         setupNavigationBar()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchProductList()
     }
     
     override func addUIComponents() {
@@ -81,6 +70,25 @@ final class MainViewController: SuperViewControllerSetting {
             productMiniListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
             productMiniListView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.4)
         ])
+    }
+    
+    private func fetchProductList() {
+        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 100) else { return }
+        NetworkManager().dataTask(with: request) { result in
+            switch result {
+            case .success(let data):
+                let productList: ProductList? = JSONDecoder.decodeJson(jsonData: data)
+                guard let productList = productList else { return }
+                
+                    DispatchQueue.main.async { [weak self] in
+                        self?.updateDataSource(data: productList.pages)
+                    }
+            case .failure(_):
+                DispatchQueue.main.async {
+                    //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
+                }
+            }
+        }
     }
 }
 

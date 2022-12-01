@@ -63,13 +63,14 @@ final class ProductListViewCell: UICollectionViewCell {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 21, weight: .bold)
-        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        label.setContentCompressionResistancePriority(UILayoutPriority(100), for: .horizontal)
         return label
     }()
     
     private let quantityLabel: UILabel = {
         let label = UILabel()
+        label.textAlignment = .right
+        label.setContentHuggingPriority(UILayoutPriority(100), for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
     
@@ -85,6 +86,7 @@ final class ProductListViewCell: UICollectionViewCell {
     
     private let priceLabel: UILabel = {
         let label = UILabel()
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return label
     }()
     
@@ -138,6 +140,7 @@ final class ProductListViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             accessoryImageView.topAnchor.constraint(equalTo: topStackView.topAnchor, constant: 8),
             accessoryImageView.bottomAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: -8),
+            accessoryImageView.widthAnchor.constraint(equalToConstant: 30),
             accessoryImageView.widthAnchor.constraint(equalTo: accessoryImageView.heightAnchor)
         ])
         

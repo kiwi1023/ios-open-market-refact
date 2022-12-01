@@ -44,7 +44,6 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchedProductList()
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     
@@ -61,8 +60,10 @@ final class ProductListViewController: SuperViewControllerSetting {
         mainView.mainCollectionView?.refreshControl = refreshController
         addUIComponents()
         setupLayout()
+        fetchedProductList()
         setupNavigationBar()
         setupImageViewGesture()
+        registerProductNotification()
     }
     
     override func addUIComponents() {
@@ -227,7 +228,24 @@ final class ProductListViewController: SuperViewControllerSetting {
         
         return footerView
     }
+    
+    private func registerProductNotification() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateList),
+                                               name: .productDataDidChanged,
+                                               object: nil)
+    }
+    
+    @objc private func updateList() {
+        refreshList()
+        self.scrollToTop()
+    }
+    
+    func scrollToTop() {
+        mainView.mainCollectionView?.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)
+    }
 }
+
 // MARK: - CollectionView delegate
 
 extension ProductListViewController: UICollectionViewDelegate {

@@ -32,11 +32,14 @@ enum HTTPMethod {
 
 enum URLHost {
     case openMarket
+    case mainBannerImages
     
     var url: String {
         switch self {
         case .openMarket:
             return "https://openmarket.yagom-academy.kr"
+        case .mainBannerImages:
+            return "https://kiwi1023.github.io"
         }
     }
 }
@@ -77,6 +80,7 @@ enum HTTPPath {
     case productDetail(_ productNumber: Int)
     case getDeleteURI(_ productNumber: Int)
     case delete(_ deleteURL: String)
+    case bannerImages
     
     var value: String {
         switch self {
@@ -90,6 +94,8 @@ enum HTTPPath {
             return "/api/products/\(productNumber)/archived"
         case .delete(let deleteURI):
             return"\(deleteURI)"
+        case .bannerImages:
+            return "/images.json"
         }
     }
 }

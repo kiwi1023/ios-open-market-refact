@@ -30,11 +30,11 @@ final class MainViewController: SuperViewControllerSetting {
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
         fetchProductList()
+        fetchBannerImages()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupDefault()
         addUIComponents()
         setupLayout()
         setupNavigationBar()
@@ -80,9 +80,33 @@ final class MainViewController: SuperViewControllerSetting {
                 let productList: ProductList? = JSONDecoder.decodeJson(jsonData: data)
                 guard let productList = productList else { return }
                 
-                    DispatchQueue.main.async { [weak self] in
-                        self?.updateDataSource(data: productList.pages)
-                    }
+                DispatchQueue.main.async { [weak self] in
+                    self?.updateDataSource(data: productList.pages)
+                }
+            case .failure(_):
+                DispatchQueue.main.async {
+                    //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")
+                }
+            }
+        }
+    }
+    
+    private func fetchBannerImages() {
+        let request = OpenMarketRequest(method: .get,
+                                        baseURL: URLHost.mainBannerImages.url,
+                                        path: .bannerImages)
+        
+        NetworkManager().dataTask(with: request) { result in
+            switch result {
+            case .success(let data):
+                let bannerImage: [BannerImage]? = JSONDecoder.decodeJson(jsonData: data)
+                guard let bannerImage = bannerImage else { return }
+                
+                DispatchQueue.main.async { [self] in
+                    var url: [String] = []
+                    bannerImage.forEach { url.append($0.image) }
+                    bannerView.imageUrls = url
+                }
             case .failure(_):
                 DispatchQueue.main.async {
                     //self.showAlert(title: "서버 통신 실패", message: "데이터를 받아오지 못했습니다.")

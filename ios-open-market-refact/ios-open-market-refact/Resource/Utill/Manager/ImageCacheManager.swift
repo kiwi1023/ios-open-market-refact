@@ -59,6 +59,33 @@ public class ImageCache {
         dataTasks[url]?.resume()
     }
     
+    final func loadBannerImage(url: NSURL, completion: @escaping (UIImage?) -> Void) {
+        // Cache에 저장된 이미지가 있는 경우
+        if let cachedImage = image(url: url) {
+            print("cache hit")
+            DispatchQueue.main.async {
+                completion(cachedImage)
+            }
+            return
+        }
+        
+        // .epemeral: 따로 NSCache를 사용하기 때문에 URLSession에서 cache를 사용하지 않게끔 설정
+        let urlSession = URLSession(configuration: .ephemeral)
+        let task = urlSession.dataTask(with: url as URL) { data, response, error in
+            guard let responseData = data,
+                  let image = UIImage(data: responseData)
+                  else { return }
+            
+            self.cachedImages.setObject(image, forKey: url, cost: responseData.count)
+            DispatchQueue.main.async {
+                completion(image)
+            }
+            return
+        }
+        dataTasks[url] = task
+        dataTasks[url]?.resume()
+    }
+    
     final func cancel(url: NSURL) {
         dataTasks[url]?.cancel()
         dataTasks[url] = nil

@@ -48,11 +48,6 @@ final class ProductListViewController: SuperViewControllerSetting {
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationItem.hidesSearchBarWhenScrolling = true
-    }
-    
     //MARK: - View Default Setup Method
     
     override func setupDefault() {
@@ -276,6 +271,10 @@ extension ProductListViewController: UICollectionViewDelegate {
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }
     
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        navigationItem.hidesSearchBarWhenScrolling = true
+    }
+    
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let position = scrollView.contentOffset.y
         guard let height = mainView.mainCollectionView?.contentSize.height,
@@ -297,7 +296,7 @@ extension ProductListViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text?.lowercased() else { return }
         if text == "" {
-            fetchedProductList()
+            refreshList()
         } else {
             sortingProduct(text: text)
         }

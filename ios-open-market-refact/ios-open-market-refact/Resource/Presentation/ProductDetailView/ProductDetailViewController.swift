@@ -92,6 +92,8 @@ final class ProductDetailViewController: SuperViewControllerSetting {
                     switch result {
                     case .success(_):
                         DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: .productDataDidChanged,
+                                                            object: self)
                             self.navigationController?.popViewController(animated: true)
                         }
                     case .failure(_):

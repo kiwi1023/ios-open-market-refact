@@ -183,7 +183,7 @@ final class ProductRegistViewController: UIViewController {
             case .success:
                 DispatchQueue.main.async {
                     AlertDirector(viewController: self).createProductPostSuccessAlert(message: "해당 상품을 등록 완료했습니다.") { [weak self] _ in
-                        NotificationCenter.default.post(name: .productDataDidChanged,
+                        NotificationCenter.default.post(name: .addProductData,
                                                         object: self)
                         self?.refreshList?()
                         self?.navigationController?.popViewController(animated: true)
@@ -210,6 +210,8 @@ final class ProductRegistViewController: UIViewController {
                 print(String(decoding: success, as: UTF8.self))
                 DispatchQueue.main.async {
                     AlertDirector(viewController: self).createProductPatchSuccessAlert(message: "해당 상품을 수정 완료했습니다.") { [weak self] _ in
+                        NotificationCenter.default.post(name: .productDataDidChanged,
+                                                        object: self)
                         self?.refreshList?()
                         self?.navigationController?.popViewController(animated: true)
                     }

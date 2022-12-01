@@ -8,5 +8,6 @@
 import Foundation
 
 extension Notification.Name {
+    static let addProductData = Notification.Name("addProductData")
     static let productDataDidChanged = Notification.Name("productDataDidChanged")
 }

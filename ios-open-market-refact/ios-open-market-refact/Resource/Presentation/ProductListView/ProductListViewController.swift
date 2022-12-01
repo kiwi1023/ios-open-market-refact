@@ -11,6 +11,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     private var pageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
     private var productList: [Product] = []
+    private var selectedIndexPath: IndexPath?
     
     enum Section {
         case main
@@ -121,7 +122,7 @@ final class ProductListViewController: SuperViewControllerSetting {
             ) else {
             return
         }
-
+        
         NetworkManager().dataTask(with: productListGetRequest) { result in
             switch result {
             case .success(let data):
@@ -131,7 +132,7 @@ final class ProductListViewController: SuperViewControllerSetting {
                 DispatchQueue.main.async {
                     self.updateDataSource(data: fetchedList.pages)
                 }
-
+                
             case .failure(_):
                 AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
             }
@@ -232,6 +233,11 @@ final class ProductListViewController: SuperViewControllerSetting {
     private func registerProductNotification() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updateList),
+                                               name: .addProductData,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didProductDataChanged),
                                                name: .productDataDidChanged,
                                                object: nil)
     }
@@ -239,6 +245,16 @@ final class ProductListViewController: SuperViewControllerSetting {
     @objc private func updateList() {
         refreshList()
         self.scrollToTop()
+    }
+    
+    @objc private func didProductDataChanged() {
+        fetchedProductList()
+    }
+    
+    private func scrollToSelectedIndex() {
+        guard let selectedIndexPath = selectedIndexPath else { return }
+        
+        mainView.mainCollectionView?.scrollToItem(at: selectedIndexPath, at: .init(rawValue: 0), animated: true)
     }
     
     func scrollToTop() {
@@ -254,6 +270,8 @@ extension ProductListViewController: UICollectionViewDelegate {
         guard let productId = dataSource?.itemIdentifier(for: indexPath)?.id else {
             return
         }
+        self.selectedIndexPath = indexPath
+        
         productDetailViewController.receiveProductNumber(productNumber: productId)
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }

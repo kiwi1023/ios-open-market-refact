@@ -67,7 +67,6 @@ final class MainBannerView: UIView {
         }
         
         DispatchQueue.main.async { [self] in
-            print("퐁프")
             for index in 0..<imageUrls.count + 2 {
                 let imageView = UIImageView(frame: self.bounds)
                 imageView.contentMode = .scaleToFill
@@ -82,9 +81,7 @@ final class MainBannerView: UIView {
   
     
      func downloadImages() {
-         print(imageViews.count)
         for i in 0..<imageViews.count {
-            print(imageViews.count)
             var urlStr = ""
             if i == 0 {
                 urlStr = imageUrls.last ?? ""
@@ -100,7 +97,6 @@ final class MainBannerView: UIView {
             
             ImageCache.shared.loadBannerImage(url: nsURL) { [self] image in
                 self.imageViews[i].image = image
-                print("1")
             }
         }
     }

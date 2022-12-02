@@ -1,11 +1,11 @@
 //
-//  Alert.swift
+//  AlertBuilder.swift
 //  ios-open-market-refact
 //
 //  Created by Kiwon Song on 2022/11/24.
 //
 
-import UIKit
+import UIKit.UIAlert
 
 struct Alert {
     var title: String?
@@ -112,11 +112,15 @@ final class AlertBuilder: AlertBuilderable {
     func show() {
         guard validAlert() else { return }
         
-        let alert = UIAlertController(title: alert.title, message: alert.message, preferredStyle: alert.style)
+        let alert = UIAlertController(title: alert.title,
+                                      message: alert.message,
+                                      preferredStyle: alert.style)
         
         [firstAction, secondAction, okAction, cancelAction].forEach { actionButton in
             if actionButton.title != nil {
-                let action = UIAlertAction(title: actionButton.title, style: actionButton.style, handler: actionButton.action)
+                let action = UIAlertAction(title: actionButton.title,
+                                           style: actionButton.style,
+                                           handler: actionButton.action)
                 alert.addAction(action)
             }
         }
@@ -151,7 +155,8 @@ struct AlertDirector {
             .show()
     }
     
-    func createProductEditActionSheet(editAction: @escaping (UIAlertAction) -> Void, deleteAction: @escaping (UIAlertAction) -> Void) {
+    func createProductEditActionSheet(editAction: @escaping (UIAlertAction) -> Void,
+                                      deleteAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
             .setAlertStyle(.actionSheet)
             .setFirstActionTitle("수정")
@@ -173,7 +178,8 @@ struct AlertDirector {
             .show()
     }
     
-    func createProductDeleteSuccessAlert(message: String, successAction: @escaping (UIAlertAction) -> Void) {
+    func createProductDeleteSuccessAlert(message: String,
+                                         successAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
             .setFirstActionTitle("확인")
             .setMessage(message)
@@ -182,7 +188,8 @@ struct AlertDirector {
             .show()
     }
     
-    func createProductPostSuccessAlert(message: String, successAction: @escaping (UIAlertAction) -> Void) {
+    func createProductPostSuccessAlert(message: String,
+                                       successAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
             .setFirstActionTitle("확인")
             .setMessage(message)
@@ -191,7 +198,8 @@ struct AlertDirector {
             .show()
     }
     
-    func createProductPatchSuccessAlert(message: String, successAction: @escaping (UIAlertAction) -> Void) {
+    func createProductPatchSuccessAlert(message: String,
+                                        successAction: @escaping (UIAlertAction) -> Void) {
         AlertBuilder(viewController: viewController)
             .setFirstActionTitle("확인")
             .setMessage(message)
@@ -201,19 +209,4 @@ struct AlertDirector {
     }
 }
 
-enum ProductTextConditionAlert {
-    case invalidName, invalidPrice, invalidStock, success
-    
-    var message: String {
-        switch self {
-        case .invalidName:
-            return "이름을 올바르게 입력해 주세요"
-        case .invalidPrice:
-            return "가격을 올바르게 입력해 주세요"
-        case .invalidStock:
-            return "재고를 올바르게 입력해 주세요"
-        case .success:
-            return "상품 등록 완료"
-        }
-    }
-}
+

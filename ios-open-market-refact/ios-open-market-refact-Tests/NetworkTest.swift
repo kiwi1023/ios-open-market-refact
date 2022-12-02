@@ -15,7 +15,8 @@ final class NetworkTest: XCTestCase {
         let expectation = expectation(description: "비동기테스트")
         let session = StubSession()
         var productName: String?
-        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1, itemsPerPage: 100) else { return }
+        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1,
+                                                                         itemsPerPage: 100) else { return }
         
         session.dataTask(with: request) { result in
             switch result {
@@ -51,7 +52,10 @@ final class NetworkTest: XCTestCase {
         guard let assetImage = UIImage(named: "testImage") else { return }
         guard let jpegData = assetImage.compress() else { return }
         
-        guard let request = OpenMarketRequestDirector().createPostRequest(product: product, images: [ProductImage(name: "testImage", data: jpegData, type: "jpeg")]) else { return }
+        guard let request = OpenMarketRequestDirector().createPostRequest(product: product,
+                                                                          images: [ProductImage(name: "testImage",
+                                                                                                data: jpegData,
+                                                                                                type: "jpeg")]) else { return }
         
         networkManager.dataTask(with: request) { result in
             switch result {
@@ -80,7 +84,8 @@ final class NetworkTest: XCTestCase {
                                           secret: UserInfo.secret)
         let networkManager = NetworkManager()
        
-        guard let request = OpenMarketRequestDirector().createPatchRequest(product: product, productNumber: 189) else { return }
+        guard let request = OpenMarketRequestDirector().createPatchRequest(product: product,
+                                                                           productNumber: 189) else { return }
         
         networkManager.dataTask(with: request) { result in
             switch result {

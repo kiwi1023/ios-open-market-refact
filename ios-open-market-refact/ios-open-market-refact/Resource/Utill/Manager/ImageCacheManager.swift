@@ -7,22 +7,20 @@
 
 import UIKit
 
-public class ImageCache {
-    public static let shared = ImageCache()
+final class ImageCache {
+    static let shared = ImageCache()
     private init() {}
     
     private let cachedImages = NSCache<NSURL, UIImage>()
     private var waitingRespoinseClosure = [NSURL: [(UIImage) -> Void]]()
     private var dataTasks = [NSURL: URLSessionDataTask]()
     
-    private final func image(url: NSURL) -> UIImage? {
+    private func image(url: NSURL) -> UIImage? {
         return cachedImages.object(forKey: url)
     }
     
-    final func load(url: NSURL, completion: @escaping (UIImage?) -> Void) {
-        // Cache에 저장된 이미지가 있는 경우
+    func load(url: NSURL, completion: @escaping (UIImage?) -> Void) {
         if let cachedImage = image(url: url) {
-            print("cache hit")
             DispatchQueue.main.async {
                 completion(cachedImage)
             }
@@ -35,7 +33,6 @@ public class ImageCache {
             waitingRespoinseClosure[url] = [completion]
         }
         
-        // .epemeral: 따로 NSCache를 사용하기 때문에 URLSession에서 cache를 사용하지 않게끔 설정
         let urlSession = URLSession(configuration: .ephemeral)
         let task = urlSession.dataTask(with: url as URL) { data, response, error in
             guard let responseData = data,
@@ -59,22 +56,19 @@ public class ImageCache {
         dataTasks[url]?.resume()
     }
     
-    final func loadBannerImage(url: NSURL, completion: @escaping (UIImage?) -> Void) {
-        // Cache에 저장된 이미지가 있는 경우
+    func loadBannerImage(url: NSURL, completion: @escaping (UIImage?) -> Void) {
         if let cachedImage = image(url: url) {
-            print("cache hit")
             DispatchQueue.main.async {
                 completion(cachedImage)
             }
             return
         }
         
-        // .epemeral: 따로 NSCache를 사용하기 때문에 URLSession에서 cache를 사용하지 않게끔 설정
         let urlSession = URLSession(configuration: .ephemeral)
         let task = urlSession.dataTask(with: url as URL) { data, response, error in
             guard let responseData = data,
                   let image = UIImage(data: responseData)
-                  else { return }
+            else { return }
             
             self.cachedImages.setObject(image, forKey: url, cost: responseData.count)
             DispatchQueue.main.async {
@@ -86,7 +80,7 @@ public class ImageCache {
         dataTasks[url]?.resume()
     }
     
-    final func cancel(url: NSURL) {
+    func cancel(url: NSURL) {
         dataTasks[url]?.cancel()
         dataTasks[url] = nil
         dataTasks.removeValue(forKey: url)

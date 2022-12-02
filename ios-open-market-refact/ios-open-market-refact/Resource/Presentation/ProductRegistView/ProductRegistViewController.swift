@@ -7,6 +7,26 @@
 
 import UIKit
 
+enum ProductTextConditionAlert {
+    case invalidName
+    case invalidPrice
+    case invalidStock
+    case success
+    
+    var message: String {
+        switch self {
+        case .invalidName:
+            return "이름을 올바르게 입력해 주세요"
+        case .invalidPrice:
+            return "가격을 올바르게 입력해 주세요"
+        case .invalidStock:
+            return "재고를 올바르게 입력해 주세요"
+        case .success:
+            return "상품 등록 완료"
+        }
+    }
+}
+
 final class ProductRegistViewController: SuperViewControllerSetting {
     private var product: ProductDetail?
     
@@ -196,11 +216,11 @@ final class ProductRegistViewController: SuperViewControllerSetting {
                 DispatchQueue.main.async {
                     AlertDirector(viewController: self)
                         .createProductPostSuccessAlert(message: "해당 상품을 등록 완료했습니다.") { [weak self] _ in
-                        NotificationCenter.default.post(name: .addProductData,
-                                                        object: self)
-                        self?.refreshList?()
-                        self?.navigationController?.popViewController(animated: true)
-                    }
+                            NotificationCenter.default.post(name: .addProductData,
+                                                            object: self)
+                            self?.refreshList?()
+                            self?.navigationController?.popViewController(animated: true)
+                        }
                 }
             case .failure:
                 DispatchQueue.main.async {
@@ -219,8 +239,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         
         NetworkManager().dataTask(with: request) { result in
             switch result {
-            case .success(let success):
-                print(String(decoding: success, as: UTF8.self))
+            case .success(_):
                 DispatchQueue.main.async {
                     AlertDirector(viewController: self).createProductPatchSuccessAlert(message: "해당 상품을 수정 완료했습니다.") { [weak self] _ in
                         NotificationCenter.default.post(name: .productDataDidChanged,

@@ -7,18 +7,6 @@
 
 import Foundation
 
-struct MultiPartForm {
-    let boundary: String
-    let jsonData: Data
-    let images: [ProductImage]
-}
-
-struct ProductImage {
-    let name: String
-    let data: Data
-    let type: String
-}
-
 protocol APIRequest {
     var method: HTTPMethod { get }
     var baseURL: String { get }

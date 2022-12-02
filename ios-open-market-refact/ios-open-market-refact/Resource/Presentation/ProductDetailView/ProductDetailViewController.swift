@@ -116,7 +116,7 @@ extension ProductDetailViewController {
         NetworkManager().dataTask(with: detailRequest) { [self] result in
             switch result {
             case .success(let data):
-                productDetail = JSONDecoder.decodeJson(jsonData: data)
+                productDetail = JsonDecoderManager.shared.decode(from: data, to: ProductDetail.self)
                 
                 guard let productDetail = productDetail else { return }
                 

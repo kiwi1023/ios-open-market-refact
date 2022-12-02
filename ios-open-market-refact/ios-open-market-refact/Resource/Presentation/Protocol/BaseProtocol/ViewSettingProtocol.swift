@@ -10,19 +10,9 @@ import UIKit
 protocol ViewSettingProtocol {
     
     init()
-    /*
-     setupDefault()
-     NavigationController 관련 작업
-     delegate 설정 작업
-     */
+    
     func setupDefault()
-    /*
-     UI Component들을 view 에 추가 하는 작업
-     */
     func addUIComponents()
-    /*
-     뷰의 AutoLayout 지정
-     */
     func setupLayout()
 }
 
@@ -44,17 +34,9 @@ class SuperViewControllerSetting: UIViewController , ViewSettingProtocol {
         setupLayout()
     }
     
-    func setupDefault() {
-        
-    }
-    
-    func addUIComponents() {
-       
-    }
-    
-    func setupLayout() {
-       
-    }
+    func setupDefault() { }
+    func addUIComponents() { }
+    func setupLayout() { }
 }
 
 class SuperViewSetting: UIView , ViewSettingProtocol {
@@ -72,15 +54,7 @@ class SuperViewSetting: UIView , ViewSettingProtocol {
         setupLayout()
     }
     
-    func setupDefault() {
-        
-    }
-    
-    func addUIComponents() {
-       
-    }
-    
-    func setupLayout() {
-       
-    }
+    func setupDefault() { }
+    func addUIComponents() { }
+    func setupLayout() { }
 }

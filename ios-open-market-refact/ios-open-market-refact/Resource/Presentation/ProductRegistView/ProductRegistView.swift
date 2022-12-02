@@ -25,9 +25,10 @@ final class ProductRegistView: UIView {
     }()
     
     private(set) lazy var registCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCollectionViewLayout())
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(ProductRegistCollectionViewCell.self, forCellWithReuseIdentifier: ProductRegistCollectionViewCell.reuseIdentifier)
+        let collectionView = UICollectionView(frame: .zero,
+                                              collectionViewLayout: createCollectionViewLayout())
+        collectionView.register(ProductRegistCollectionViewCell.self,
+                                forCellWithReuseIdentifier: ProductRegistCollectionViewCell.reuseIdentifier)
         collectionView.isScrollEnabled = false
         return collectionView
     }()
@@ -38,7 +39,6 @@ final class ProductRegistView: UIView {
                                                        productSaleTextField,
                                                        productStockTextField,
                                                        productDescriptionTextView])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 8
         stackView.distribution = .fill
@@ -48,7 +48,6 @@ final class ProductRegistView: UIView {
     
     private let productNameTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = " 상품명"
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
@@ -59,7 +58,6 @@ final class ProductRegistView: UIView {
     
     private let productPriceTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = " 판매 가격"
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
@@ -70,7 +68,6 @@ final class ProductRegistView: UIView {
     
     private let productSaleTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = " 할인 금액"
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
@@ -81,7 +78,6 @@ final class ProductRegistView: UIView {
     
     private let productStockTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = " 재고 수량"
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
@@ -94,7 +90,6 @@ final class ProductRegistView: UIView {
     
     private lazy var productDescriptionTextView: UITextView = {
         let textView = UITextView()
-        textView.translatesAutoresizingMaskIntoConstraints = false
         textView.font = .preferredFont(forTextStyle: .body)
         textView.isScrollEnabled = false
         textView.layer.borderWidth = 0.1
@@ -111,7 +106,7 @@ final class ProductRegistView: UIView {
         backgroundColor = .systemBackground
         addUIComponents()
         setupLayout()
-        textViewDefault()
+        setupTextViewPlaceHolder()
     }
     
     required init?(coder: NSCoder) {
@@ -119,6 +114,8 @@ final class ProductRegistView: UIView {
         debugPrint("ProductListViewController Initialize error")
     }
     
+    // MARK: - Setup Functions
+
     private func addUIComponents() {
         addSubview(mainScrollView)
         
@@ -133,8 +130,6 @@ final class ProductRegistView: UIView {
         productPriceTextField.delegate = self
         productDescriptionTextView.delegate = self
     }
-    
-    // MARK: - Setup Collection View Method
     
     private func setupLayout() {
         NSLayoutConstraint.activate([
@@ -158,6 +153,8 @@ final class ProductRegistView: UIView {
         ])
     }
     
+    // MARK: - Setup Collection View Method
+    
     private func createCollectionViewLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(0.5))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -172,7 +169,7 @@ final class ProductRegistView: UIView {
         return layout
     }
     
-    private func textViewDefault() {
+    private func setupTextViewPlaceHolder() {
         let text = productDescriptionTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if text == "" {
             productDescriptionTextView.text = textViewPlaceHolder
@@ -192,22 +189,22 @@ final class ProductRegistView: UIView {
     
     func configureProduct(product: ProductDetail) {
         productNameTextField.text = product.name
-        productDescriptionTextView.text = product.description
         productPriceTextField.text = "\(Int(product.price))"
         productSaleTextField.text = "\(Int(product.discountedPrice))"
         productStockTextField.text = "\(product.stock)"
+        productDescriptionTextView.text = product.description
         if !productDescriptionTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             productDescriptionTextView.textColor = .black
         }
     }
 }
 
+// MARK: - UITextFieldDelegate Functions
+
 extension ProductRegistView: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let textFieldText = textField.text,
-              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
-            return false
-        }
+              let rangeOfTextToReplace = Range(range, in: textFieldText) else { return false }
         let substringToReplace = textFieldText[rangeOfTextToReplace]
         let count = textFieldText.count - substringToReplace.count + string.count
         return count <= 15
@@ -233,14 +230,13 @@ extension ProductRegistView: UITextViewDelegate {
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
+        guard let oldString = textView.text,
+              let newRange = Range(range, in: oldString) else { return true }
         let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
         
         let characterCount = newString.count
-        if characterCount > 700 {
-            print("700자를 넘겼습니다.")
-            return false
-        }
+        guard characterCount <= 700 else { return false }
+        
         return true
     }
 }

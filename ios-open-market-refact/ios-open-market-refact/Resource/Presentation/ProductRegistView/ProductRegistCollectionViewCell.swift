@@ -31,10 +31,11 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
     
     var removeImage: (() -> Void)?
     
+    // MARK: - Cell Initializer
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupDefault()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -43,6 +44,7 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: - Cell Default Setup
+    
     private func setupDefault() {
         addUIComponents()
         setupLayout()
@@ -69,19 +71,6 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configureImage(data: UIImage) {
-        registImageButton.setImage(data, for: .normal)
-        deleteImageButton.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
-    }
-    
-    func changeInteraction() {
-        registImageButton.isUserInteractionEnabled = false
-    }
-    
-    func hideDeleteImageButton() {
-        deleteImageButton.isHidden = true
-    }
-    
     override func prepareForReuse() {
         registImageButton.imageView?.image = nil
         deleteImageButton.isHidden = false
@@ -89,5 +78,14 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
     
     @objc private func didTapRemoveButton() {
         removeImage?()
+    }
+    
+    func configureImage(data: UIImage) {
+        registImageButton.setImage(data, for: .normal)
+        deleteImageButton.addTarget(self, action: #selector(didTapRemoveButton), for: .touchUpInside)
+    }
+    
+    func hideDeleteImageButton() {
+        deleteImageButton.isHidden = true
     }
 }

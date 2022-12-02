@@ -56,13 +56,17 @@ extension APIRequest {
         let lineBreak = "\r\n"
         var requestBody = Data()
         
-        requestBody.append(createMultipartFormJsonData(boundary: form.boundary,
-                                                       json: form.jsonData))
+        requestBody.append(createMultipartFormJsonData(
+            boundary: form.boundary,
+            json: form.jsonData)
+        )
         
         form.images.forEach
         {
-            requestBody.append(createMultipartFormImageData(boundary: form.boundary,
-                                                            image: $0))
+            requestBody.append(createMultipartFormImageData(
+                boundary: form.boundary,
+                image: $0)
+            )
         }
         
         requestBody.append("\(lineBreak)--\(form.boundary)--\(lineBreak)")

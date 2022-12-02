@@ -112,15 +112,20 @@ final class AlertBuilder: AlertBuilderable {
     func show() {
         guard validAlert() else { return }
         
-        let alert = UIAlertController(title: alert.title,
-                                      message: alert.message,
-                                      preferredStyle: alert.style)
+        let alert = UIAlertController(
+            title: alert.title,
+            message: alert.message,
+            preferredStyle: alert.style
+        )
         
         [firstAction, secondAction, okAction, cancelAction].forEach { actionButton in
             if actionButton.title != nil {
-                let action = UIAlertAction(title: actionButton.title,
-                                           style: actionButton.style,
-                                           handler: actionButton.action)
+                let action = UIAlertAction(
+                    title: actionButton.title,
+                    style: actionButton.style,
+                    handler: actionButton.action
+                )
+                
                 alert.addAction(action)
             }
         }
@@ -208,5 +213,4 @@ struct AlertDirector {
             .show()
     }
 }
-
 

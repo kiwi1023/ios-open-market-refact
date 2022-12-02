@@ -11,6 +11,8 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     
     private let mainScrollView = UIScrollView()
     private let productScrollView = UIScrollView()
+    
+    var changeCurrentPage: (() -> Void)?
     private var currentPage = 1 {
         didSet {
             changeCurrentPage?()
@@ -87,10 +89,6 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     }
     
     override func setupLayout() {
-        let topMargin = CGFloat(10)
-        let leadingMargin = CGFloat(20)
-        let trailingMargin = CGFloat(-20)
-        
         mainScrollView.translatesAutoresizingMaskIntoConstraints = false
         mainScrollView.contentSize.width = self.bounds.width
         
@@ -102,7 +100,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         ])
         
         NSLayoutConstraint.activate([
-            productScrollView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor, constant: topMargin),
+            productScrollView.topAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.topAnchor, constant: 10),
             productScrollView.centerXAnchor.constraint(equalTo: mainScrollView.centerXAnchor),
             productScrollView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 40),
             productScrollView.heightAnchor.constraint(equalTo: productScrollView.widthAnchor)
@@ -116,9 +114,9 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         ])
         
         NSLayoutConstraint.activate([
-            venderStackView.topAnchor.constraint(equalTo: photoIndexLabel.bottomAnchor, constant: topMargin),
-            venderStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: leadingMargin),
-            venderStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: trailingMargin)
+            venderStackView.topAnchor.constraint(equalTo: photoIndexLabel.bottomAnchor, constant: 10),
+            venderStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 20),
+            venderStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([
@@ -127,29 +125,29 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         ])
         
         NSLayoutConstraint.activate([
-            spacingView.topAnchor.constraint(equalTo: venderStackView.bottomAnchor, constant: topMargin),
-            spacingView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: leadingMargin),
-            spacingView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: trailingMargin),
+            spacingView.topAnchor.constraint(equalTo: venderStackView.bottomAnchor, constant: 10),
+            spacingView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 20),
+            spacingView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -20),
             spacingView.heightAnchor.constraint(equalToConstant: 1)
         ])
         
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor.constraint(equalTo: spacingView.bottomAnchor, constant: 10),
-            descriptionLabel.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: leadingMargin),
-            descriptionLabel.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: trailingMargin),
+            descriptionLabel.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 20),
+            descriptionLabel.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -20),
             descriptionLabel.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor)
         ])
     }
     
     private func setupProductScrollview() {
         productScrollView.translatesAutoresizingMaskIntoConstraints = false
-        productScrollView.delegate = self // scroll범위에 따라 pageControl의 값을 바꾸어주기 위한 delegate
+        productScrollView.delegate = self
         productScrollView.alwaysBounceVertical = false
         productScrollView.showsHorizontalScrollIndicator = false
         productScrollView.showsVerticalScrollIndicator = false
         productScrollView.isScrollEnabled = true
         productScrollView.isPagingEnabled = true
-        productScrollView.bounces = false // 경계지점에서
+        productScrollView.bounces = false
         productScrollView.clipsToBounds = true
         productScrollView.layer.cornerRadius = 15
     }
@@ -167,14 +165,21 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         ])
     }
     
+    //MARK: - Product DetailViewController Data Setup
+    
     private func configureImageView(_ productDetail: ProductDetail) {
         DispatchQueue.main.async { [self] in
-            productScrollView.contentSize = CGSize(width: productScrollView.bounds.width * CGFloat(productDetail.images.count), height: productScrollView.bounds.height)
+            productScrollView.contentSize = CGSize(
+                width: productScrollView.bounds.width * CGFloat(productDetail.images.count),
+                height: productScrollView.bounds.height
+            )
         }
         
         for (index, image) in productDetail.images.enumerated() {
             let imageView = UIImageView()
+            
             guard let url = NSURL(string: image.url) else { return }
+            
             ImageCache.shared.load(url: url) { image in
                 imageView.image = image
             }
@@ -197,9 +202,9 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         descriptionLabel.text = productDetail.description
         setUpProductInfoStackViewLayout(productDetail: productDetail)
     }
-    
-    var changeCurrentPage: (() -> Void)?
 }
+
+//MARK: - Product Images Scrolling extension
 
 extension ProductDetailView {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

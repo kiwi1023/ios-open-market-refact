@@ -2,22 +2,19 @@
 //  ProductMiniListView.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/11/16.
+//  Created by 송기원, 유한석, 이은찬 on 2022/11/16.
 //
 
 import UIKit
 
 final class ProductMiniListView: SuperViewSetting {
-    
-//    var productMiniListCellSelectedDelegate: ProductMiniListCellSelectedDelegate?
-    
+        
     var titleStackView = ProductMiniListTitleStackView()
     private(set) var miniListCollectionView: UICollectionView?
     
     //MARK: - Setup ProductMiniListView Method
     
     override func setupDefault() {
-        translatesAutoresizingMaskIntoConstraints = false
         addUIComponents()
         setupLayout()
         configureCollectionView()
@@ -38,17 +35,18 @@ final class ProductMiniListView: SuperViewSetting {
     
     private func configureCollectionView() {
         miniListCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createHorizonalCollectionViewLayout())
-        guard let miniListCollectionView = miniListCollectionView else {
-            return
-        }
+        
+        guard let miniListCollectionView = miniListCollectionView else { return }
+        
         addSubview(miniListCollectionView)
         miniListCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         miniListCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             miniListCollectionView.topAnchor.constraint(equalTo: titleStackView.bottomAnchor, constant: 10),
             miniListCollectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             miniListCollectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            miniListCollectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: 0)
+            miniListCollectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
@@ -66,7 +64,6 @@ final class ProductMiniListView: SuperViewSetting {
         section.orthogonalScrollingBehavior = .continuous
         let layout = UICollectionViewCompositionalLayout(section: section)
         
-
         return layout
     }
 }

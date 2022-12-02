@@ -2,7 +2,7 @@
 //  ProductInfoStackView.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/11/14.
+//  Created by 송기원, 유한석, 이은찬 on 2022/11/14.
 //
 
 import UIKit
@@ -10,8 +10,9 @@ import UIKit
 final class ProductInfoStackView: UIStackView {
     
     private var productDetail: ProductDetail?
-    
     private var isStarToggled = true
+    
+    //MARK: - Product Info StackView UIComponents frame
     
     private let starImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "star"))
@@ -62,7 +63,6 @@ final class ProductInfoStackView: UIStackView {
     required init(coder: NSCoder) {
         productDetail = nil
         super.init(coder: coder)
-        debugPrint("ProductInfoStackView Initializing Error")
     }
     
     //MARK: - Setup StackView Default
@@ -72,10 +72,15 @@ final class ProductInfoStackView: UIStackView {
         distribution = .fillProportionally
         alignment = .fill
         spacing = 10
+        
+        setupStarImageViewTapGesture()
+        starToggle()
+    }
+    
+    private func setupStarImageViewTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(starToggle))
         starImageView.addGestureRecognizer(tapGesture)
         starImageView.isUserInteractionEnabled = true
-        starToggle()
     }
     
     private func addStackViewComponents() {
@@ -86,34 +91,37 @@ final class ProductInfoStackView: UIStackView {
         addArrangedSubview(stockLabel)
     }
     
+    func setupProductDetail(productDetail: ProductDetail) {
+        self.productDetail = productDetail
+        setupProductDetailViewData()
+        setupPriceLabelAttribute()
+    }
+    
     private func setupProductDetailViewData() {
-        
         let stockString = productDetail?.stock.numberFormattingToDecimal()
         
         stockLabel.text = "\(stockString ?? "0")개 남음"
     }
     
     private func setupPriceLabelAttribute() {
-        guard let productDetail = productDetail else {
-            return
-        }
+        guard let productDetail = productDetail else { return }
+        
         var originalPriceString = productDetail.price.numberFormattingToDecimal()
         var bargainPriceString = productDetail.bargainPrice.numberFormattingToDecimal()
+        
         originalPriceString = "\(originalPriceString)원"
         bargainPriceString = "\(bargainPriceString)원"
         
-        if productDetail.discountedPrice == 0 { // 할인 없는 경우
+        if productDetail.discountedPrice == 0 {
             bargainPriceLabel.isHidden = true
             let originalAttributedString = NSMutableAttributedString(string: originalPriceString)
             originalAttributedString.setAttributes(
                 [.foregroundColor: UIColor.black],
-                //range: (originalPriceString as NSString).range(of:originalPriceString)
                 range: NSMakeRange(0, originalPriceString.count)
-
             )
             originalPriceLabel.attributedText = originalAttributedString
             
-        } else { // 할인 된 경우
+        } else {
             let originalAttributedString = NSMutableAttributedString(string: originalPriceString)
             let bargainAttributedString = NSMutableAttributedString(string: bargainPriceString)
             
@@ -121,13 +129,11 @@ final class ProductInfoStackView: UIStackView {
                 [.foregroundColor: UIColor.lightGray,
                  .strikethroughStyle: NSUnderlineStyle.single.rawValue
                 ],
-                //range: (originalPriceString as NSString).range(of:originalPriceString)
                 range: NSMakeRange(0, originalPriceString.count)
             )
             
             bargainAttributedString.setAttributes(
                 [.foregroundColor: UIColor.red],
-                //range: (bargainPriceString as NSString).range(of:bargainPriceString)
                 range: NSMakeRange(0, bargainPriceString.count)
             )
             
@@ -136,13 +142,8 @@ final class ProductInfoStackView: UIStackView {
         }
     }
     
-    func setupProductDetail(productDetail: ProductDetail) {
-        self.productDetail = productDetail
-        setupProductDetailViewData()
-        setupPriceLabelAttribute()
-    }
-    
     //MARK: - Star ImageView Touch Event
+    
     @objc private func starToggle() {
         if isStarToggled {
             starImageView.image = UIImage(systemName: "star")?.withTintColor(.yellow)

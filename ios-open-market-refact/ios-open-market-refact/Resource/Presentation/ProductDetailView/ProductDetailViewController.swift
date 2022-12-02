@@ -7,6 +7,13 @@
 
 import UIKit
 
+struct ProductDetailViewControllerNameSpace {
+    static let deleteCompletionMessage = "해당 상품을 삭제 완료했습니다."
+    static let deleteFailureMessage = "제품을 삭제하지 못했습니다."
+    static let wrongPasswordMessage = "비밀번호가 틀렸습니다"
+    static let dataLoadFailureMessage = "데이터를 불러오지 못했습니다."
+}
+
 final class ProductDetailViewController: SuperViewControllerSetting {
     
     private var productDetail: ProductDetail?
@@ -37,8 +44,13 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     private func configureNavigationBar(productDetail: ProductDetail) {
         if productDetail.vendorID == UserInfo.id {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(editButtonDidTapped))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .action,
+                target: self,
+                action: #selector(editButtonDidTapped)
+            )
         }
+        
         navigationItem.title = productDetail.name
     }
     
@@ -50,13 +62,15 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         }
     }
     
-    
     private func convertToEditView() {
-        guard let productDetail = self.productDetail else { return }
+        guard let productDetail = productDetail else { return }
+        
         let registView = ProductRegistViewController(product: productDetail)
+        
         registView.refreshList = {
             self.receiveDetailData()
         }
+        
         navigationController?.pushViewController(registView, animated: true)
     }
     
@@ -68,7 +82,9 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     }
     
     private func removeCurrentProduct() {
-        AlertDirector(viewController: self).createProductDeleteSuccessAlert(message: "해당 상품을 삭제 완료했습니다.") { [weak self] _ in
+        AlertDirector(viewController: self).createProductDeleteSuccessAlert(
+            message: ProductDetailViewControllerNameSpace.deleteCompletionMessage
+        ) { [weak self] _ in
             self?.navigationController?.popViewController(animated: true)
         }
     }
@@ -97,15 +113,20 @@ final class ProductDetailViewController: SuperViewControllerSetting {
                             self.navigationController?.popViewController(animated: true)
                         }
                     case .failure(_):
-                        AlertDirector(viewController: self).createErrorAlert(message: "제품을 삭제하지 못했습니다.")
+                        AlertDirector(viewController: self).createErrorAlert(
+                            message:ProductDetailViewControllerNameSpace.deleteFailureMessage
+                        )
                     }
                 }
             case .failure(_):
-                AlertDirector(viewController: self).createErrorAlert(message: "비밀번호가 틀렸습니다")
+                AlertDirector(viewController: self).createErrorAlert(
+                    message: ProductDetailViewControllerNameSpace.wrongPasswordMessage
+                )
             }
         }
     }
 }
+
 //MARK: - ProductDetail View Mock Data
 
 extension ProductDetailViewController {
@@ -126,7 +147,9 @@ extension ProductDetailViewController {
                 }
             case .failure(_):
                 DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createErrorAlert(message: "데이터를 불러오지 못했습니다.")
+                    AlertDirector(viewController: self).createErrorAlert(
+                        message: ProductDetailViewControllerNameSpace.dataLoadFailureMessage
+                    )
                 }
             }
         }

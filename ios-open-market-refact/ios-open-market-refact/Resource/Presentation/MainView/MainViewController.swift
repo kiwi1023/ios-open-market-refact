@@ -2,7 +2,7 @@
 //  MainViewController.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/11/16.
+//  Created by 송기원, 유한석, 이은찬 on 2022/11/16.
 //
 
 import UIKit
@@ -71,39 +71,46 @@ final class MainViewController: SuperViewControllerSetting {
     }
     
     private func fetchProductList() {
-        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: MainViewControllerNameSpace.initialPageInfo.pageNumber,
-                                                                         itemsPerPage: MainViewControllerNameSpace.initialPageInfo.itemsPerPage) else { return }
+        guard let request = OpenMarketRequestDirector().createGetRequest(
+            pageNumber: MainViewControllerNameSpace.initialPageInfo.pageNumber,
+            itemsPerPage: MainViewControllerNameSpace.initialPageInfo.itemsPerPage
+        ) else { return }
         
         NetworkManager().dataTask(with: request) { result in
             switch result {
             case .success(let data):
-                guard let productList = JsonDecoderManager.shared.decode(from: data,
-                                                                         to: ProductList.self) else { return }
+                guard let productList = JsonDecoderManager.shared.decode(
+                    from: data,
+                    to: ProductList.self
+                ) else { return }
                 
                 DispatchQueue.main.async { [weak self] in
                     self?.updateDataSource(data: productList.pages)
                 }
-                
             case .failure(_):
-                
                 DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createErrorAlert(message: MainViewControllerNameSpace.getDataErrorMassage)
+                    AlertDirector(viewController: self).createErrorAlert(
+                        message: MainViewControllerNameSpace.getDataErrorMassage
+                    )
                 }
-                
             }
         }
     }
     
     private func fetchBannerImages() {
-        let request = OpenMarketRequest(method: .get,
-                                        baseURL: URLHost.mainBannerImages.url,
-                                        path: .bannerImages)
+        let request = OpenMarketRequest(
+            method: .get,
+            baseURL: URLHost.mainBannerImages.url,
+            path: .bannerImages
+        )
         
         NetworkManager().dataTask(with: request) { result in
             switch result {
             case .success(let data):
-                guard let bannerImage = JsonDecoderManager.shared.decode(from: data,
-                                                                         to: [BannerImage].self) else { return }
+                guard let bannerImage = JsonDecoderManager.shared.decode(
+                    from: data,
+                    to: [BannerImage].self
+                ) else { return }
                 
                 DispatchQueue.main.async { [self] in
                     var url: [String] = []
@@ -111,13 +118,12 @@ final class MainViewController: SuperViewControllerSetting {
                     bannerImage.forEach { url.append($0.image) }
                     bannerView.imageUrls = url
                 }
-                
             case .failure(_):
-                
                 DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createErrorAlert(message: MainViewControllerNameSpace.getDataErrorMassage)
+                    AlertDirector(viewController: self).createErrorAlert(
+                        message: MainViewControllerNameSpace.getDataErrorMassage
+                    )
                 }
-    
             }
         }
     }
@@ -139,9 +145,11 @@ extension MainViewController {
         let dataSource = DataSource(collectionView: miniListCollectionView) {
             (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
             
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
-                                                                for: indexPath,
-                                                                item: itemIdentifier)
+            return collectionView.dequeueConfiguredReusableCell(
+                using: cellRegistration,
+                for: indexPath,
+                item: itemIdentifier
+            )
         }
         
         return dataSource

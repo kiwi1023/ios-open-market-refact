@@ -9,7 +9,7 @@ import UIKit
 
 final class ProductMiniListViewCell: UICollectionViewCell {
     
-    var product: Product?
+    private var product: Product?
     
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
@@ -24,7 +24,7 @@ final class ProductMiniListViewCell: UICollectionViewCell {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 21, weight: .bold)
+        label.font = .preferredFont(forTextStyle: .title3).bold()
         label.setContentHuggingPriority(.defaultLow, for: .horizontal)
         label.setContentCompressionResistancePriority(UILayoutPriority(100), for: .horizontal)
         label.textAlignment = .center
@@ -38,7 +38,6 @@ final class ProductMiniListViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: NSCoder())
-        debugPrint("ProductListViewController Initialize error")
     }
     
     //MARK: - Cell Default Setup
@@ -63,28 +62,25 @@ final class ProductMiniListViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             nameLabel.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: 10),
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 10),
-            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ])
     }
     
     func configure(data: Product) {
-        guard let nsURL = NSURL(string: data.thumbnail) else {
-            return
-        }
+        guard let nsURL = NSURL(string: data.thumbnail) else { return }
+        
         ImageCache.shared.load(url: nsURL) {  image in
             self.thumbnailImageView.image = image
         }
         
-        //thumbnailImageView.setImageUrl(data.thumbnail)
         nameLabel.text = data.name
         product = data
     }
     
     override func prepareForReuse() {
         guard let product = product,
-              let nsURL = NSURL(string: product.thumbnail) else {
-            return
-        }
+              let nsURL = NSURL(string: product.thumbnail) else { return }
+        
         ImageCache.shared.cancel(url: nsURL)
         thumbnailImageView.image = nil
     }

@@ -30,7 +30,7 @@ final class ProductMiniListViewCell: UICollectionViewCell {
         label.textAlignment = .center
         return label
     }()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupDefault()

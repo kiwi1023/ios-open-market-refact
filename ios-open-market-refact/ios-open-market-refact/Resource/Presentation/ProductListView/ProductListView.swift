@@ -8,7 +8,7 @@
 import UIKit
 
 final class ProductListView: SuperViewSetting {
-
+    
     private(set) var mainCollectionView: UICollectionView?
     
     //MARK: - View Initializer
@@ -54,9 +54,9 @@ final class ProductListView: SuperViewSetting {
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                heightDimension: .fractionalWidth(1/4))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
-                                                        repeatingSubitem: item,
-                                                        count:1)
-
+                                                       repeatingSubitem: item,
+                                                       count:1)
+        
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 3, leading: 3, bottom: 3, trailing: 3)

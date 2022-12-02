@@ -8,7 +8,7 @@
 import UIKit
 
 final class ProductMiniListView: SuperViewSetting {
-        
+    
     var titleStackView = ProductMiniListTitleStackView()
     private(set) var miniListCollectionView: UICollectionView?
     
@@ -34,7 +34,8 @@ final class ProductMiniListView: SuperViewSetting {
     }
     
     private func configureCollectionView() {
-        miniListCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createHorizonalCollectionViewLayout())
+        miniListCollectionView = UICollectionView(frame: .zero,
+                                                  collectionViewLayout: createHorizonalCollectionViewLayout())
         
         guard let miniListCollectionView = miniListCollectionView else { return }
         

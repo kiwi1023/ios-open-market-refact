@@ -64,7 +64,7 @@ final class ProductMiniListTitleStackView: UIStackView {
         addArrangedSubview(titleLabel)
         addArrangedSubview(moreListLabel)
     }
-
+    
     @objc private func tapMoreButton() {
         moreButtonDelegate?.moreButtonAddGesture()
     }

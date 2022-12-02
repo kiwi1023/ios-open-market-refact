@@ -95,14 +95,18 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     private func deleteProduct() {
         guard let productNumber = productNumber else { return }
-        guard let deleteURIRequest = OpenMarketRequestDirector().createDeleteURIRequest(productNumber: productNumber) else { return }
+        guard let deleteURIRequest = OpenMarketRequestDirector().createDeleteURIRequest(
+            productNumber: productNumber
+        ) else { return }
         
         
         NetworkManager().dataTask(with: deleteURIRequest) { result in
             switch result {
             case .success(let data):
                 
-                guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(with: data) else { return }
+                guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(
+                    with: data
+                ) else { return }
                 
                 NetworkManager().dataTask(with: deleteRequest) { result in
                     switch result {
@@ -132,7 +136,9 @@ final class ProductDetailViewController: SuperViewControllerSetting {
 extension ProductDetailViewController {
     private func receiveDetailData() {
         guard let productNumber = productNumber else { return }
-        guard let detailRequest = OpenMarketRequestDirector().createGetDetailRequest(productNumber) else { return }
+        guard let detailRequest = OpenMarketRequestDirector().createGetDetailRequest(
+            productNumber
+        ) else { return }
         
         NetworkManager().dataTask(with: detailRequest) { [self] result in
             switch result {

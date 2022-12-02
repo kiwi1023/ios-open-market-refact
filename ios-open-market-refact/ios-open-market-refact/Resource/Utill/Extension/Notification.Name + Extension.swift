@@ -2,7 +2,7 @@
 //  Notification.Name + Extension.swift
 //  Diary
 //
-//  Created by Kiwi, Brad. on 2022/08/23.
+//  Created by 송기원, 유한석, 이은찬 on 2022/11/15.
 //
 
 import Foundation

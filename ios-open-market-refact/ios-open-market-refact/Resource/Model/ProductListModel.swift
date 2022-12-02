@@ -4,9 +4,11 @@
 //
 //  Created by 송기원, 유한석, 이은찬 on 2022/11/10.
 //
+
 import Foundation
 
 // MARK: - ProductList
+
 struct ProductList: Decodable {
     let pageNo: Int
     let itemsPerPage: Int
@@ -20,6 +22,7 @@ struct ProductList: Decodable {
 }
 
 // MARK: - Product
+
 struct Product: Decodable, Hashable {
     let id: Int
     let vendorID: Int

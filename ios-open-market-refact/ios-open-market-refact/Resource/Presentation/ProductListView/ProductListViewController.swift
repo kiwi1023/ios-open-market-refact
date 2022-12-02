@@ -20,6 +20,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     private let initialInfo = ProductListViewControllerNameSpace()
     
     //MARK: CollectionView Properties
+    
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
     
@@ -115,10 +116,6 @@ final class ProductListViewController: SuperViewControllerSetting {
         registProductImageView.isUserInteractionEnabled = true
     }
     
-    @objc private func didTapSearchingButton() {
-        print("didTapSearchingButton!")
-    }
-    
     @objc private func didTapRegistButton() {
         navigationController?.pushViewController(ProductRegistViewController(product: nil), animated: true)
     }
@@ -130,16 +127,16 @@ final class ProductListViewController: SuperViewControllerSetting {
             .createGetRequest(
                 pageNumber: pageInfo.pageNumber,
                 itemsPerPage: pageInfo.itemsPerPage
-            ) else {
-            return
-        }
+            ) else { return }
         
         NetworkManager().dataTask(with: productListGetRequest) { result in
             switch result {
             case .success(let data):
-                guard let fetchedList = JsonDecoderManager.shared.decode(from: data, to: ProductList.self) else {
-                    return
-                }
+                guard let fetchedList = JsonDecoderManager.shared.decode(
+                    from: data,
+                    to: ProductList.self
+                ) else { return }
+                
                 DispatchQueue.main.async {
                     switch fetchType{
                     case .update:
@@ -159,12 +156,14 @@ final class ProductListViewController: SuperViewControllerSetting {
         snapshot.deleteAllItems()
         snapshot.appendSections([.main])
         snapshot.appendItems(data)
+        
         dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
     }
     
     func appendDataSource(data: [Product]) {
         productList += data
         snapshot.appendItems(data)
+        
         DispatchQueue.main.async {
             self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
         }
@@ -174,6 +173,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         snapshot.deleteAllItems()
         snapshot.appendSections([.main])
         snapshot.appendItems(data)
+        
         dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
     }
     
@@ -184,9 +184,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     private func configureDataSource() -> DataSource? {
-        guard let mainCollectionView = mainView.mainCollectionView else {
-            return nil
-        }
+        guard let mainCollectionView = mainView.mainCollectionView else { return nil }
         
         let cellRegistration = UICollectionView.CellRegistration<ProductListViewCell, Product> { cell, indexPath, item in
             cell.configure(data: item)
@@ -205,15 +203,19 @@ final class ProductListViewController: SuperViewControllerSetting {
     //MARK: - Product Refresh Method
     
     private func registerProductNotification() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(updateList),
-                                               name: .addProductData,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateList),
+            name: .addProductData,
+            object: nil
+        )
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didProductDataChanged),
-                                               name: .productDataDidChanged,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didProductDataChanged),
+            name: .productDataDidChanged,
+            object: nil
+        )
     }
     
     @objc private func didProductDataChanged() {
@@ -231,7 +233,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         self.scrollToTop()
     }
     
-    func scrollToTop() {
+    private func scrollToTop() {
         mainView.mainCollectionView?.scrollToItem(
             at: IndexPath(item: -1, section: 0),
             at: .init(rawValue: 0),
@@ -245,11 +247,10 @@ final class ProductListViewController: SuperViewControllerSetting {
 extension ProductListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let productDetailViewController = ProductDetailViewController()
-        guard let productId = dataSource?.itemIdentifier(for: indexPath)?.id else {
-            return
-        }
-        self.selectedIndexPath = indexPath
         
+        guard let productId = dataSource?.itemIdentifier(for: indexPath)?.id else { return }
+        
+        self.selectedIndexPath = indexPath
         productDetailViewController.receiveProductNumber(productNumber: productId)
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }
@@ -260,10 +261,9 @@ extension ProductListViewController: UICollectionViewDelegate {
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let position = scrollView.contentOffset.y
+        
         guard let height = mainView.mainCollectionView?.contentSize.height,
-              let boundHeight = mainView.mainCollectionView?.bounds.size.height else {
-            return
-        }
+              let boundHeight = mainView.mainCollectionView?.bounds.size.height else { return }
         
         if position > (height - boundHeight + 100) {
             pageInfo.pageNumber += 1
@@ -278,6 +278,7 @@ extension ProductListViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text?.lowercased() else { return }
+        
         if text == ProductListViewControllerNameSpace.emptySearchState {
             refreshList()
         } else {

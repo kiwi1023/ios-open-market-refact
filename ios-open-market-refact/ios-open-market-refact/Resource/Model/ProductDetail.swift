@@ -7,7 +7,8 @@
 
 import Foundation
 
-// MARK: - ProductDetaiil
+// MARK: - ProductDetail
+
 struct ProductDetail: Decodable {
     let id: Int
     let vendorID: Int

@@ -211,9 +211,9 @@
 			children = (
 				454DAB8F29262A23002CC8D6 /* Protocol */,
 				454DAB812923FEB3002CC8D6 /* MainView */,
+				455785BF291E56C40082A983 /* ProductListView */,
 				454DAB7229221410002CC8D6 /* ProductDetailView */,
 				18A132C92921FB0700E6FE34 /* ProductRegistView */,
-				455785BF291E56C40082A983 /* ProductListView */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";

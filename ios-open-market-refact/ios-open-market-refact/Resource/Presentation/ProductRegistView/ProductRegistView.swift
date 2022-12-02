@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ProductRegistView: UIView {
+final class ProductRegistView: SuperViewSetting {
     private let mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -25,10 +25,11 @@ final class ProductRegistView: UIView {
     }()
     
     private(set) lazy var registCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero,
-                                              collectionViewLayout: createCollectionViewLayout())
-        collectionView.register(ProductRegistCollectionViewCell.self,
-                                forCellWithReuseIdentifier: ProductRegistCollectionViewCell.reuseIdentifier)
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: createCollectionViewLayout()
+        )
+        
         collectionView.isScrollEnabled = false
         return collectionView
     }()
@@ -52,6 +53,7 @@ final class ProductRegistView: UIView {
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
+        textField.font = .preferredFont(forTextStyle: .title3)
         textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
@@ -62,6 +64,7 @@ final class ProductRegistView: UIView {
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
+        textField.font = .preferredFont(forTextStyle: .title3)
         textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
@@ -72,6 +75,7 @@ final class ProductRegistView: UIView {
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
+        textField.font = .preferredFont(forTextStyle: .title3)
         textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
@@ -82,6 +86,7 @@ final class ProductRegistView: UIView {
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
+        textField.font = .preferredFont(forTextStyle: .title3)
         textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
@@ -94,35 +99,15 @@ final class ProductRegistView: UIView {
         textView.isScrollEnabled = false
         textView.layer.borderWidth = 0.1
         textView.layer.cornerRadius = 5
+        textView.font = .preferredFont(forTextStyle: .title3)
         textView.setContentHuggingPriority(UILayoutPriority(50), for: .vertical)
         return textView
     }()
     
-    //MARK: - View Initializer
-    
-    init() {
-        super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .systemBackground
-        addUIComponents()
-        setupLayout()
-        setupTextViewPlaceHolder()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: NSCoder())
-        debugPrint("ProductListViewController Initialize error")
-    }
-    
     // MARK: - Setup Functions
-
-    private func addUIComponents() {
-        addSubview(mainScrollView)
-        
-        mainScrollView.addSubview(mainStackView)
-        
-        mainStackView.addArrangedSubview(registCollectionView)
-        mainStackView.addArrangedSubview(productInfoStackView)
+    
+    override func setupDefault() {
+        setupTextViewPlaceHolder()
         
         productNameTextField.delegate = self
         productSaleTextField.delegate = self
@@ -131,7 +116,14 @@ final class ProductRegistView: UIView {
         productDescriptionTextView.delegate = self
     }
     
-    private func setupLayout() {
+    override func addUIComponents() {
+        addSubview(mainScrollView)
+        mainScrollView.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(registCollectionView)
+        mainStackView.addArrangedSubview(productInfoStackView)
+    }
+    
+    override func setupLayout() {
         NSLayoutConstraint.activate([
             mainScrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             mainScrollView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),
@@ -205,6 +197,7 @@ extension ProductRegistView: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let textFieldText = textField.text,
               let rangeOfTextToReplace = Range(range, in: textFieldText) else { return false }
+        
         let substringToReplace = textFieldText[rangeOfTextToReplace]
         let count = textFieldText.count - substringToReplace.count + string.count
         return count <= 15
@@ -232,6 +225,7 @@ extension ProductRegistView: UITextViewDelegate {
         let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let oldString = textView.text,
               let newRange = Range(range, in: oldString) else { return true }
+        
         let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
         
         let characterCount = newString.count

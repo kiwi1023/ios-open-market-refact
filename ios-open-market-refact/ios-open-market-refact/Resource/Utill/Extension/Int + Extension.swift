@@ -2,7 +2,7 @@
 //  String + Extension.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/11/15.
+//  Created by 송기원, 유한석, 이은찬 on 2022/11/15.
 //
 
 import Foundation

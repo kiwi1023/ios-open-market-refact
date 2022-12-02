@@ -2,7 +2,7 @@
 //  ViewControllerSettingProtocol.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/11/17.
+//  Created by 송기원, 유한석, 이은찬 on 2022/11/17.
 //
 
 import UIKit
@@ -25,7 +25,7 @@ class SuperViewControllerSetting: UIViewController , ViewSettingProtocol {
     required init() {
         super.init(nibName: nil, bundle: nil)
     }
-   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground

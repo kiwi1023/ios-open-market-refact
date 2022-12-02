@@ -8,9 +8,6 @@
 import UIKit
 
 final class ProductRegistCollectionViewCell: UICollectionViewCell {
-    
-    static let reuseIdentifier = "registCell"
-    
     private let registImageButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -40,7 +37,6 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: NSCoder())
-        debugPrint("ProductListViewController Initialize error")
     }
     
     //MARK: - Cell Default Setup
@@ -60,7 +56,7 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
             registImageButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             registImageButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             registImageButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            registImageButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor )
+            registImageButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
         
         NSLayoutConstraint.activate([

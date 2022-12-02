@@ -33,13 +33,6 @@ final class MainBannerView: SuperViewSetting {
         addSubview(pageControl)
     }
     
-    override func setupLayout() {
-        NSLayoutConstraint.activate([
-            pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-            pageControl.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
-        ])
-    }
-    
     private func setupPageControl() {
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         pageControl.pageIndicatorTintColor = .lightGray
@@ -57,6 +50,12 @@ final class MainBannerView: SuperViewSetting {
     }
     
     private func configureScrollView() {
+        
+        NSLayoutConstraint.activate([
+            pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            pageControl.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
+        ])
+        
         DispatchQueue.main.async { [self] in
             scrollView.frame = bounds
             scrollView.contentSize = CGSize(

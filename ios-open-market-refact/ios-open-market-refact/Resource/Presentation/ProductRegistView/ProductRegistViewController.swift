@@ -7,6 +7,16 @@
 
 import UIKit
 
+struct ProductRegistViewControllerNameSpace {
+    static let addViewNavigationTitle = "상품 등록"
+    static let editViewNavigationTitle = "상품 수정"
+    static let editImageMessage = "사진은 수정이 불가합니다."
+    static let successRegistMessage = "해당 상품을 등록 완료했습니다."
+    static let registImageMessage = "사진을 등록해 주세요"
+    static let successEditMessage = "해당 상품을 수정 완료했습니다."
+    static let editFailureMessage = "상품 수정에 실패하였습니다."
+}
+
 enum ProductTextConditionAlert {
     case invalidName
     case invalidPrice
@@ -28,27 +38,27 @@ enum ProductTextConditionAlert {
 }
 
 final class ProductRegistViewController: SuperViewControllerSetting {
-    private var product: ProductDetail?
     
     enum ViewMode {
-        case add, edit
+        case add
+        case edit
     }
     
     enum Section: Int {
         case image
     }
     
-    private let registView = ProductRegistView()
-    private let imagePicker = UIImagePickerController()
-    private var viewMode = ViewMode.add
-    
-    private var isAppendable = true
+    private typealias DataSource = UICollectionViewDiffableDataSource<Section, UIImage>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, UIImage>
     
     private lazy var dataSource: DataSource = configureDataSource()
     private lazy var snapshot: Snapshot = configureSnapshot()
     
-    private typealias DataSource = UICollectionViewDiffableDataSource<Section, UIImage>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, UIImage>
+    private let registView = ProductRegistView()
+    private let imagePicker = UIImagePickerController()
+    private var viewMode = ViewMode.add
+    private var isAppendable = true
+    private var product: ProductDetail?
     
     var refreshList: (() -> Void)?
     
@@ -69,30 +79,40 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardUp),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardDown),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardUp),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardDown),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self,
-                                                  name: UIResponder.keyboardWillShowNotification,
-                                                  object: nil)
-        NotificationCenter.default.removeObserver(self,
-                                                  name: UIResponder.keyboardWillHideNotification,
-                                                  object: nil)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
+    
+    //MARK: - Setup ViewController method
     
     override func setupDefault() {
         view.backgroundColor = .systemBackground
         configureProduct()
-        addUIComponents()
-        setupLayout()
         setupNavigationBar()
         configureImagePicker()
         updateDataSource(data: [UIImage(named: "iconCamera.png") ?? UIImage()])
@@ -115,9 +135,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     private func setupNavigationBar() {
         switch viewMode {
         case .add:
-            self.navigationItem.title = "상품 등록"
+            self.navigationItem.title = ProductRegistViewControllerNameSpace.addViewNavigationTitle
         case .edit:
-            self.navigationItem.title = "상품 수정"
+            self.navigationItem.title = ProductRegistViewControllerNameSpace.editViewNavigationTitle
         }
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -134,28 +154,31 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func configureDataSource() -> DataSource {
-        return DataSource(collectionView: registView.registCollectionView) {
-            (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
-            
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductRegistCollectionViewCell.reuseIdentifier,
-                                                                for: indexPath) as? ProductRegistCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            
+        let cell = UICollectionView.CellRegistration<ProductRegistCollectionViewCell, UIImage> { cell, indexPath, item in
             cell.removeImage = {
                 switch self.viewMode {
                 case .add:
-                    self.deleteDataSource(image: itemIdentifier)
+                    self.deleteDataSource(image: item)
                 case .edit:
-                    AlertDirector(viewController: self).createErrorAlert(message: "사진은 수정이 불가합니다.")
+                    AlertDirector(viewController: self).createErrorAlert(
+                        message: ProductRegistViewControllerNameSpace.editImageMessage
+                    )
                 }
             }
             if self.isAppendable && indexPath.row == 0 {
                 cell.hideDeleteImageButton()
             }
-            cell.configureImage(data: itemIdentifier)
-            return cell
+            cell.configureImage(data: item)
         }
+        
+        let dataSource = DataSource(collectionView: registView.registCollectionView) {
+            (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
+            return collectionView.dequeueConfiguredReusableCell(using: cell,
+                                                                for: indexPath,
+                                                                item: itemIdentifier)
+        }
+        
+        return dataSource
     }
     
     private func configureSnapshot() -> Snapshot {
@@ -165,6 +188,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     private func updateDataSource(data: [UIImage]) {
         snapshot.appendSections([.image])
         snapshot.appendItems(data)
+        
         DispatchQueue.main.async {
             self.dataSource.apply(self.snapshot, animatingDifferences: false)
         }
@@ -175,6 +199,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         
         if snapshot.numberOfItems > 5 {
             guard let first = snapshot.itemIdentifiers.first else { return }
+            
             snapshot.deleteItems([first])
             isAppendable = false
         }
@@ -189,7 +214,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         
         if !isAppendable {
             guard let first = snapshot.itemIdentifiers.first else { return }
+            
             let insertImage = UIImage(named: "iconCamera.png") ?? UIImage()
+            
             snapshot.insertItems([insertImage], beforeItem: first)
             isAppendable = true
         }
@@ -201,12 +228,15 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     
     private func postProduct(input: RegistrationProduct) {
         var images = snapshot.itemIdentifiers
+        
         if isAppendable {
             images.removeFirst()
         }
+        
         let productImages = images.map {
             ProductImage(name: $0.description, data: $0.compress() ?? Data(), type: "png")
         }
+        
         guard let request = OpenMarketRequestDirector()
             .createPostRequest(product: input, images: productImages) else { return }
         
@@ -215,9 +245,13 @@ final class ProductRegistViewController: SuperViewControllerSetting {
             case .success:
                 DispatchQueue.main.async {
                     AlertDirector(viewController: self)
-                        .createProductPostSuccessAlert(message: "해당 상품을 등록 완료했습니다.") { [weak self] _ in
+                        .createProductPostSuccessAlert(
+                            message: ProductRegistViewControllerNameSpace.successRegistMessage
+                        ) { [weak self] _ in
                             NotificationCenter.default.post(name: .addProductData,
-                                                            object: self)
+                                                            object: self
+                            )
+                            
                             self?.refreshList?()
                             self?.navigationController?.popViewController(animated: true)
                         }
@@ -225,7 +259,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
             case .failure:
                 DispatchQueue.main.async {
                     if images.isEmpty {
-                        AlertDirector(viewController: self).createErrorAlert(message: "사진을 등록해 주세요")
+                        AlertDirector(viewController: self).createErrorAlert(
+                            message: ProductRegistViewControllerNameSpace.registImageMessage
+                        )
                     }
                 }
             }
@@ -234,22 +270,32 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     
     private func patchProduct(input: RegistrationProduct) {
         guard let product = product else { return }
-        guard let request = OpenMarketRequestDirector().createPatchRequest(product: input,
-                                                                           productNumber: product.id) else { return }
+        guard let request = OpenMarketRequestDirector().createPatchRequest(
+            product: input,
+            productNumber: product.id
+        ) else { return }
         
         NetworkManager().dataTask(with: request) { result in
             switch result {
             case .success(_):
                 DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createProductPatchSuccessAlert(message: "해당 상품을 수정 완료했습니다.") { [weak self] _ in
-                        NotificationCenter.default.post(name: .productDataDidChanged,
-                                                        object: self)
+                    AlertDirector(viewController: self).createProductPatchSuccessAlert(
+                        message: ProductRegistViewControllerNameSpace.successEditMessage
+                    ) { [weak self] _ in
+                        NotificationCenter.default.post(
+                            name: .productDataDidChanged,
+                            object: self
+                        )
+                        
                         self?.refreshList?()
                         self?.navigationController?.popViewController(animated: true)
                     }
                 }
             case .failure(let error):
-                AlertDirector(viewController: self).createErrorAlert(message: "상품 수정에 실패하였습니다.")
+                AlertDirector(viewController: self).createErrorAlert(
+                    message: ProductRegistViewControllerNameSpace.editFailureMessage
+                )
+                
                 print(error.localizedDescription)
                 break
             }
@@ -258,17 +304,31 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     
     private func configureProduct() {
         guard let product = product else { return }
+        
         registView.configureProduct(product: product)
         viewMode = .edit
         
         DispatchQueue.main.async {
             product.images.forEach { image in
                 guard let url = NSURL(string: image.url) else { return }
+                
                 ImageCache.shared.load(url: url) { image in
                     guard let image = image else { return }
+                    
                     self.appendDataSource(data: image)
                 }
             }
+        }
+    }
+    
+    private func checkProductInfomation(product: RegistrationProduct, completion: @escaping () -> Void) {
+        
+        if checkTextIsEmpty(product: product) == .success {
+            completion()
+        } else {
+            let condition = checkTextIsEmpty(product: product).message
+            
+            AlertDirector(viewController: self).createErrorAlert(message: condition)
         }
     }
     
@@ -276,19 +336,13 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         switch viewMode {
         case .add:
             let product = registView.makeProduct()
-            if checkTextIsEmpty(product: product) == .success {
-                postProduct(input: product)
-            } else {
-                let condition = checkTextIsEmpty(product: product).message
-                AlertDirector(viewController: self).createErrorAlert(message: condition)
+            checkProductInfomation(product: product) {
+                self.postProduct(input: product)
             }
         case .edit:
             let product = registView.makeProduct()
-            if checkTextIsEmpty(product: product) == .success {
-                patchProduct(input: product)
-            } else {
-                let condition = checkTextIsEmpty(product: product).message
-                AlertDirector(viewController: self).createErrorAlert(message: condition)
+            checkProductInfomation(product: product) {
+                self.patchProduct(input: product)
             }
         }
     }
@@ -297,6 +351,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         guard product.name != "" else { return ProductTextConditionAlert.invalidName }
         guard product.price != 0 else  { return ProductTextConditionAlert.invalidPrice }
         guard product.stock != 0 else  { return ProductTextConditionAlert.invalidStock }
+        
         return ProductTextConditionAlert.success
     }
 }
@@ -306,12 +361,13 @@ final class ProductRegistViewController: SuperViewControllerSetting {
 extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let selectedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
+        
         appendDataSource(data: selectedImage)
         dismiss(animated: true)
     }
 }
 
-// MARK: - UICollectionViewDelegate Function
+// MARK: - UICollectionView Delegate Function
 
 extension ProductRegistViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -320,7 +376,9 @@ extension ProductRegistViewController: UICollectionViewDelegate {
             case .add:
                 self.present(imagePicker, animated: true)
             case .edit:
-                AlertDirector(viewController: self).createErrorAlert(message: "사진은 수정이 불가합니다.")
+                AlertDirector(viewController: self).createErrorAlert(
+                    message: ProductRegistViewControllerNameSpace.editImageMessage
+                )
             }
         }
     }
@@ -339,13 +397,16 @@ extension ProductRegistViewController {
             top: 0.0,
             left: 0.0,
             bottom: keyboardFrame.size.height,
-            right: 0.0)
+            right: 0.0
+        )
+        
         registView.mainScrollView.contentInset = contentInset
         registView.mainScrollView.scrollIndicatorInsets = contentInset
     }
     
     @objc private func keyboardDown() {
         let contentInset = UIEdgeInsets.zero
+        
         registView.mainScrollView.contentInset = contentInset
         registView.mainScrollView.scrollIndicatorInsets = contentInset
     }

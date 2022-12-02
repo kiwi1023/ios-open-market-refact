@@ -7,9 +7,23 @@
 
 import UIKit
 
+struct ProductListViewControllerNameSpace {
+    static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
+    static let navigationTitle = "상품목록"
+    static let searchControllerPlaceHolder = "검색해보세용"
+    static let emptySearchState = ""
+    static let registButtonColor = "RegistButtonColor"
+}
+
 final class ProductListViewController: SuperViewControllerSetting {
     
-    private var pageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
+    private let initialInfo = ProductListViewControllerNameSpace()
+    
+    //MARK: CollectionView Properties
+    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
+    
+    private var pageInfo: (pageNumber: Int, itemsPerPage: Int) = ProductListViewControllerNameSpace.initialPageInfo
     private var productList: [Product] = []
     private var selectedIndexPath: IndexPath?
     
@@ -17,8 +31,10 @@ final class ProductListViewController: SuperViewControllerSetting {
         case main
     }
     
-    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
+    enum FetchType {
+        case update
+        case add
+    }
     
     private lazy var dataSource: DataSource? = configureDataSource()
     private lazy var snapshot: Snapshot = configureSnapshot()
@@ -26,7 +42,6 @@ final class ProductListViewController: SuperViewControllerSetting {
     //MARK: View
     private lazy var refreshController: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        //refreshControl.addTarget(self, action: #selector(refreshList) , for: .valueChanged)
         refreshControl.addTarget(self, action: #selector(refreshList), for: .valueChanged)
         return refreshControl
     }()
@@ -37,7 +52,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
-        imageView.tintColor = UIColor(red: 1, green: 126/255, blue: 55/255, alpha: 1)
+        imageView.tintColor = UIColor(named: ProductListViewControllerNameSpace.registButtonColor)
         return imageView
     }()
     
@@ -56,9 +71,9 @@ final class ProductListViewController: SuperViewControllerSetting {
         mainView.mainCollectionView?.refreshControl = refreshController
         addUIComponents()
         setupLayout()
-        fetchedProductList()
         setupNavigationBar()
         setupImageViewGesture()
+        fetchedProductList(fetchType: .update)
         registerProductNotification()
     }
     
@@ -83,13 +98,12 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     private func setupNavigationBar() {
-        navigationItem.title = "상품목록"
+        navigationItem.title = ProductListViewControllerNameSpace.navigationTitle
         navigationItem.largeTitleDisplayMode = .automatic
         
         let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchBar.placeholder = "검색해보세용"
+        searchController.searchBar.placeholder = ProductListViewControllerNameSpace.searchControllerPlaceHolder
         searchController.searchResultsUpdater = self
-        //searchController.delegate = self
         
         navigationItem.searchController = searchController
     }
@@ -109,32 +123,9 @@ final class ProductListViewController: SuperViewControllerSetting {
         navigationController?.pushViewController(ProductRegistViewController(product: nil), animated: true)
     }
     
-    private func fetchedProductList() {
-        guard let productListGetRequest = OpenMarketRequestDirector()
-            .createGetRequest(
-                pageNumber: pageInfo.pageNumber,
-                itemsPerPage: pageInfo.itemsPerPage
-            ) else {
-            return
-        }
-        
-        NetworkManager().dataTask(with: productListGetRequest) { result in
-            switch result {
-            case .success(let data):
-                guard let fetchedList = JsonDecoderManager.shared.decode(from: data, to: ProductList.self) else {
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.updateDataSource(data: fetchedList.pages)
-                }
-                
-            case .failure(_):
-                AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
-            }
-        }
-    }
+    //MARK: - Data Source, Snapshot Update Method
     
-    private func addingProductList() {
+    private func fetchedProductList(fetchType: FetchType) {
         guard let productListGetRequest = OpenMarketRequestDirector()
             .createGetRequest(
                 pageNumber: pageInfo.pageNumber,
@@ -150,9 +141,13 @@ final class ProductListViewController: SuperViewControllerSetting {
                     return
                 }
                 DispatchQueue.main.async {
-                    self.appendDataSource(data: fetchedList.pages)
+                    switch fetchType{
+                    case .update:
+                        self.updateDataSource(data: fetchedList.pages)
+                    case .add :
+                        self.appendDataSource(data: fetchedList.pages)
+                    }
                 }
-                
             case .failure(_):
                 AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
             }
@@ -182,13 +177,6 @@ final class ProductListViewController: SuperViewControllerSetting {
         dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
     }
     
-    @objc private func refreshList() {
-        print("새로고침띠")
-        pageInfo = (1,10)
-        fetchedProductList()
-        refreshController.endRefreshing() // 새로고침 이벤트 종료
-    }
-    
     //MARK: - Setup CollectionView Method
     
     private func configureSnapshot() -> Snapshot {
@@ -214,16 +202,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         return dataSource
     }
     
-    private func createSpinnerFooter() -> UIView {
-        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
-        
-        let spinner = UIActivityIndicatorView()
-        spinner.center = footerView.center
-        footerView.addSubview(spinner)
-        spinner.startAnimating()
-        
-        return footerView
-    }
+    //MARK: - Product Refresh Method
     
     private func registerProductNotification() {
         NotificationCenter.default.addObserver(self,
@@ -237,23 +216,27 @@ final class ProductListViewController: SuperViewControllerSetting {
                                                object: nil)
     }
     
+    @objc private func didProductDataChanged() {
+        fetchedProductList(fetchType: .update)
+    }
+    
+    @objc private func refreshList() {
+        pageInfo = ProductListViewControllerNameSpace.initialPageInfo
+        fetchedProductList(fetchType: .update)
+        refreshController.endRefreshing()
+    }
+    
     @objc private func updateList() {
         refreshList()
         self.scrollToTop()
     }
     
-    @objc private func didProductDataChanged() {
-        fetchedProductList()
-    }
-    
-    private func scrollToSelectedIndex() {
-        guard let selectedIndexPath = selectedIndexPath else { return }
-        
-        mainView.mainCollectionView?.scrollToItem(at: selectedIndexPath, at: .init(rawValue: 0), animated: true)
-    }
-    
     func scrollToTop() {
-        mainView.mainCollectionView?.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: true)
+        mainView.mainCollectionView?.scrollToItem(
+            at: IndexPath(item: -1, section: 0),
+            at: .init(rawValue: 0),
+            animated: true
+        )
     }
 }
 
@@ -281,10 +264,10 @@ extension ProductListViewController: UICollectionViewDelegate {
               let boundHeight = mainView.mainCollectionView?.bounds.size.height else {
             return
         }
-        print("position : \(position)")
+        
         if position > (height - boundHeight + 100) {
             pageInfo.pageNumber += 1
-            addingProductList()
+            fetchedProductList(fetchType: .add)
         }
     }
 }
@@ -295,7 +278,7 @@ extension ProductListViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text?.lowercased() else { return }
-        if text == "" {
+        if text == ProductListViewControllerNameSpace.emptySearchState {
             refreshList()
         } else {
             sortingProduct(text: text)

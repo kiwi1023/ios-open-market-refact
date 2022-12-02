@@ -7,14 +7,14 @@
 
 import UIKit
 
-final class ProductListView: UIView {
+final class ProductListView: SuperViewSetting {
 
     private(set) var mainCollectionView: UICollectionView?
     
     //MARK: - View Initializer
     
-    init() {
-        super.init(frame: .zero)
+    required init() {
+        super.init()
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
         configurationCollectionView()
@@ -33,10 +33,11 @@ final class ProductListView: UIView {
         guard let mainCollectionView = mainCollectionView else {
             return
         }
-        mainCollectionView.showsVerticalScrollIndicator = false
+        
         addSubview(mainCollectionView)
-        mainCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mainCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        mainCollectionView.showsVerticalScrollIndicator = false
+        mainCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         NSLayoutConstraint.activate([
             mainCollectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             mainCollectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),

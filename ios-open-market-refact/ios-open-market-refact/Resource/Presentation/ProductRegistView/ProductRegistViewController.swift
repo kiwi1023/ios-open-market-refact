@@ -237,8 +237,10 @@ final class ProductRegistViewController: SuperViewControllerSetting {
             ProductImage(name: $0.description, data: $0.compress() ?? Data(), type: "png")
         }
         
-        guard let request = OpenMarketRequestDirector()
-            .createPostRequest(product: input, images: productImages) else { return }
+        guard let request = OpenMarketRequestDirector().createPostRequest(
+            product: input,
+            images: productImages
+        ) else { return }
         
         NetworkManager().dataTask(with: request) { result in
             switch result {
@@ -248,8 +250,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
                         .createProductPostSuccessAlert(
                             message: ProductRegistViewControllerNameSpace.successRegistMessage
                         ) { [weak self] _ in
-                            NotificationCenter.default.post(name: .addProductData,
-                                                            object: self
+                            NotificationCenter.default.post(
+                                name: .addProductData,
+                                object: self
                             )
                             
                             self?.refreshList?()

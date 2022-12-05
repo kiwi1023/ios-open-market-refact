@@ -129,11 +129,7 @@ final class ProductDetailViewController: SuperViewControllerSetting {
             }
         }
     }
-}
-
-//MARK: - ProductDetail View Mock Data
-
-extension ProductDetailViewController {
+    
     private func receiveDetailData() {
         guard let productNumber = productNumber else { return }
         guard let detailRequest = OpenMarketRequestDirector().createGetDetailRequest(

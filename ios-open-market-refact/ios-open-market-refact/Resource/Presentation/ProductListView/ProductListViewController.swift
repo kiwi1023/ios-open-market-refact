@@ -220,6 +220,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     @objc private func didProductDataChanged() {
         fetchedProductList(fetchType: .update)
+        scrollToSelectedIndex()
     }
     
     @objc private func refreshList() {
@@ -236,6 +237,16 @@ final class ProductListViewController: SuperViewControllerSetting {
     private func scrollToTop() {
         mainView.mainCollectionView?.scrollToItem(
             at: IndexPath(item: -1, section: 0),
+            at: .init(rawValue: 0),
+            animated: true
+        )
+    }
+    
+    private func scrollToSelectedIndex() {
+        guard let selectedIndexPath = selectedIndexPath else { return }
+        
+        mainView.mainCollectionView?.scrollToItem(
+            at: selectedIndexPath,
             at: .init(rawValue: 0),
             animated: true
         )

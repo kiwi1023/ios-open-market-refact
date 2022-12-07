@@ -8,6 +8,7 @@
 import UIKit
 
 final class MainBannerView: SuperViewSetting {
+    
     private let scrollView = UIScrollView()
     private let pageControl = UIPageControl()
     private var imageViews: [UIImageView] = []

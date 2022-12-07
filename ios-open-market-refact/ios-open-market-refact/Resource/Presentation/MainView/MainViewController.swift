@@ -24,7 +24,7 @@ final class MainViewController: SuperViewControllerSetting {
     
     private lazy var dataSource: DataSource? = configureDataSource()
     private let bannerView = MainBannerView()
-    private lazy var productMiniListView = ProductMiniListView()
+    private let productMiniListView = ProductMiniListView()
     
     //MARK: - Setup ViewController Method
     

@@ -47,14 +47,14 @@ final class ProductDetailViewController: SuperViewControllerSetting {
             navigationItem.rightBarButtonItem = UIBarButtonItem(
                 barButtonSystemItem: .action,
                 target: self,
-                action: #selector(editButtonDidTapped)
+                action: #selector(didTapEitButton)
             )
         }
         
         navigationItem.title = productDetail.name
     }
     
-    @objc private func editButtonDidTapped() {
+    @objc private func didTapEitButton() {
         AlertDirector(viewController: self).createProductEditActionSheet { [weak self] _ in
             self?.convertToEditView()
         } deleteAction: { [weak self] _ in

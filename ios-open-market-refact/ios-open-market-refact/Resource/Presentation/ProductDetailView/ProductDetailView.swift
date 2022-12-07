@@ -152,7 +152,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         productScrollView.layer.cornerRadius = 15
     }
     
-    private func setUpProductInfoStackViewLayout(productDetail: ProductDetail) {
+    private func setupProductInfoStackViewLayout(productDetail: ProductDetail) {
         productInfoStackView.setupProductDetail(productDetail: productDetail)
         
         addSubview(productInfoStackView)
@@ -200,7 +200,7 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         venderImageView.image = UIImage(systemName: "person.circle")
         venderNameLabel.text = productDetail.vendors.name
         descriptionLabel.text = productDetail.description
-        setUpProductInfoStackViewLayout(productDetail: productDetail)
+        setupProductInfoStackViewLayout(productDetail: productDetail)
     }
 }
 

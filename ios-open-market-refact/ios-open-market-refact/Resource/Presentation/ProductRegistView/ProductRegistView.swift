@@ -8,6 +8,7 @@
 import UIKit
 
 final class ProductRegistView: SuperViewSetting {
+    
     private let mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false

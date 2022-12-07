@@ -8,6 +8,7 @@
 import UIKit
 
 final class ProductRegistCollectionViewCell: UICollectionViewCell {
+    
     private let registImageButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false

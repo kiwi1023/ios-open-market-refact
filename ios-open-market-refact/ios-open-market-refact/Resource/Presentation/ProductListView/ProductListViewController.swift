@@ -7,17 +7,16 @@
 
 import UIKit
 
-struct ProductListViewControllerNameSpace {
+private enum ProductListViewControllerNameSpace {
     static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
     static let navigationTitle = "상품목록"
     static let searchControllerPlaceHolder = "검색해보세용"
     static let emptySearchState = ""
     static let registButtonColor = "RegistButtonColor"
+    static let getDataErrorMassage = "데이터를 받아오지 못했습니다."
 }
 
 final class ProductListViewController: SuperViewControllerSetting {
-    
-    private let initialInfo = ProductListViewControllerNameSpace()
     
     //MARK: CollectionView Properties
     
@@ -146,7 +145,7 @@ final class ProductListViewController: SuperViewControllerSetting {
                     }
                 }
             case .failure(_):
-                AlertDirector(viewController: self).createErrorAlert(message: "데이터 로드 오류")
+                AlertDirector(viewController: self).createErrorAlert(message: ProductListViewControllerNameSpace.getDataErrorMassage)
             }
         }
     }

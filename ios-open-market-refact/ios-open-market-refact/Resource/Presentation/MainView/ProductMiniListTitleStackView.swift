@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct ProductMiniListTitleStackViewNameSpace {
+private enum ProductMiniListTitleStackViewNameSpace {
     static let titleLabelContent = "🚨 이 상품 놓치지 마세요"
     static let moreListLabelContent = "more ➡️"
 }

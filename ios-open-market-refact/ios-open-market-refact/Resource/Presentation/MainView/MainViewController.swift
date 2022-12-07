@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct MainViewControllerNameSpace {
+private enum MainViewControllerNameSpace {
     static let appTitle = "My Market🏪"
     static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 20)
     static let getDataErrorMassage = "데이터를 받아오지 못했습니다."

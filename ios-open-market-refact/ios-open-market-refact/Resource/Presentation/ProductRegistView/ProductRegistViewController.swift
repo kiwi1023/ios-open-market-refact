@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct ProductRegistViewControllerNameSpace {
+private enum ProductRegistViewControllerNameSpace {
     static let addViewNavigationTitle = "상품 등록"
     static let editViewNavigationTitle = "상품 수정"
     static let editImageMessage = "사진은 수정이 불가합니다."
@@ -17,7 +17,7 @@ struct ProductRegistViewControllerNameSpace {
     static let editFailureMessage = "상품 수정에 실패하였습니다."
 }
 
-enum ProductTextConditionAlert {
+private enum ProductTextConditionAlert {
     case invalidName
     case invalidPrice
     case invalidStock

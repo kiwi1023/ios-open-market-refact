@@ -7,6 +7,22 @@
 
 import UIKit
 
+private enum RegistrationBasicValueNameSpace {
+    static let stringEmpty = ""
+    static let stringZero = "0"
+    static let doubleZero: Double = 0
+    static let intZero: Int = 0
+}
+
+private enum ProductRegistViewNameSpace {
+    static let productNamePlaceHolder = " 상품명"
+    static let productPricePlaceHolder = " 판매 가격"
+    static let productSalePlaceHolder = " 할인 금액"
+    static let productStockPlaceHolder = " 재고 수량"
+    static let productDescriptionPlaceHolder = " 텍스트를 입력하세요"
+    static let productDefaultCurrency = "KRW"
+}
+
 final class ProductRegistView: SuperViewSetting {
     
     private let mainStackView: UIStackView = {
@@ -50,7 +66,7 @@ final class ProductRegistView: SuperViewSetting {
     
     private let productNameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = " 상품명"
+        textField.placeholder = ProductRegistViewNameSpace.productNamePlaceHolder
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
@@ -61,7 +77,7 @@ final class ProductRegistView: SuperViewSetting {
     
     private let productPriceTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = " 판매 가격"
+        textField.placeholder = ProductRegistViewNameSpace.productPricePlaceHolder
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
@@ -72,7 +88,7 @@ final class ProductRegistView: SuperViewSetting {
     
     private let productSaleTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = " 할인 금액"
+        textField.placeholder = ProductRegistViewNameSpace.productSalePlaceHolder
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
@@ -83,7 +99,7 @@ final class ProductRegistView: SuperViewSetting {
     
     private let productStockTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = " 재고 수량"
+        textField.placeholder = ProductRegistViewNameSpace.productStockPlaceHolder
         textField.addLeftPadding()
         textField.layer.borderWidth = 0.1
         textField.layer.cornerRadius = 5
@@ -91,8 +107,6 @@ final class ProductRegistView: SuperViewSetting {
         textField.addConstraint(textField.heightAnchor.constraint(equalToConstant: 30))
         return textField
     }()
-    
-    private let textViewPlaceHolder = " 텍스트를 입력하세요"
     
     private lazy var productDescriptionTextView: UITextView = {
         let textView = UITextView()
@@ -165,18 +179,18 @@ final class ProductRegistView: SuperViewSetting {
     private func setupTextViewPlaceHolder() {
         let text = productDescriptionTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if text == "" {
-            productDescriptionTextView.text = textViewPlaceHolder
+            productDescriptionTextView.text = ProductRegistViewNameSpace.productDescriptionPlaceHolder
             productDescriptionTextView.textColor = UIColor.lightGray.withAlphaComponent(0.7)
         }
     }
     
     func makeProduct() -> RegistrationProduct {
-        return RegistrationProduct(name: productNameTextField.text ?? "",
-                                   description: productDescriptionTextView.text ?? "",
-                                   price: Double(productPriceTextField.text ?? "0") ?? 0,
-                                   currency: "KRW",
-                                   discountedPrice: Double(productSaleTextField.text ?? "0") ?? 0,
-                                   stock: Int(productStockTextField.text ?? "0") ?? 0,
+        return RegistrationProduct(name: productNameTextField.text ?? RegistrationBasicValueNameSpace.stringEmpty,
+                                   description: productDescriptionTextView.text ?? RegistrationBasicValueNameSpace.stringEmpty,
+                                   price: Double(productPriceTextField.text ?? RegistrationBasicValueNameSpace.stringZero) ?? RegistrationBasicValueNameSpace.doubleZero,
+                                   currency: ProductRegistViewNameSpace.productDefaultCurrency,
+                                   discountedPrice: Double(productSaleTextField.text ?? RegistrationBasicValueNameSpace.stringZero) ?? RegistrationBasicValueNameSpace.doubleZero,
+                                   stock: Int(productStockTextField.text ?? RegistrationBasicValueNameSpace.stringZero) ?? RegistrationBasicValueNameSpace.intZero,
                                    secret: UserInfo.secret)
     }
     
@@ -209,7 +223,7 @@ extension ProductRegistView: UITextFieldDelegate {
 
 extension ProductRegistView: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == textViewPlaceHolder {
+        if textView.text == ProductRegistViewNameSpace.productDescriptionPlaceHolder {
             textView.text = nil
             textView.textColor = .black
         }
@@ -217,7 +231,7 @@ extension ProductRegistView: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = textViewPlaceHolder
+            textView.text = ProductRegistViewNameSpace.productDescriptionPlaceHolder
             textView.textColor = .lightGray.withAlphaComponent(0.7)
         }
     }

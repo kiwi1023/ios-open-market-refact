@@ -14,16 +14,19 @@ private enum MainViewControllerNameSpace {
 }
 
 final class MainViewController: SuperViewControllerSetting {
+    typealias InitialPageInfo = (pageNumber: Int, itemsPerPage: Int)
     
     enum Section {
         case main
     }
     
+    private let mainViewModel = MainViewModel()
+    
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
     
     private lazy var dataSource: DataSource? = configureDataSource()
-    private let bannerView = MainBannerView()
+    private lazy var bannerView = MainBannerView()
     private let productMiniListView = ProductMiniListView()
     
     //MARK: - Setup ViewController Method
@@ -32,14 +35,14 @@ final class MainViewController: SuperViewControllerSetting {
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
+        bannerView.downLoadDelegate = self
         setupNavigationBar()
-        fetchProductList()
-        fetchBannerImages()
+        //bind()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchProductList()
+        bind()
     }
     
     override func addUIComponents() {
@@ -70,60 +73,24 @@ final class MainViewController: SuperViewControllerSetting {
         ])
     }
     
-    private func fetchProductList() {
-        guard let request = OpenMarketRequestDirector().createGetRequest(
-            pageNumber: MainViewControllerNameSpace.initialPageInfo.pageNumber,
-            itemsPerPage: MainViewControllerNameSpace.initialPageInfo.itemsPerPage
-        ) else { return }
+    private func bind() {
+        let miniListFetchAction = Observable<(InitialPageInfo)>(MainViewControllerNameSpace.initialPageInfo)
+        let bannerImageLoadAction = Observable(MainViewModel.MainViewAction.bannerImageLoad)
+                                                                
+        let output = mainViewModel.transform(input: .init(
+            productMiniListFetchAction: miniListFetchAction,
+            bannerImageLoadAction: bannerImageLoadAction
+        ))
         
-        NetworkManager().dataTask(with: request) { result in
-            switch result {
-            case .success(let data):
-                guard let productList = JsonDecoderManager.shared.decode(
-                    from: data,
-                    to: ProductList.self
-                ) else { return }
-                
-                DispatchQueue.main.async { [weak self] in
-                    self?.updateDataSource(data: productList.pages)
-                }
-            case .failure(_):
-                DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createErrorAlert(
-                        message: MainViewControllerNameSpace.getDataErrorMassage
-                    )
-                }
+        output.productListOutput.subscribe { list in
+            DispatchQueue.main.async {
+                self.updateDataSource(data: list)
             }
         }
-    }
-    
-    private func fetchBannerImages() {
-        let request = OpenMarketRequest(
-            method: .get,
-            baseURL: URLHost.mainBannerImages.url,
-            path: .bannerImages
-        )
         
-        NetworkManager().dataTask(with: request) { result in
-            switch result {
-            case .success(let data):
-                guard let bannerImage = JsonDecoderManager.shared.decode(
-                    from: data,
-                    to: [BannerImage].self
-                ) else { return }
-                
-                DispatchQueue.main.async { [self] in
-                    var url: [String] = []
-                    
-                    bannerImage.forEach { url.append($0.image) }
-                    bannerView.imageUrls = url
-                }
-            case .failure(_):
-                DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createErrorAlert(
-                        message: MainViewControllerNameSpace.getDataErrorMassage
-                    )
-                }
+        output.bannerImagesOutput.subscribe { bannerUrls in
+            DispatchQueue.main.async { [weak self] in
+                self?.bannerView.imageUrls = bannerUrls
             }
         }
     }
@@ -189,5 +156,43 @@ extension MainViewController: UICollectionViewDelegate {
         
         productDetailViewController.receiveProductNumber(productNumber: productId)
         navigationController?.pushViewController(productDetailViewController, animated: true)
+    }
+}
+
+//MARK: - MainBannerView Image Load Delegate
+
+protocol MainBannerViewImageLoadProtocol {
+    func downLoadImages(imageViewCount: Int, urls: [String], completion: @escaping ([UIImage]) -> Void)
+}
+
+extension MainViewController: MainBannerViewImageLoadProtocol {
+    func downLoadImages(imageViewCount: Int, urls: [String], completion: @escaping ([UIImage]) -> Void) {
+        var images: [UIImage] = []
+        print(imageViewCount)
+        print(urls)
+        DispatchQueue.main.async {
+            for i in 0..<imageViewCount {
+                var urlStr = ""
+                
+                if i == 0 {
+                    urlStr = urls.last ?? ""
+                } else if i == imageViewCount - 1 {
+                    urlStr = urls.first ?? ""
+                } else {
+                    urlStr = urls[i - 1]
+                }
+                
+                guard let nsURL = NSURL(string: urlStr) else { return  }
+                
+                ImageCache.shared.loadBannerImage(url: nsURL) { image in
+                    guard let image = image else { return }
+                    images.append(image)
+                }
+                print(images.count)
+                
+            }
+            completion(images)
+        }
+        
     }
 }

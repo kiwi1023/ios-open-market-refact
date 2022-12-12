@@ -9,11 +9,14 @@ import UIKit
 
 final class MainBannerView: SuperViewSetting {
     
+    var downLoadDelegate: MainBannerViewImageLoadProtocol?
+    
     private let scrollView = UIScrollView()
     private let pageControl = UIPageControl()
     private var imageViews: [UIImageView] = []
     var imageUrls: [String] = [] {
         didSet {
+            print("Image Urls is Changed!!!")
             configureScrollView()
             setupPageControl()
             setupScrollView()
@@ -51,7 +54,6 @@ final class MainBannerView: SuperViewSetting {
     }
     
     private func configureScrollView() {
-        
         NSLayoutConstraint.activate([
             pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             pageControl.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
@@ -67,6 +69,7 @@ final class MainBannerView: SuperViewSetting {
         }
         
         DispatchQueue.main.async { [self] in
+            imageViews = []
             for index in 0..<imageUrls.count + 2 {
                 let imageView = UIImageView(frame: bounds)
                 
@@ -75,29 +78,34 @@ final class MainBannerView: SuperViewSetting {
                 scrollView.addSubview(imageView)
                 imageViews.append(imageView)
             }
-            downloadImages()
+//            downloadImages()
+            downLoadDelegate?.downLoadImages(imageViewCount: imageViews.count, urls: imageUrls) { images in
+                for (index, image) in images.enumerated() {
+                    self.imageViews[index].image = image
+                }
+            }
         }
     }
     
-    private func downloadImages() {
-        for i in 0..<imageViews.count {
-            var urlStr = ""
-            
-            if i == 0 {
-                urlStr = imageUrls.last ?? ""
-            } else if i == imageViews.count - 1 {
-                urlStr = imageUrls.first ?? ""
-            } else {
-                urlStr = imageUrls[i - 1]
-            }
-            
-            guard let nsURL = NSURL(string: urlStr) else { return  }
-            
-            ImageCache.shared.loadBannerImage(url: nsURL) { [self] image in
-                imageViews[i].image = image
-            }
-        }
-    }
+//    private func downloadImages() {
+//        for i in 0..<imageViews.count {
+//            var urlStr = ""
+//            
+//            if i == 0 {
+//                urlStr = imageUrls.last ?? ""
+//            } else if i == imageViews.count - 1 {
+//                urlStr = imageUrls.first ?? ""
+//            } else {
+//                urlStr = imageUrls[i - 1]
+//            }
+//            
+//            guard let nsURL = NSURL(string: urlStr) else { return  }
+//            
+//            ImageCache.shared.loadBannerImage(url: nsURL) { [self] image in
+//                imageViews[i].image = image
+//            }
+//        }
+//    }
     
     private func infiniteScroll() {
         if scrollView.contentOffset.x == 0 {

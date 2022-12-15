@@ -10,6 +10,7 @@ import Foundation
 class MainViewModel: ViewModelBuilderProtocol {
     
     var productList: Observable<[Product]> = Observable([])
+    let bannerImageUrl = Observable<[String]>([])
     let networkAPI: SessionProtocol
     
     enum MainViewAction {
@@ -32,7 +33,6 @@ class MainViewModel: ViewModelBuilderProtocol {
     }
     
     func transform(input: Input) -> Output {
-        let bannerImagesOutput = Observable<[String]>([])
         
         input.productMiniListFetchAction.subscribe { [self] (pageNumber: Int, itemsPerPage: Int) in
             fetchProductList(input: input.productMiniListFetchAction) { [self] fetchedList in
@@ -41,18 +41,18 @@ class MainViewModel: ViewModelBuilderProtocol {
         }
         
         input.bannerImageLoadAction.subscribe { [self] action in
-            fetchBannerImages { bannerImages in
+            fetchBannerImages { [self] bannerImages in
                 var url: [String] = []
                 bannerImages.forEach {
                     url.append($0.image)
                 }
-                bannerImagesOutput.value = url
+                bannerImageUrl.value = url
             }
         }
         
         return .init(
             productListOutput: productList,
-            bannerImagesOutput: bannerImagesOutput
+            bannerImagesOutput: bannerImageUrl
         )
     }
     

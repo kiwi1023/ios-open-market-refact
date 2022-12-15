@@ -36,7 +36,6 @@ final class MainViewController: SuperViewControllerSetting {
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
         setupNavigationBar()
-        //bind()
     }
     
     override func viewWillAppear(_ animated: Bool) {

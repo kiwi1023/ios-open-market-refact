@@ -26,7 +26,7 @@ class BannerViewModel: ViewModelBuilderProtocol {
     
     func transform(input: Input) -> Output {
         input.setBannerImagesAction.subscribe { [self] (imageViewsCount: Int, imageUrls: [String]) in
-            downloadImages(input: input.setBannerImagesAction) { [self] index, imageUrl in
+            sortImageUrls(input: input.setBannerImagesAction) { [self] index, imageUrl in
                 bannerImage.value = (index, imageUrl)
             }
         }
@@ -36,7 +36,7 @@ class BannerViewModel: ViewModelBuilderProtocol {
         )
     }
     
-    private func downloadImages(input: Observable<(imageViewsCount: Int, imageUrls: [String])>, completion: @escaping (Int, String) -> Void) {
+    private func sortImageUrls(input: Observable<(imageViewsCount: Int, imageUrls: [String])>, completion: @escaping (Int, String) -> Void) {
         for index in 0..<input.value.imageViewsCount {
             var urlStr = ""
         
@@ -47,7 +47,6 @@ class BannerViewModel: ViewModelBuilderProtocol {
             } else {
                 urlStr = input.value.imageUrls[index - 1]
             }
-        
             completion(index, urlStr)
         }
     }

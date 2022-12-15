@@ -42,7 +42,9 @@
 		45E9BDCB294345B8000A8A54 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9BDCA294345B8000A8A54 /* Observable.swift */; };
 		4D16B49A292F4833002647D7 /* AlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D16B499292F4833002647D7 /* AlertBuilder.swift */; };
 		4D27D59C2937747E000EB3FA /* Notification.Name + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D27D59B2937747E000EB3FA /* Notification.Name + Extension.swift */; };
+		4D36BFD829471ECA00778150 /* MainViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D36BFD729471ECA00778150 /* MainViewModelTest.swift */; };
 		4D58D19A29388407008F11E6 /* BannerImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D58D19929388407008F11E6 /* BannerImage.swift */; };
+		4D5FCD6E294AD152004189F3 /* bannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5FCD6D294AD152004189F3 /* bannerViewModel.swift */; };
 		4D85B71C291A1D0000E41E71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71B291A1D0000E41E71 /* AppDelegate.swift */; };
 		4D85B71E291A1D0000E41E71 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */; };
 		4D8B7BBD291CE04400A6E5F2 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BBC291CE04400A6E5F2 /* APIConfiguration.swift */; };
@@ -106,7 +108,9 @@
 		45E9BDCA294345B8000A8A54 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		4D16B499292F4833002647D7 /* AlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBuilder.swift; sourceTree = "<group>"; };
 		4D27D59B2937747E000EB3FA /* Notification.Name + Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification.Name + Extension.swift"; sourceTree = "<group>"; };
+		4D36BFD729471ECA00778150 /* MainViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainViewModelTest.swift; path = "ios-open-market-refact-Tests/MainViewModelTest/MainViewModelTest.swift"; sourceTree = SOURCE_ROOT; };
 		4D58D19929388407008F11E6 /* BannerImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerImage.swift; sourceTree = "<group>"; };
+		4D5FCD6D294AD152004189F3 /* bannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bannerViewModel.swift; sourceTree = "<group>"; };
 		4D85B718291A1D0000E41E71 /* ios-open-market-refact.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-open-market-refact.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D85B71B291A1D0000E41E71 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -178,6 +182,7 @@
 		454DAB8F29262A23002CC8D6 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
+				4D36BFD429471E5500778150 /* Util */,
 				454DAB9029262A31002CC8D6 /* BaseProtocol */,
 			);
 			path = Protocol;
@@ -196,7 +201,8 @@
 			isa = PBXGroup;
 			children = (
 				455785A5291CF20F0082A983 /* TestDouble */,
-				4557859C291CEFC90082A983 /* NetworkTest.swift */,
+				4D36BFD529471E6100778150 /* NetworkTest */,
+				4D36BFD629471E7900778150 /* MainViewModelTest */,
 			);
 			path = "ios-open-market-refact-Tests";
 			sourceTree = "<group>";
@@ -266,7 +272,6 @@
 		459EDB5D291CAE0C00B1A7EB /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				45E9BDCA294345B8000A8A54 /* Observable.swift */,
 				459EDB5E291CAE4700B1A7EB /* ProductListModel.swift */,
 				4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */,
 				45578591291CB20F0082A983 /* CurrencyEnum.swift */,
@@ -281,6 +286,7 @@
 			isa = PBXGroup;
 			children = (
 				45E9BDC529406FDD000A8A54 /* MainViewModel.swift */,
+				4D5FCD6D294AD152004189F3 /* bannerViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -302,6 +308,30 @@
 				4D16B499292F4833002647D7 /* AlertBuilder.swift */,
 			);
 			path = Builder;
+			sourceTree = "<group>";
+		};
+		4D36BFD429471E5500778150 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				45E9BDCA294345B8000A8A54 /* Observable.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		4D36BFD529471E6100778150 /* NetworkTest */ = {
+			isa = PBXGroup;
+			children = (
+				4557859C291CEFC90082A983 /* NetworkTest.swift */,
+			);
+			path = NetworkTest;
+			sourceTree = "<group>";
+		};
+		4D36BFD629471E7900778150 /* MainViewModelTest */ = {
+			isa = PBXGroup;
+			children = (
+				4D36BFD729471ECA00778150 /* MainViewModelTest.swift */,
+			);
+			path = MainViewModelTest;
 			sourceTree = "<group>";
 		};
 		4D85B70F291A1D0000E41E71 = {
@@ -500,6 +530,7 @@
 				455785AB291CF49C0082A983 /* MockData.swift in Sources */,
 				455785A9291CF33A0082A983 /* StubSession.swift in Sources */,
 				4557859D291CEFC90082A983 /* NetworkTest.swift in Sources */,
+				4D36BFD829471ECA00778150 /* MainViewModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -519,6 +550,7 @@
 				4DE5DD872939CC7A007E845F /* ProductDeleteKey.swift in Sources */,
 				4DE5DD7F2939CA8A007E845F /* ProductImage.swift in Sources */,
 				4D8B7BBF291CE09C00A6E5F2 /* APIRequestProtocol.swift in Sources */,
+				4D5FCD6E294AD152004189F3 /* bannerViewModel.swift in Sources */,
 				454DAB832923FEBF002CC8D6 /* MainViewController.swift in Sources */,
 				455785BD291E55A20082A983 /* ProductListViewController.swift in Sources */,
 				45E9BDC82943452D000A8A54 /* ViewModelBuilderProtocol.swift in Sources */,

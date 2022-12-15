@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MainViewModel: ViewModelBuilderProtocol {
+class MainViewModel: ViewModelBuilderProtocol {
     
     var productList: Observable<[Product]> = Observable([])
     let networkAPI: SessionProtocol
@@ -27,20 +27,20 @@ struct MainViewModel: ViewModelBuilderProtocol {
         let bannerImagesOutput: Observable<[String]>
     }
         
-    init(networkAPI: SessionProtocol = NetworkManager()) {
+    required init(networkAPI: SessionProtocol = NetworkManager()) {
         self.networkAPI = networkAPI
     }
     
     func transform(input: Input) -> Output {
         let bannerImagesOutput = Observable<[String]>([])
         
-        input.productMiniListFetchAction.subscribe { (pageNumber: Int, itemsPerPage: Int) in
-            fetchProductList(input: input.productMiniListFetchAction) { fetchedList in
+        input.productMiniListFetchAction.subscribe { [self] (pageNumber: Int, itemsPerPage: Int) in
+            fetchProductList(input: input.productMiniListFetchAction) { [self] fetchedList in
                 productList.value = fetchedList.pages
             }
         }
         
-        input.bannerImageLoadAction.subscribe { action in
+        input.bannerImageLoadAction.subscribe { [self] action in
             fetchBannerImages { bannerImages in
                 var url: [String] = []
                 bannerImages.forEach {

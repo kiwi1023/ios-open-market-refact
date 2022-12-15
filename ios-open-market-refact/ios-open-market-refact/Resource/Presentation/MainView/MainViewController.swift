@@ -35,7 +35,6 @@ final class MainViewController: SuperViewControllerSetting {
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
-        bannerView.downLoadDelegate = self
         setupNavigationBar()
         //bind()
     }
@@ -90,7 +89,7 @@ final class MainViewController: SuperViewControllerSetting {
         
         output.bannerImagesOutput.subscribe { bannerUrls in
             DispatchQueue.main.async { [weak self] in
-                self?.bannerView.imageUrls = bannerUrls
+                self?.bannerView.bind(imageUrls: bannerUrls)
             }
         }
     }
@@ -156,43 +155,5 @@ extension MainViewController: UICollectionViewDelegate {
         
         productDetailViewController.receiveProductNumber(productNumber: productId)
         navigationController?.pushViewController(productDetailViewController, animated: true)
-    }
-}
-
-//MARK: - MainBannerView Image Load Delegate
-
-protocol MainBannerViewImageLoadProtocol {
-    func downLoadImages(imageViewCount: Int, urls: [String], completion: @escaping ([UIImage]) -> Void)
-}
-
-extension MainViewController: MainBannerViewImageLoadProtocol {
-    func downLoadImages(imageViewCount: Int, urls: [String], completion: @escaping ([UIImage]) -> Void) {
-        var images: [UIImage] = []
-        print(imageViewCount)
-        print(urls)
-        DispatchQueue.main.async {
-            for i in 0..<imageViewCount {
-                var urlStr = ""
-                
-                if i == 0 {
-                    urlStr = urls.last ?? ""
-                } else if i == imageViewCount - 1 {
-                    urlStr = urls.first ?? ""
-                } else {
-                    urlStr = urls[i - 1]
-                }
-                
-                guard let nsURL = NSURL(string: urlStr) else { return  }
-                
-                ImageCache.shared.loadBannerImage(url: nsURL) { image in
-                    guard let image = image else { return }
-                    images.append(image)
-                }
-                print(images.count)
-                
-            }
-            completion(images)
-        }
-        
     }
 }

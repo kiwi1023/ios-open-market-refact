@@ -42,6 +42,8 @@
 		45BD3FEA294DAF0700B37A25 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BD3FE9294DAF0700B37A25 /* MainViewModel.swift */; };
 		45BD3FEC294DAF0F00B37A25 /* BannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BD3FEB294DAF0F00B37A25 /* BannerViewModel.swift */; };
 		45BD3FEF294DB07A00B37A25 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BD3FEE294DB07A00B37A25 /* Observable.swift */; };
+		45BD3FF8294E104C00B37A25 /* BannerViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BD3FF7294E104C00B37A25 /* BannerViewModelTest.swift */; };
+		45BD3FFB294E11BF00B37A25 /* BannerImageUrlMockData.json in Resources */ = {isa = PBXBuildFile; fileRef = 45BD3FF9294E109B00B37A25 /* BannerImageUrlMockData.json */; };
 		4D16B49A292F4833002647D7 /* AlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D16B499292F4833002647D7 /* AlertBuilder.swift */; };
 		4D27D59C2937747E000EB3FA /* Notification.Name + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D27D59B2937747E000EB3FA /* Notification.Name + Extension.swift */; };
 		4D58D19A29388407008F11E6 /* BannerImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D58D19929388407008F11E6 /* BannerImage.swift */; };
@@ -108,6 +110,8 @@
 		45BD3FE9294DAF0700B37A25 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		45BD3FEB294DAF0F00B37A25 /* BannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerViewModel.swift; sourceTree = "<group>"; };
 		45BD3FEE294DB07A00B37A25 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		45BD3FF7294E104C00B37A25 /* BannerViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerViewModelTest.swift; sourceTree = "<group>"; };
+		45BD3FF9294E109B00B37A25 /* BannerImageUrlMockData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = BannerImageUrlMockData.json; sourceTree = "<group>"; };
 		4D16B499292F4833002647D7 /* AlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBuilder.swift; sourceTree = "<group>"; };
 		4D27D59B2937747E000EB3FA /* Notification.Name + Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification.Name + Extension.swift"; sourceTree = "<group>"; };
 		4D58D19929388407008F11E6 /* BannerImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerImage.swift; sourceTree = "<group>"; };
@@ -216,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				1841B1F4294DECF600973DA5 /* NetworkTest */,
+				45BD3FF6294E103B00B37A25 /* BannerViewModelTest */,
 				1841B1F3294DECC000973DA5 /* MainViewModelTest */,
 				455785A5291CF20F0082A983 /* TestDouble */,
 			);
@@ -228,6 +233,7 @@
 				455785A3291CF1010082A983 /* ProductListMockData.json */,
 				455785A8291CF33A0082A983 /* StubSession.swift */,
 				455785AA291CF49C0082A983 /* MockData.swift */,
+				45BD3FF9294E109B00B37A25 /* BannerImageUrlMockData.json */,
 			);
 			path = TestDouble;
 			sourceTree = "<group>";
@@ -323,6 +329,14 @@
 				45BD3FEE294DB07A00B37A25 /* Observable.swift */,
 			);
 			path = Type;
+			sourceTree = "<group>";
+		};
+		45BD3FF6294E103B00B37A25 /* BannerViewModelTest */ = {
+			isa = PBXGroup;
+			children = (
+				45BD3FF7294E104C00B37A25 /* BannerViewModelTest.swift */,
+			);
+			path = BannerViewModelTest;
 			sourceTree = "<group>";
 		};
 		4D16B498292F4826002647D7 /* Builder */ = {
@@ -516,6 +530,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D8B7BCC291D4E8D00A6E5F2 /* Assets.xcassets in Resources */,
+				45BD3FFB294E11BF00B37A25 /* BannerImageUrlMockData.json in Resources */,
 				455785B1291CF6B20082A983 /* ProductListMockData.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -529,6 +544,7 @@
 			files = (
 				455785AB291CF49C0082A983 /* MockData.swift in Sources */,
 				455785A9291CF33A0082A983 /* StubSession.swift in Sources */,
+				45BD3FF8294E104C00B37A25 /* BannerViewModelTest.swift in Sources */,
 				4557859D291CEFC90082A983 /* NetworkTest.swift in Sources */,
 				1841B1F2294DECBB00973DA5 /* MainViewModelTest.swift in Sources */,
 			);

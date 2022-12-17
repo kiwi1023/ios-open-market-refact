@@ -14,6 +14,7 @@ private enum MainViewControllerNameSpace {
 }
 
 final class MainViewController: SuperViewControllerSetting {
+    typealias InitialPageInfo = (pageNumber: Int, itemsPerPage: Int)
     
     enum Section {
         case main
@@ -21,6 +22,8 @@ final class MainViewController: SuperViewControllerSetting {
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
+    
+    private let mainViewModel = MainViewModel()
     
     private lazy var dataSource: DataSource? = configureDataSource()
     private let bannerView = MainBannerView()
@@ -33,13 +36,11 @@ final class MainViewController: SuperViewControllerSetting {
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
         setupNavigationBar()
-        fetchProductList()
-        fetchBannerImages()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchProductList()
+        bind()
     }
     
     override func addUIComponents() {
@@ -70,63 +71,19 @@ final class MainViewController: SuperViewControllerSetting {
         ])
     }
     
-    private func fetchProductList() {
-        guard let request = OpenMarketRequestDirector().createGetRequest(
-            pageNumber: MainViewControllerNameSpace.initialPageInfo.pageNumber,
-            itemsPerPage: MainViewControllerNameSpace.initialPageInfo.itemsPerPage
-        ) else { return }
-        
-        NetworkManager().dataTask(with: request) { result in
-            switch result {
-            case .success(let data):
-                guard let productList = JsonDecoderManager.shared.decode(
-                    from: data,
-                    to: ProductList.self
-                ) else { return }
-                
-                DispatchQueue.main.async { [weak self] in
-                    self?.updateDataSource(data: productList.pages)
-                }
-            case .failure(_):
-                DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createErrorAlert(
-                        message: MainViewControllerNameSpace.getDataErrorMassage
-                    )
-                }
-            }
-        }
-    }
-    
-    private func fetchBannerImages() {
-        let request = OpenMarketRequest(
-            method: .get,
-            baseURL: URLHost.mainBannerImages.url,
-            path: .bannerImages
-        )
-        
-        NetworkManager().dataTask(with: request) { result in
-            switch result {
-            case .success(let data):
-                guard let bannerImage = JsonDecoderManager.shared.decode(
-                    from: data,
-                    to: [BannerImage].self
-                ) else { return }
-                
-                DispatchQueue.main.async { [self] in
-                    var url: [String] = []
-                    
-                    bannerImage.forEach { url.append($0.image) }
-                    bannerView.imageUrls = url
-                }
-            case .failure(_):
-                DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createErrorAlert(
-                        message: MainViewControllerNameSpace.getDataErrorMassage
-                    )
-                }
-            }
-        }
-    }
+    private func bind() {
+           let miniListFetchAction = Observable<(InitialPageInfo)>(MainViewControllerNameSpace.initialPageInfo)
+                                                                   
+           let output = mainViewModel.transform(input: .init(
+            pageInfoInput: miniListFetchAction
+           ))
+           
+           output.fetchedProductListOutput.subscribe { list in
+               DispatchQueue.main.async {
+                   self.updateDataSource(data: list)
+               }
+           }
+       }
 }
 
 //MARK: - Setup CollectionView Method

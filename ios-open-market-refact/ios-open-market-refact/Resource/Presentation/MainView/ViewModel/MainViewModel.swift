@@ -9,13 +9,13 @@ import Foundation
 
 final class MainViewModel: ViewModelBuilder {
     
+    private let networkAPI: SessionProtocol
     var onErrorHandling : ((APIError) -> Void)?
     
-    private let networkAPI: SessionProtocol
-    
-    init(networkAPI: SessionProtocol) {
+    init(networkAPI: SessionProtocol = NetworkManager()) {
         self.networkAPI = networkAPI
     }
+    
     enum MainViewAction {
         case listFetch
     }

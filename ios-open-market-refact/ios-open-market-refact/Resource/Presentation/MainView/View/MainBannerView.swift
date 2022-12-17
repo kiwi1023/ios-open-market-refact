@@ -9,17 +9,10 @@ import UIKit
 
 final class MainBannerView: SuperViewSetting {
     
+    private let bannerViewModel = BannerViewModel()
     private let scrollView = UIScrollView()
     private let pageControl = UIPageControl()
     private var imageViews: [UIImageView] = []
-    var imageUrls: [String] = [] {
-        didSet {
-            configureScrollView()
-            setupPageControl()
-            setupScrollView()
-            startTimer()
-        }
-    }
     private var timer = Timer()
     
     //MARK: - Main Banner View Setup Methods
@@ -27,6 +20,9 @@ final class MainBannerView: SuperViewSetting {
     override func setupDefault() {
         layer.cornerRadius = 20
         layer.masksToBounds = true
+        bind()
+        setupScrollView()
+        startTimer()
     }
     
     override func addUIComponents() {
@@ -34,11 +30,39 @@ final class MainBannerView: SuperViewSetting {
         addSubview(pageControl)
     }
     
-    private func setupPageControl() {
+    private func setupLayout(imageUrls count: Int) {
+        
+        NSLayoutConstraint.activate([
+            pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            pageControl.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
+        ])
+        
+        scrollView.frame = bounds
+        scrollView.contentSize = CGSize(
+            width: scrollView.frame.size.width * CGFloat(count + 2),
+            height: bounds.height
+        )
+        scrollView.contentOffset.x = scrollView.frame.size.width
+    }
+    
+    private func setImageViews(count: Int) {
+        imageViews = []
+        
+        for index in 0..<count + 2 {
+            let imageView = UIImageView(frame: bounds)
+            
+            imageView.contentMode = .scaleToFill
+            imageView.frame.origin.x = bounds.width * CGFloat(index)
+            scrollView.addSubview(imageView)
+            imageViews.append(imageView)
+        }
+    }
+    
+    private func setupPageControl(imageUrls count: Int) {
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         pageControl.pageIndicatorTintColor = .lightGray
         pageControl.currentPageIndicatorTintColor = .black
-        pageControl.numberOfPages = imageUrls.count
+        pageControl.numberOfPages = count
         pageControl.allowsContinuousInteraction = false
     }
     
@@ -50,52 +74,33 @@ final class MainBannerView: SuperViewSetting {
         scrollView.scrollsToTop = false
     }
     
-    private func configureScrollView() {
+    func bind() {
+        let loadBannerImagesAction = Observable<Void>(())
         
-        NSLayoutConstraint.activate([
-            pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-            pageControl.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
-        ])
+        let output = bannerViewModel.transform(input: .init(loadBannerImagesAction: loadBannerImagesAction))
         
-        DispatchQueue.main.async { [self] in
-            scrollView.frame = bounds
-            scrollView.contentSize = CGSize(
-                width: scrollView.frame.size.width * CGFloat(imageUrls.count + 2),
-                height: bounds.height
-            )
-            scrollView.contentOffset.x = scrollView.frame.size.width
-        }
-        
-        DispatchQueue.main.async { [self] in
-            for index in 0..<imageUrls.count + 2 {
-                let imageView = UIImageView(frame: bounds)
+        output.loadBannerImagesOutPut.subscribe { [self] count, index, url in
+            DispatchQueue.main.async { [self] in
+                getNumberOfImageUrls(count: count)
+               
+                guard imageViews.count != 2 else  { return }
                 
-                imageView.contentMode = .scaleToFill
-                imageView.frame.origin.x = bounds.width * CGFloat(index)
-                scrollView.addSubview(imageView)
-                imageViews.append(imageView)
+                configureBannerImages(index: index, url: url)
             }
-            downloadImages()
         }
     }
     
-    private func downloadImages() {
-        for i in 0..<imageViews.count {
-            var urlStr = ""
-            
-            if i == 0 {
-                urlStr = imageUrls.last ?? ""
-            } else if i == imageViews.count - 1 {
-                urlStr = imageUrls.first ?? ""
-            } else {
-                urlStr = imageUrls[i - 1]
-            }
-            
-            guard let nsURL = NSURL(string: urlStr) else { return  }
-            
-            ImageCache.shared.loadBannerImage(url: nsURL) { [self] image in
-                imageViews[i].image = image
-            }
+    private func getNumberOfImageUrls(count: Int) {
+        setupLayout(imageUrls: count)
+        setImageViews(count: count)
+        setupPageControl(imageUrls: count)
+    }
+    
+    private func configureBannerImages(index: Int, url: String) {
+        guard let nsURL = NSURL(string: url) else { return  }
+        
+        ImageCache.shared.loadBannerImage(url: nsURL) { [self] image in
+            imageViews[index].image = image
         }
     }
     

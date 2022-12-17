@@ -12,7 +12,7 @@ final class MainViewModelTest: XCTestCase {
     
     struct MockSession: SessionProtocol {
         var result: Result<Data, Error>
-        func dataTask(with request: ios_open_market_refact.APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) {
+        func dataTask(with request: APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) {
             completionHandler(result)
         }
     }

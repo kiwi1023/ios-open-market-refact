@@ -12,6 +12,7 @@
 		1824C6982935CD2300C1A7C4 /* UILable + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAEADB7291E652B0029C029 /* UILable + Extension.swift */; };
 		1824C6992935CD2700C1A7C4 /* SessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785A6291CF2FF0082A983 /* SessionProtocol.swift */; };
 		1841B1F2294DECBB00973DA5 /* MainViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1841B1F1294DECBB00973DA5 /* MainViewModelTest.swift */; };
+		1841B1FB294E18DF00973DA5 /* ListViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1841B1FA294E18DF00973DA5 /* ListViewModelTest.swift */; };
 		185E225A2923B5F50016E01F /* UITextField + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185E22592923B5F50016E01F /* UITextField + Extension.swift */; };
 		18A132CD2921FD0600E6FE34 /* ProductRegistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A132CC2921FD0600E6FE34 /* ProductRegistView.swift */; };
 		18A132CF29224CE400E6FE34 /* ProductRegistCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A132CE29224CE400E6FE34 /* ProductRegistCollectionViewCell.swift */; };
@@ -77,6 +78,7 @@
 
 /* Begin PBXFileReference section */
 		1841B1F1294DECBB00973DA5 /* MainViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModelTest.swift; sourceTree = "<group>"; };
+		1841B1FA294E18DF00973DA5 /* ListViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewModelTest.swift; sourceTree = "<group>"; };
 		185E22592923B5F50016E01F /* UITextField + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField + Extension.swift"; sourceTree = "<group>"; };
 		18A132CA2921FB4D00E6FE34 /* ProductRegistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRegistViewController.swift; sourceTree = "<group>"; };
 		18A132CC2921FD0600E6FE34 /* ProductRegistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRegistView.swift; sourceTree = "<group>"; };
@@ -171,6 +173,14 @@
 			path = NetworkTest;
 			sourceTree = "<group>";
 		};
+		1841B1F9294E18BC00973DA5 /* ListViewModelTest */ = {
+			isa = PBXGroup;
+			children = (
+				1841B1FA294E18DF00973DA5 /* ListViewModelTest.swift */,
+			);
+			path = ListViewModelTest;
+			sourceTree = "<group>";
+		};
 		18A132C92921FB0700E6FE34 /* ProductRegistView */ = {
 			isa = PBXGroup;
 			children = (
@@ -224,6 +234,7 @@
 				1841B1F4294DECF600973DA5 /* NetworkTest */,
 				45BD3FF6294E103B00B37A25 /* BannerViewModelTest */,
 				1841B1F3294DECC000973DA5 /* MainViewModelTest */,
+				1841B1F9294E18BC00973DA5 /* ListViewModelTest */,
 				455785A5291CF20F0082A983 /* TestDouble */,
 			);
 			path = "ios-open-market-refact-Tests";
@@ -563,6 +574,7 @@
 			files = (
 				455785AB291CF49C0082A983 /* MockData.swift in Sources */,
 				455785A9291CF33A0082A983 /* StubSession.swift in Sources */,
+				1841B1FB294E18DF00973DA5 /* ListViewModelTest.swift in Sources */,
 				45BD3FF8294E104C00B37A25 /* BannerViewModelTest.swift in Sources */,
 				4557859D291CEFC90082A983 /* NetworkTest.swift in Sources */,
 				1841B1F2294DECBB00973DA5 /* MainViewModelTest.swift in Sources */,

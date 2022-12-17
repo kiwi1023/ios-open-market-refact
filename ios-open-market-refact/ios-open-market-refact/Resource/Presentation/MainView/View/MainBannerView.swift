@@ -79,13 +79,15 @@ final class MainBannerView: SuperViewSetting {
         
         let output = bannerViewModel.transform(input: .init(loadBannerImagesAction: loadBannerImagesAction))
         
-        output.loadBannerImagesOutPut.subscribe { [self] count, index, url in
+        output.loadBannerImagesOutPut.subscribe { [self] bannerImageUrls in
             DispatchQueue.main.async { [self] in
-                getNumberOfImageUrls(count: count)
+                getNumberOfImageUrls(count: bannerImageUrls.count - 2)
                
                 guard imageViews.count != 2 else  { return }
                 
-                configureBannerImages(index: index, url: url)
+                for (index , url) in bannerImageUrls.enumerated() {
+                    configureBannerImages(index: index, url: url)
+                }
             }
         }
     }

@@ -11,14 +11,14 @@ class BannerViewModel: ViewModelBuilder {
     
     var networkAPI: SessionProtocol
     var onErrorHandling : ((APIError) -> Void)?
-    var bannerImage: Observable<(count: Int, index: Int, imageUrl: String)> = Observable((Int(), Int(), String()))
+    var bannerImage: Observable<[String]> = Observable([])
     
     struct Input {
         let loadBannerImagesAction: Observable<Void>
     }
     
     struct Output {
-        let loadBannerImagesOutPut: Observable<(count: Int, index: Int, imageUrl: String)>
+        let loadBannerImagesOutPut: Observable<[String]>
     }
     
     init(networkAPI: SessionProtocol = NetworkManager()) {
@@ -34,9 +34,8 @@ class BannerViewModel: ViewModelBuilder {
                     bannerImages.forEach {
                         url.append($0.image)
                     }
-                    sortImageUrls(imageUrls: url) { index, imageUrl in
-                        self.bannerImage.value = (url.count, index, imageUrl)
-                    }
+                    self.bannerImage.value = sortImageUrls(imageUrls: url)
+                    
                 case .failure(let failure):
                     self.onErrorHandling?(failure)
                 }
@@ -69,7 +68,9 @@ class BannerViewModel: ViewModelBuilder {
         }
     }
     
-    private func sortImageUrls(imageUrls: [String], completion: @escaping (Int, String) -> Void) {
+    private func sortImageUrls(imageUrls: [String]) -> [String] {
+        var result: [String] = []
+        
         for index in 0..<(imageUrls.count + 2) {
             var urlStr = ""
             
@@ -80,7 +81,8 @@ class BannerViewModel: ViewModelBuilder {
             } else {
                 urlStr = imageUrls[index - 1]
             }
-            completion(index, urlStr)
+            result.append(urlStr)
         }
+        return result
     }
 }

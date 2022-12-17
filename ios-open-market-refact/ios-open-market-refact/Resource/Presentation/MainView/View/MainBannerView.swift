@@ -78,9 +78,12 @@ final class MainBannerView: SuperViewSetting {
                 scrollView.addSubview(imageView)
                 imageViews.append(imageView)
             }
-//            downloadImages()
-            downLoadDelegate?.downLoadImages(imageViewCount: imageViews.count, urls: imageUrls) { images in
-                for (index, image) in images.enumerated() {
+            for index in 0..<imageViews.count {
+                downLoadDelegate?.downLoadImages(
+                    imageViewCount: imageViews.count,
+                    urls: imageUrls,
+                    urlIndex: index
+                ) { image in
                     self.imageViews[index].image = image
                 }
             }

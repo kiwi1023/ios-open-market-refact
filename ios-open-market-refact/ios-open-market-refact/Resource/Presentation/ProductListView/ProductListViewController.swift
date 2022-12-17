@@ -7,24 +7,24 @@
 
 import UIKit
 
-private enum ProductListViewControllerNameSpace {
-    static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
-    static let navigationTitle = "상품목록"
-    static let searchControllerPlaceHolder = "검색해보세용"
-    static let emptySearchState = ""
-    static let registButtonColor = "RegistButtonColor"
-    static let getDataErrorMassage = "데이터를 받아오지 못했습니다."
-}
-
 final class ProductListViewController: SuperViewControllerSetting {
+    
+    //MARK: ProductListView NameSpace
+    
+    private enum ProductListViewControllerNameSpace {
+        static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
+        static let navigationTitle = "상품목록"
+        static let searchControllerPlaceHolder = "검색해보세용"
+        static let emptySearchState = ""
+        static let registButtonColor = "RegistButtonColor"
+        static let getDataErrorMassage = "데이터를 받아오지 못했습니다."
+    }
     
     //MARK: CollectionView Properties
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
-    
-    private var pageInfo: (pageNumber: Int, itemsPerPage: Int) = ProductListViewControllerNameSpace.initialPageInfo
-    private var productList: [Product] = []
+
     private var selectedIndexPath: IndexPath?
     
     enum Section {
@@ -35,6 +35,19 @@ final class ProductListViewController: SuperViewControllerSetting {
         case update
         case add
     }
+    
+    private let pageState = Observable<(
+        pageNumber: Int,
+        itemsPerPage: Int,
+        fetchType: FetchType)
+    >((
+        ProductListViewControllerNameSpace.initialPageInfo.pageNumber,
+        ProductListViewControllerNameSpace.initialPageInfo.itemsPerPage,
+        .update
+    ))
+    private let filteringState = Observable<String>("")
+    
+    private let productListViewModel = ProductListViewModel()
     
     private lazy var dataSource: DataSource? = configureDataSource()
     private lazy var snapshot: Snapshot = configureSnapshot()
@@ -73,8 +86,8 @@ final class ProductListViewController: SuperViewControllerSetting {
         setupLayout()
         setupNavigationBar()
         setupImageViewGesture()
-        fetchedProductList(fetchType: .update)
         registerProductNotification()
+        bind()
     }
     
     override func addUIComponents() {
@@ -121,50 +134,32 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     //MARK: - Data Source, Snapshot Update Method
     
-    private func fetchedProductList(fetchType: FetchType) {
-        guard let productListGetRequest = OpenMarketRequestDirector()
-            .createGetRequest(
-                pageNumber: pageInfo.pageNumber,
-                itemsPerPage: pageInfo.itemsPerPage
-            ) else { return }
+    private func bind () {
         
-        NetworkManager().dataTask(with: productListGetRequest) { result in
-            switch result {
-            case .success(let data):
-                guard let fetchedList = JsonDecoderManager.shared.decode(
-                    from: data,
-                    to: ProductList.self
-                ) else { return }
+        let output = productListViewModel.transform(input: .init(
+            productListPageInfoUpdateAction: pageState,
+            filteringStateUpdateAction: filteringState
+        ))
+        
+        output.productListOutput.subscribe { [self] productList in
+            switch pageState.value.fetchType {
+            case .update :
+                snapshot.deleteAllItems()
+                snapshot.appendSections([.main])
+                snapshot.appendItems(productList)
+                
+                dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
+            case .add :
+                snapshot.appendItems(productList)
                 
                 DispatchQueue.main.async {
-                    switch fetchType{
-                    case .update:
-                        self.updateDataSource(data: fetchedList.pages)
-                    case .add :
-                        self.appendDataSource(data: fetchedList.pages)
-                    }
+                    self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
                 }
-            case .failure(_):
-                AlertDirector(viewController: self).createErrorAlert(message: ProductListViewControllerNameSpace.getDataErrorMassage)
             }
         }
-    }
-    
-    func updateDataSource(data: [Product]) {
-        productList = data
-        snapshot.deleteAllItems()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(data)
         
-        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
-    }
-    
-    func appendDataSource(data: [Product]) {
-        productList += data
-        snapshot.appendItems(data)
-        
-        DispatchQueue.main.async {
-            self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
+        output.filteredListOutput.subscribe { filteredList in
+            self.filteredDataSource(data: filteredList)
         }
     }
     
@@ -172,8 +167,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         snapshot.deleteAllItems()
         snapshot.appendSections([.main])
         snapshot.appendItems(data)
-        
-        dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
+        self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
     }
     
     //MARK: - Setup CollectionView Method
@@ -218,13 +212,12 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     @objc private func didProductDataChanged() {
-        fetchedProductList(fetchType: .update)
+        pageState.value.fetchType = .update
         scrollToSelectedIndex()
     }
     
     @objc private func refreshList() {
-        pageInfo = ProductListViewControllerNameSpace.initialPageInfo
-        fetchedProductList(fetchType: .update)
+        pageState.value = (pageState.value.pageNumber, pageState.value.itemsPerPage, .update)
         refreshController.endRefreshing()
     }
     
@@ -276,8 +269,7 @@ extension ProductListViewController: UICollectionViewDelegate {
               let boundHeight = mainView.mainCollectionView?.bounds.size.height else { return }
         
         if position > (height - boundHeight + 100) {
-            pageInfo.pageNumber += 1
-            fetchedProductList(fetchType: .add)
+            pageState.value = (pageState.value.pageNumber + 1, pageState.value.itemsPerPage, .add)
         }
     }
 }
@@ -297,8 +289,6 @@ extension ProductListViewController: UISearchResultsUpdating {
     }
     
     private func sortingProduct(text: String) {
-        filteredDataSource(data: productList.filter({ product in
-            product.name.lowercased().contains(text)
-        }))
+        filteringState.value = text
     }
 }

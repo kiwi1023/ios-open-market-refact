@@ -162,37 +162,28 @@ extension MainViewController: UICollectionViewDelegate {
 //MARK: - MainBannerView Image Load Delegate
 
 protocol MainBannerViewImageLoadProtocol {
-    func downLoadImages(imageViewCount: Int, urls: [String], completion: @escaping ([UIImage]) -> Void)
+    
+    func downLoadImages(imageViewCount: Int, urls: [String], urlIndex: Int, completion: @escaping (UIImage) -> Void)
 }
 
 extension MainViewController: MainBannerViewImageLoadProtocol {
-    func downLoadImages(imageViewCount: Int, urls: [String], completion: @escaping ([UIImage]) -> Void) {
-        var images: [UIImage] = []
-        print(imageViewCount)
-        print(urls)
+    func downLoadImages(imageViewCount: Int, urls: [String], urlIndex: Int, completion: @escaping (UIImage) -> Void) {
         DispatchQueue.main.async {
-            for i in 0..<imageViewCount {
-                var urlStr = ""
-                
-                if i == 0 {
-                    urlStr = urls.last ?? ""
-                } else if i == imageViewCount - 1 {
-                    urlStr = urls.first ?? ""
-                } else {
-                    urlStr = urls[i - 1]
-                }
-                
-                guard let nsURL = NSURL(string: urlStr) else { return  }
-                
-                ImageCache.shared.loadBannerImage(url: nsURL) { image in
-                    guard let image = image else { return }
-                    images.append(image)
-                }
-                print(images.count)
-                
+            var urlStr = ""
+            if urlIndex == 0 {
+                urlStr = urls.last ?? ""
+            } else if urlIndex == imageViewCount - 1 {
+                urlStr = urls.first ?? ""
+            } else {
+                urlStr = urls[urlIndex - 1]
             }
-            completion(images)
+            
+            guard let nsURL = NSURL(string: urlStr) else { return  }
+            
+            ImageCache.shared.loadBannerImage(url: nsURL) { image in
+                guard let image = image else { return }
+                completion(image)
+            }
         }
-        
     }
 }

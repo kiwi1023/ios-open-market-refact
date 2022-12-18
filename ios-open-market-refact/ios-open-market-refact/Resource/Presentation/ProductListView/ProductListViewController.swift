@@ -117,6 +117,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.placeholder = ProductListViewControllerNameSpace.searchControllerPlaceHolder
         searchController.searchResultsUpdater = self
+        searchController.delegate = self
         
         navigationItem.searchController = searchController
     }
@@ -147,16 +148,11 @@ final class ProductListViewController: SuperViewControllerSetting {
                 snapshot.deleteAllItems()
                 snapshot.appendSections([.main])
                 snapshot.appendItems(productList)
-                
-                DispatchQueue.main.async {
-                    self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
-                }
             case .add :
                 snapshot.appendItems(productList)
-                
-                DispatchQueue.main.async {
-                    self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
-                }
+            }
+            DispatchQueue.main.async {
+                self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
             }
         }
         
@@ -288,7 +284,8 @@ extension ProductListViewController: UISearchResultsUpdating {
         guard let text = searchController.searchBar.text?.lowercased() else { return }
         
         if text == ProductListViewControllerNameSpace.emptySearchState {
-            refreshList()
+            //pageState.value = (pageState.value.pageNumber, pageState.value.itemsPerPage, .update)
+            self.scrollToTop()
         } else {
             sortingProduct(text: text)
         }
@@ -296,5 +293,11 @@ extension ProductListViewController: UISearchResultsUpdating {
     
     private func sortingProduct(text: String) {
         filteringState.value = text
+    }
+}
+
+extension ProductListViewController: UISearchControllerDelegate {
+    func willDismissSearchController(_ searchController: UISearchController) {
+        refreshList()
     }
 }

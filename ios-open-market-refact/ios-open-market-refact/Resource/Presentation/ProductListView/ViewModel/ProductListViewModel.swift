@@ -13,6 +13,7 @@ final class ProductListViewModel: ViewModelBuilder {
     
     private var productList: [Product] = []
     private var selectedIndexPath: IndexPath?
+    private var appendingProuctList: [Product] = []
     
     let networkAPI: SessionProtocol
     
@@ -43,7 +44,13 @@ final class ProductListViewModel: ViewModelBuilder {
             self.fetchedCurrentProductList(pageNumber: pageNumber, itemsPerPage: itemsPerPage, fetchType: fetchType) { (result: Result<Bool, APIError>) in
                 switch result {
                 case .success:
-                    fetchedProductList.value = self.productList
+                    switch input.productListPageInfoUpdateAction.value.fetchType {
+                    case .update:
+                        fetchedProductList.value = self.productList
+                    case .add:
+                        fetchedProductList.value = self.appendingProuctList
+                    }
+                    
                 case .failure(let failure):
                     self.onErrorHandling?(failure)
                 }
@@ -86,6 +93,7 @@ final class ProductListViewModel: ViewModelBuilder {
                     self?.productList = fetchedList.pages
                 case .add:
                     self?.productList += fetchedList.pages
+                    self?.appendingProuctList = fetchedList.pages
                 }
                 completion(.success(true))
             case .failure:

@@ -115,8 +115,8 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         
         NSLayoutConstraint.activate([
             venderStackView.topAnchor.constraint(equalTo: photoIndexLabel.bottomAnchor, constant: 10),
-            venderStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 20),
-            venderStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -20)
+            venderStackView.leadingAnchor.constraint(equalTo: mainScrollView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            venderStackView.trailingAnchor.constraint(equalTo: mainScrollView.safeAreaLayoutGuide.trailingAnchor, constant: -20)
         ])
         
         NSLayoutConstraint.activate([

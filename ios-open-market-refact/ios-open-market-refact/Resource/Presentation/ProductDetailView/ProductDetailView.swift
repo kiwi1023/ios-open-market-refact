@@ -28,13 +28,11 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         return label
     }()
     
-    private lazy var venderStackView: UIStackView = {
-        let stackView = UIStackView(
-            arrangedSubviews: [venderImageView, venderNameLabel]
-        )
+    private let venderStackView: UIStackView = {
+        let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fill
         stackView.spacing = 10
         return stackView
     }()
@@ -120,14 +118,14 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         ])
         
         NSLayoutConstraint.activate([
-            venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor),
-            venderImageView.widthAnchor.constraint(equalToConstant: 50)
+            venderImageView.widthAnchor.constraint(equalToConstant: 50),
+            venderImageView.heightAnchor.constraint(equalTo: venderImageView.widthAnchor)
         ])
         
         NSLayoutConstraint.activate([
             spacingView.topAnchor.constraint(equalTo: venderStackView.bottomAnchor, constant: 10),
-            spacingView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 20),
-            spacingView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -20),
+            spacingView.leadingAnchor.constraint(equalTo: mainScrollView.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            spacingView.trailingAnchor.constraint(equalTo: mainScrollView.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             spacingView.heightAnchor.constraint(equalToConstant: 1)
         ])
         

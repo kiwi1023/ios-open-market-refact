@@ -148,7 +148,9 @@ final class ProductListViewController: SuperViewControllerSetting {
                 snapshot.appendSections([.main])
                 snapshot.appendItems(productList)
                 
-                dataSource?.apply(snapshot, animatingDifferences: false, completion: nil)
+                DispatchQueue.main.async {
+                    self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
+                }
             case .add :
                 snapshot.appendItems(productList)
                 
@@ -167,7 +169,10 @@ final class ProductListViewController: SuperViewControllerSetting {
         snapshot.deleteAllItems()
         snapshot.appendSections([.main])
         snapshot.appendItems(data)
-        self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
+        
+        DispatchQueue.main.async {
+            self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
+        }
     }
     
     //MARK: - Setup CollectionView Method

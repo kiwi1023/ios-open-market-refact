@@ -19,6 +19,7 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     private let productDetailViewModel = ProductDetailViewModel()
     private lazy var productDetailView = ProductDetailView()
     
+    private let fetchProductDetailAction = Observable(ProductDetailViewModel.detailViewRefreshAction.refreshAction)
     private var deleteButtonAction = Observable(ProductDetailViewModel.ButtonAction.defaultAction)
     private var editButtonAction = Observable(ProductDetailViewModel.ButtonAction.defaultAction)
     
@@ -66,6 +67,10 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         let registView = ProductRegistViewController()
         registView.configureProduct(product: productDetail)
         
+        registView.refreshList = {
+            self.fetchProductDetailAction.value = ProductDetailViewModel.detailViewRefreshAction.refreshAction
+        }
+        
         navigationController?.pushViewController(registView, animated: true)
     }
     
@@ -86,7 +91,10 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     }
     
     private func bind() {
-        let fetchProductDetailAction = Observable<Void>(())
+        
+        productDetailView.changeCurrentPage = {
+            self.fetchProductDetailAction.value = ProductDetailViewModel.detailViewRefreshAction.refreshAction
+        }
         
         let input = ProductDetailViewModel.Input(fetchProductDetailAction: fetchProductDetailAction, deleteButtonAction: deleteButtonAction, editButtonAction: editButtonAction)
         

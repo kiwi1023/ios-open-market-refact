@@ -23,8 +23,12 @@ final class ProductDetailViewModel: ViewModelBuilder {
         case editButtonAction
     }
     
+    enum detailViewRefreshAction {
+        case refreshAction
+    }
+    
     struct Input {
-        let fetchProductDetailAction: Observable<Void>
+        let fetchProductDetailAction: Observable<detailViewRefreshAction>
         let deleteButtonAction: Observable<ButtonAction>
         let editButtonAction: Observable<ButtonAction>
     }

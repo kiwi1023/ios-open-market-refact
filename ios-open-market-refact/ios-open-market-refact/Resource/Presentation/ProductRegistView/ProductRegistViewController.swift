@@ -38,7 +38,7 @@ private enum ProductTextConditionAlert {
 }
 
 final class ProductRegistViewController: SuperViewControllerSetting {
-    
+
     enum ViewMode {
         case add
         case edit
@@ -58,25 +58,14 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     private let imagePicker = UIImagePickerController()
     private var viewMode = ViewMode.add
     private var isAppendable = true
-    private var product: ProductDetail?
+    private let viewModel = ProductRegistViewModel(networkAPI: NetworkManager())
+    
+    var postAction = Observable<(RegistrationProduct?, [ProductImage], Update)>((nil, [], .unUpdatable))
+    var patchAction = Observable<(RegistrationProduct?, Update)>((nil, .unUpdatable))
     
     var refreshList: (() -> Void)?
     
     //MARK: - ViewController Initializer
-    
-    init(product: ProductDetail?) {
-        self.product = product
-        super.init()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: NSCoder())
-        debugPrint("ProductRegistViewController Initialize error")
-    }
-    
-    required init() {
-        fatalError("init() has not been implemented")
-    }
     
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(
@@ -112,11 +101,11 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     
     override func setupDefault() {
         view.backgroundColor = .systemBackground
-        configureProduct()
         setupNavigationBar()
         configureImagePicker()
         updateDataSource(data: [UIImage(named: "iconCamera.png") ?? UIImage()])
         registView.registCollectionView.delegate = self
+        bind()
     }
     
     override func addUIComponents() {
@@ -226,88 +215,20 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         }
     }
     
-    private func postProduct(input: RegistrationProduct) {
+    private func makeProductImages() -> [ProductImage] {
         var images = snapshot.itemIdentifiers
         
         if isAppendable {
             images.removeFirst()
         }
         
-        let productImages = images.map {
+        return images.map {
             ProductImage(name: $0.description, data: $0.compress() ?? Data(), type: "png")
         }
-        
-        guard let request = OpenMarketRequestDirector().createPostRequest(
-            product: input,
-            images: productImages
-        ) else { return }
-        
-        NetworkManager().dataTask(with: request) { result in
-            switch result {
-            case .success:
-                DispatchQueue.main.async {
-                    AlertDirector(viewController: self)
-                        .createProductPostSuccessAlert(
-                            message: ProductRegistViewControllerNameSpace.successRegistMessage
-                        ) { [weak self] _ in
-                            NotificationCenter.default.post(
-                                name: .addProductData,
-                                object: self
-                            )
-                            
-                            self?.refreshList?()
-                            self?.navigationController?.popViewController(animated: true)
-                        }
-                }
-            case .failure:
-                DispatchQueue.main.async {
-                    if images.isEmpty {
-                        AlertDirector(viewController: self).createErrorAlert(
-                            message: ProductRegistViewControllerNameSpace.registImageMessage
-                        )
-                    }
-                }
-            }
-        }
     }
     
-    private func patchProduct(input: RegistrationProduct) {
-        guard let product = product else { return }
-        guard let request = OpenMarketRequestDirector().createPatchRequest(
-            product: input,
-            productNumber: product.id
-        ) else { return }
-        
-        NetworkManager().dataTask(with: request) { result in
-            switch result {
-            case .success(_):
-                DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createProductPatchSuccessAlert(
-                        message: ProductRegistViewControllerNameSpace.successEditMessage
-                    ) { [weak self] _ in
-                        NotificationCenter.default.post(
-                            name: .productDataDidChanged,
-                            object: self
-                        )
-                        
-                        self?.refreshList?()
-                        self?.navigationController?.popViewController(animated: true)
-                    }
-                }
-            case .failure(let error):
-                AlertDirector(viewController: self).createErrorAlert(
-                    message: ProductRegistViewControllerNameSpace.editFailureMessage
-                )
-                
-                print(error.localizedDescription)
-                break
-            }
-        }
-    }
-    
-    private func configureProduct() {
-        guard let product = product else { return }
-        
+    func configureProduct(product: ProductDetail) {
+        viewModel.configure(id: product.id)
         registView.configureProduct(product: product)
         viewMode = .edit
         
@@ -325,7 +246,6 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func checkProductInfomation(product: RegistrationProduct, completion: @escaping () -> Void) {
-        
         if checkTextIsEmpty(product: product) == .success {
             completion()
         } else {
@@ -335,17 +255,40 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         }
     }
     
-    @objc private func didTapDoneButton() {
-        switch viewMode {
-        case .add:
-            let product = registView.makeProduct()
-            checkProductInfomation(product: product) {
-                self.postProduct(input: product)
+    private func bind() {
+        let input = ProductRegistViewModel.Input(postAction: postAction, patchAction: patchAction)
+        let output = self.viewModel.transform(input: input)
+        output.doneAction.subscribe { isAction in
+            if isAction {
+                DispatchQueue.main.async {
+                    switch self.viewMode {
+                    case .add:
+                        self.refreshList?()
+                        self.navigationController?.popViewController(animated: true)
+                        NotificationCenter.default.post(name: .addProductData,
+                                                        object: self)
+                    case .edit:
+                        self.refreshList?()
+                        self.navigationController?.popViewController(animated: true)
+                        NotificationCenter.default.post(name: .productDataDidChanged,
+                                                        object: self)
+                    }
+                    
+                }
             }
-        case .edit:
-            let product = registView.makeProduct()
-            checkProductInfomation(product: product) {
-                self.patchProduct(input: product)
+        }
+    }
+    
+    @objc private func didTapDoneButton() {
+        let product = registView.makeProduct()
+        let images = makeProductImages()
+        
+        checkProductInfomation(product: product) {
+            switch self.viewMode {
+            case .add:
+                self.postAction.value = (product, images, .updatable)
+            case .edit:
+                self.patchAction.value = (product, .updatable)
             }
         }
     }

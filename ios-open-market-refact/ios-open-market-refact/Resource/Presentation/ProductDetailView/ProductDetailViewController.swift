@@ -63,7 +63,8 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     private func convertToEditView(productDetail: ProductDetail) {
         
-        let registView = ProductRegistViewController(product: productDetail)
+        let registView = ProductRegistViewController()
+        registView.configureProduct(product: productDetail)
         
         navigationController?.pushViewController(registView, animated: true)
     }

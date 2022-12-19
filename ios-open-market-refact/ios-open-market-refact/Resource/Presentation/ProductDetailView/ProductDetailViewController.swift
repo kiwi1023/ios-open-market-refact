@@ -16,17 +16,16 @@ private enum ProductDetailViewControllerNameSpace {
 
 final class ProductDetailViewController: SuperViewControllerSetting {
     
-    private var productDetail: ProductDetail?
-    private var productNumber: Int?
+    private let productDetailViewModel = ProductDetailViewModel()
     private lazy var productDetailView = ProductDetailView()
+    
+    private var deleteButtonAction = Observable(ProductDetailViewModel.ButtonAction.defaultAction)
+    private var editButtonAction = Observable(ProductDetailViewModel.ButtonAction.defaultAction)
     
     //MARK: - Setup ViewController method
     
     override func setupDefault() {
-        receiveDetailData()
-        productDetailView.changeCurrentPage = { [self] in
-            receiveDetailData()
-        }
+        bind()
     }
     
     override func addUIComponents() {
@@ -56,29 +55,21 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     @objc private func didTapEitButton() {
         AlertDirector(viewController: self).createProductEditActionSheet { [weak self] _ in
-            self?.convertToEditView()
+            self?.editButtonAction.value = .editButtonAction
         } deleteAction: { [weak self] _ in
             self?.didTapDeleteButton()
         }
     }
     
-    private func convertToEditView() {
-        guard let productDetail = productDetail else { return }
+    private func convertToEditView(productDetail: ProductDetail) {
         
         let registView = ProductRegistViewController(product: productDetail)
-        
-        registView.refreshList = {
-            self.receiveDetailData()
-        }
         
         navigationController?.pushViewController(registView, animated: true)
     }
     
     private func didTapDeleteButton() {
-        AlertDirector(viewController: self).createProductDeleteAlert { [weak self] _ in
-            self?.deleteProduct()
-            self?.removeCurrentProduct()
-        }
+        deleteButtonAction.value = .deleteButtonAction
     }
     
     private func removeCurrentProduct() {
@@ -90,70 +81,44 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     }
     
     func receiveProductNumber(productNumber: Int) {
-        self.productNumber = productNumber
+        self.productDetailViewModel.productNumber = productNumber
     }
     
-    private func deleteProduct() {
-        guard let productNumber = productNumber else { return }
-        guard let deleteURIRequest = OpenMarketRequestDirector().createDeleteURIRequest(
-            productNumber: productNumber
-        ) else { return }
+    private func bind() {
+        let fetchProductDetailAction = Observable<Void>(())
         
+        let input = ProductDetailViewModel.Input(fetchProductDetailAction: fetchProductDetailAction, deleteButtonAction: deleteButtonAction, editButtonAction: editButtonAction)
         
-        NetworkManager().dataTask(with: deleteURIRequest) { result in
-            switch result {
-            case .success(let data):
-                
-                guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(
-                    with: data
-                ) else { return }
-                
-                NetworkManager().dataTask(with: deleteRequest) { result in
-                    switch result {
-                    case .success(_):
-                        DispatchQueue.main.async {
-                            NotificationCenter.default.post(name: .productDataDidChanged,
-                                                            object: self)
-                            self.navigationController?.popViewController(animated: true)
-                        }
-                    case .failure(_):
-                        AlertDirector(viewController: self).createErrorAlert(
-                            message:ProductDetailViewControllerNameSpace.deleteFailureMessage
-                        )
-                    }
-                }
-            case .failure(_):
-                AlertDirector(viewController: self).createErrorAlert(
-                    message: ProductDetailViewControllerNameSpace.wrongPasswordMessage
-                )
+        let output = productDetailViewModel.transform(input: input)
+        
+        output.fetchedProductDetailOutput.subscribe { [self] productDetail in
+            DispatchQueue.main.async { [self] in
+                configureNavigationBar(productDetail: productDetail)
+                productDetailView.getProductDetailData(productDetail: productDetail)
             }
         }
-    }
-    
-    private func receiveDetailData() {
-        guard let productNumber = productNumber else { return }
-        guard let detailRequest = OpenMarketRequestDirector().createGetDetailRequest(
-            productNumber
-        ) else { return }
         
-        NetworkManager().dataTask(with: detailRequest) { [self] result in
-            switch result {
-            case .success(let data):
-                productDetail = JsonDecoderManager.shared.decode(from: data, to: ProductDetail.self)
-                
-                guard let productDetail = productDetail else { return }
-                
-                DispatchQueue.main.async { [self] in
-                    configureNavigationBar(productDetail: productDetail)
-                    productDetailView.getProductDetailData(productDetail: productDetail)
+        output.deleteButtonActionOutput.subscribe { [self] action in
+            guard action == .deleteButtonAction else  { return }
+            
+            DispatchQueue.main.async { [self] in
+                AlertDirector(viewController: self).createProductDeleteAlert { [weak self] _ in
+                    self?.removeCurrentProduct()
+                    NotificationCenter.default.post(name: .addProductData,
+                                                    object: self)
                 }
-            case .failure(_):
-                DispatchQueue.main.async {
-                    AlertDirector(viewController: self).createErrorAlert(
-                        message: ProductDetailViewControllerNameSpace.dataLoadFailureMessage
-                    )
-                }
+            }
+        }
+        
+        
+        output.editButtonActionOutput.subscribe { [self] productDetail, action in
+            guard action == .editButtonAction else  { return }
+            
+            DispatchQueue.main.async { [self] in
+                convertToEditView(productDetail: productDetail)
             }
         }
     }
 }
+
+

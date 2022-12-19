@@ -59,6 +59,7 @@
 		4D8B7BC7291D031200A6E5F2 /* ProductDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */; };
 		4D8B7BCA291D24EA00A6E5F2 /* Data + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B7BC9291D24EA00A6E5F2 /* Data + Extension.swift */; };
 		4D8B7BCC291D4E8D00A6E5F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D85B724291A1D0100E41E71 /* Assets.xcassets */; };
+		4D8BBD73294F142000DFB90A /* ProductDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8BBD72294F142000DFB90A /* ProductDetailViewModel.swift */; };
 		4DAEADB6291E64EC0029C029 /* Double + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAEADB5291E64EC0029C029 /* Double + Extension.swift */; };
 		4DD10D7F292C923C00A00EAC /* MainBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD10D7D292C923C00A00EAC /* MainBannerView.swift */; };
 		4DE5DD7D2939CA75007E845F /* MultiPartForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5DD7C2939CA75007E845F /* MultiPartForm.swift */; };
@@ -131,6 +132,7 @@
 		4D8B7BC4291CE45B00A6E5F2 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		4D8B7BC6291D031200A6E5F2 /* ProductDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetail.swift; sourceTree = "<group>"; };
 		4D8B7BC9291D24EA00A6E5F2 /* Data + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data + Extension.swift"; sourceTree = "<group>"; };
+		4D8BBD72294F142000DFB90A /* ProductDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailViewModel.swift; sourceTree = "<group>"; };
 		4DAEADB5291E64EC0029C029 /* Double + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double + Extension.swift"; sourceTree = "<group>"; };
 		4DAEADB7291E652B0029C029 /* UILable + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILable + Extension.swift"; sourceTree = "<group>"; };
 		4DD10D7D292C923C00A00EAC /* MainBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBannerView.swift; sourceTree = "<group>"; };
@@ -195,8 +197,8 @@
 			isa = PBXGroup;
 			children = (
 				454DAB7329221427002CC8D6 /* ProductDetailViewController.swift */,
-				454DAB7529221CF2002CC8D6 /* ProductDetailView.swift */,
-				454DAB7729223E64002CC8D6 /* ProductInfoStackView.swift */,
+				4D8BBD70294F13EB00DFB90A /* View */,
+				4D8BBD71294F13F500DFB90A /* ViewModel */,
 			);
 			path = ProductDetailView;
 			sourceTree = "<group>";
@@ -442,6 +444,23 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
+		4D8BBD70294F13EB00DFB90A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				454DAB7529221CF2002CC8D6 /* ProductDetailView.swift */,
+				454DAB7729223E64002CC8D6 /* ProductInfoStackView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		4D8BBD71294F13F500DFB90A /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				4D8BBD72294F142000DFB90A /* ProductDetailViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		4DE5DD822939CAE7007E845F /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
@@ -517,7 +536,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1420;
 				TargetAttributes = {
 					45578599291CEFC90082A983 = {
 						CreatedOnToolsVersion = 14.1;
@@ -609,6 +628,7 @@
 				455F3BF82935EC2B0049D6FA /* JsonDecoderManager.swift in Sources */,
 				4D8B7BC5291CE45B00A6E5F2 /* APIError.swift in Sources */,
 				454DAB8529240064002CC8D6 /* ProductMiniListView.swift in Sources */,
+				4D8BBD73294F142000DFB90A /* ProductDetailViewModel.swift in Sources */,
 				45BD3FEF294DB07A00B37A25 /* Observable.swift in Sources */,
 				454DAB7A292367B3002CC8D6 /* Int + Extension.swift in Sources */,
 				455785B3291D0B730082A983 /* RegistrationProduct.swift in Sources */,
@@ -653,6 +673,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = R86M48N8C3;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
@@ -675,6 +696,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = R86M48N8C3;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;

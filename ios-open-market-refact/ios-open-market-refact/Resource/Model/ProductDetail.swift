@@ -25,6 +25,23 @@ struct ProductDetail: Decodable {
     let images: [Image]
     let vendors: Vendors
 
+    init() {
+        self.id = Int()
+        self.vendorID = Int()
+        self.name = String()
+        self.thumbnail = String()
+        self.currency = .krw
+        self.price = Double()
+        self.description = String()
+        self.bargainPrice = Double()
+        self.discountedPrice = Double()
+        self.stock = Int()
+        self.createdAt = String()
+        self.issuedAt = String()
+        self.images = [Image]()
+        self.vendors = Vendors(name: String(), id: Int())
+    }
+    
     enum CodingKeys: String, CodingKey {
         case id
         case vendorID = "vendor_id"

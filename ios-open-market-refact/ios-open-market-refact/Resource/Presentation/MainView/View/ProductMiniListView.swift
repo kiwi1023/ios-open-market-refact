@@ -11,7 +11,7 @@ final class ProductMiniListView: SuperViewSetting {
     
     var titleStackView = ProductMiniListTitleStackView()
     private(set) lazy var miniListCollectionView = UICollectionView(frame: .zero,
-                                                                                 collectionViewLayout: createHorizonalCollectionViewLayout())
+                                                                    collectionViewLayout: createHorizonalCollectionViewLayout())
     
     //MARK: - Setup ProductMiniListView Method
     

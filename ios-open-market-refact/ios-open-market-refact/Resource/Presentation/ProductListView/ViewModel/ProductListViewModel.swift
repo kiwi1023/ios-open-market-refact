@@ -2,20 +2,19 @@
 //  ProductListViewModel.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/12/17.
+//  Created by 송기원, 유한석, 이은찬 on 2022/12/17.
 //
 
 import Foundation
 
 final class ProductListViewModel: ViewModelBuilder {
     
+    private let networkAPI: SessionProtocol
     var onErrorHandling : ((APIError) -> Void)?
     
     private var productList: [Product] = []
     private var selectedIndexPath: IndexPath?
     private var appendingProuctList: [Product] = []
-    
-    private let networkAPI: SessionProtocol
     
     struct Input {
         let productListPageInfoUpdateAction: Observable<(
@@ -26,13 +25,12 @@ final class ProductListViewModel: ViewModelBuilder {
         let filteringStateUpdateAction: Observable<String>
     }
     
-    
     struct Output {
         let productListOutput : Observable<[Product]>
         let filteredListOutput: Observable<[Product]>
     }
     
-    init(networkAPI: SessionProtocol) {
+    init(networkAPI: SessionProtocol = NetworkManager()) {
         self.networkAPI = networkAPI
     }
     

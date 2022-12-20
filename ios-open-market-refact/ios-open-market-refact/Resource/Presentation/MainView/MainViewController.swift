@@ -7,14 +7,15 @@
 
 import UIKit
 
-private enum MainViewControllerNameSpace {
-    static let appTitle = "My Market🏪"
-    static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 20)
-    static let getDataErrorMassage = "데이터를 받아오지 못했습니다."
-}
-
 final class MainViewController: SuperViewControllerSetting {
-    typealias InitialPageInfo = (pageNumber: Int, itemsPerPage: Int)
+    
+    //MARK: MainViewController NameSpace
+
+    private enum MainViewControllerNameSpace {
+        static let appTitle = "My Market🏪"
+        static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 20)
+        static let getDataErrorMassage = "데이터를 받아오지 못했습니다."
+    }
     
     enum Section {
         case main
@@ -22,12 +23,12 @@ final class MainViewController: SuperViewControllerSetting {
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
-    
-    private let mainViewModel = MainViewModel()
+    private typealias InitialPageInfo = (pageNumber: Int, itemsPerPage: Int)
     
     private lazy var dataSource: DataSource? = configureDataSource()
     private let bannerView = MainBannerView()
     private let productMiniListView = ProductMiniListView()
+    private let mainViewModel = MainViewModel()
     
     //MARK: - Setup ViewController Method
     
@@ -78,7 +79,6 @@ final class MainViewController: SuperViewControllerSetting {
     
     private func bind() {
         let miniListFetchAction = Observable<(InitialPageInfo)>(MainViewControllerNameSpace.initialPageInfo)
-        
         let output = mainViewModel.transform(input: .init(
             pageInfoInput: miniListFetchAction
         ))
@@ -89,7 +89,7 @@ final class MainViewController: SuperViewControllerSetting {
             }
         }
         
-        mainViewModel.onErrorHandling = { failure in 
+        mainViewModel.onErrorHandling = { failure in
             AlertDirector(viewController: self).createErrorAlert(
                 message: MainViewControllerNameSpace.getDataErrorMassage
             )
@@ -167,11 +167,8 @@ protocol BannerViewErrorHandlingDelegate {
 
 extension MainViewController: BannerViewErrorHandlingDelegate {
     func popErrorAlert() {
-        print("DD")
-
         AlertDirector(viewController: self).createErrorAlert(
             message: MainViewControllerNameSpace.getDataErrorMassage
-            )
+        )
     }
-    
 }

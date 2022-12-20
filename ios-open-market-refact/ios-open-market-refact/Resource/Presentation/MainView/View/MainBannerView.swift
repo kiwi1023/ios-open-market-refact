@@ -86,7 +86,7 @@ final class MainBannerView: SuperViewSetting {
         output.loadBannerImagesOutPut.subscribe { [self] bannerImageUrls in
             DispatchQueue.main.async { [self] in
                 getNumberOfImageUrls(count: bannerImageUrls.count - 2)
-               
+                
                 guard imageViews.count != 2 else  { return }
                 
                 for (index , url) in bannerImageUrls.enumerated() {

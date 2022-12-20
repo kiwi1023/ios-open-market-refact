@@ -8,5 +8,6 @@
 import Foundation
 
 protocol SessionProtocol {
-    func dataTask(with request: APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void)
+    func dataTask(with request: APIRequest,
+                  completionHandler: @escaping (Result<Data, Error>) -> Void)
 }

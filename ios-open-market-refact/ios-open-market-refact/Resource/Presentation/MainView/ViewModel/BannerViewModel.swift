@@ -2,7 +2,7 @@
 //  BannerViewModel.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/12/17.
+//  Created by 송기원, 유한석, 이은찬 on 2022/12/17.
 //
 
 import Foundation
@@ -11,7 +11,6 @@ class BannerViewModel: ViewModelBuilder {
     
     private let networkAPI: SessionProtocol
     var onErrorHandling : ((APIError) -> Void)?
-    private let bannerImage: Observable<[String]> = Observable([])
     
     struct Input {
         let loadBannerImagesAction: Observable<Void>
@@ -26,6 +25,8 @@ class BannerViewModel: ViewModelBuilder {
     }
     
     func transform(input: Input) -> Output {
+        let bannerImageOutput = Observable([""])
+        
         input.loadBannerImagesAction.subscribe { [self] action in
             fetchBannerImages { [self] result in
                 switch result {
@@ -34,7 +35,7 @@ class BannerViewModel: ViewModelBuilder {
                     bannerImages.forEach {
                         url.append($0.image)
                     }
-                    self.bannerImage.value = sortImageUrls(imageUrls: url)
+                    bannerImageOutput.value = sortImageUrls(imageUrls: url)
                     
                 case .failure(let failure):
                     self.onErrorHandling?(failure)
@@ -43,7 +44,7 @@ class BannerViewModel: ViewModelBuilder {
         }
         
         return .init(
-            loadBannerImagesOutPut: bannerImage
+            loadBannerImagesOutPut: bannerImageOutput
         )
     }
     

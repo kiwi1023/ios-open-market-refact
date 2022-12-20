@@ -2,7 +2,7 @@
 //  ViewModelBuilderProtocol.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/12/17.
+//  Created by 송기원, 유한석, 이은찬 on 2022/12/17.
 //
 
 protocol ViewModelBuilder {

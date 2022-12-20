@@ -2,7 +2,7 @@
 //  MainViewModel.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/12/17.
+//  Created by 송기원, 유한석, 이은찬 on 2022/12/17.
 //
 
 import Foundation
@@ -29,7 +29,6 @@ final class MainViewModel: ViewModelBuilder {
     }
     
     func transform(input: Input) -> Output {
-        
         let fetchedProductListOutput = Observable<[Product]>([])
         
         input.pageInfoInput.subscribe { (pageNumber: Int, itemsPerPage: Int) in

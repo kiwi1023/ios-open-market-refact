@@ -39,7 +39,8 @@ struct ProductDetail: Decodable {
         self.createdAt = String()
         self.issuedAt = String()
         self.images = [Image]()
-        self.vendors = Vendors(name: String(), id: Int())
+        self.vendors = Vendors(name: String(),
+                               id: Int())
     }
     
     enum CodingKeys: String, CodingKey {

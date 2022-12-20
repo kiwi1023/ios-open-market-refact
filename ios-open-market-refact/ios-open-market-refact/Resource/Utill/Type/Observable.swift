@@ -2,7 +2,7 @@
 //  Observable.swift
 //  ios-open-market-refact
 //
-//  Created by 유한석 on 2022/12/09.
+//  Created by 송기원, 유한석, 이은찬 on 2022/12/09.
 //
 
 class Observable<T> {

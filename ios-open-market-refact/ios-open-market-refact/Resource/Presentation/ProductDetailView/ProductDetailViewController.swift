@@ -7,14 +7,16 @@
 
 import UIKit
 
-private enum ProductDetailViewControllerNameSpace {
-    static let deleteCompletionMessage = "해당 상품을 삭제 완료했습니다."
-    static let deleteFailureMessage = "제품을 삭제하지 못했습니다."
-    static let wrongPasswordMessage = "비밀번호가 틀렸습니다"
-    static let dataLoadFailureMessage = "데이터를 불러오지 못했습니다."
-}
-
 final class ProductDetailViewController: SuperViewControllerSetting {
+
+    //MARK: ProductDetailViewController NameSpace
+
+    private enum ProductDetailViewControllerNameSpace {
+        static let deleteCompletionMessage = "해당 상품을 삭제 완료했습니다."
+        static let deleteFailureMessage = "제품을 삭제하지 못했습니다."
+        static let wrongPasswordMessage = "비밀번호가 틀렸습니다"
+        static let dataLoadFailureMessage = "데이터를 불러오지 못했습니다."
+    }
     
     private let productDetailViewModel = ProductDetailViewModel()
     private let productDetailView = ProductDetailView()

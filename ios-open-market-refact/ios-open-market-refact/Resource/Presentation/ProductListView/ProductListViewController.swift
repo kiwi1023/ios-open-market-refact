@@ -22,11 +22,6 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     //MARK: CollectionView Properties
     
-    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
-
-    private var selectedIndexPath: IndexPath?
-    
     enum Section {
         case main
     }
@@ -36,6 +31,12 @@ final class ProductListViewController: SuperViewControllerSetting {
         case add
     }
     
+    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
+
+    private lazy var dataSource: DataSource? = configureDataSource()
+    private lazy var snapshot: Snapshot = configureSnapshot()
+    private let productListViewModel = ProductListViewModel(networkAPI: NetworkManager())
     private let pageState = Observable<(
         pageNumber: Int,
         itemsPerPage: Int,
@@ -46,11 +47,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         .update
     ))
     private let filteringState = Observable<String>("")
-    
-    private let productListViewModel = ProductListViewModel(networkAPI: NetworkManager())
-    
-    private lazy var dataSource: DataSource? = configureDataSource()
-    private lazy var snapshot: Snapshot = configureSnapshot()
+    private var selectedIndexPath: IndexPath?
     
     //MARK: View
     private lazy var refreshController: UIRefreshControl = {

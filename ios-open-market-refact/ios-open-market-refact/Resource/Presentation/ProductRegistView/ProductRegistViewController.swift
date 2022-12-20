@@ -61,8 +61,8 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     private var isAppendable = true
     private let viewModel = ProductRegistViewModel(networkAPI: NetworkManager())
     
-    var postAction = Observable<(RegistrationProduct?, [ProductImage], Update)>((nil, [], .unUpdatable))
-    var patchAction = Observable<(RegistrationProduct?, Update)>((nil, .unUpdatable))
+    let postAction = Observable<(RegistrationProduct?, [ProductImage], Update)>((nil, [], .unUpdatable))
+    let patchAction = Observable<(RegistrationProduct?, Update)>((nil, .unUpdatable))
     
     var refreshList: (() -> Void)?
     

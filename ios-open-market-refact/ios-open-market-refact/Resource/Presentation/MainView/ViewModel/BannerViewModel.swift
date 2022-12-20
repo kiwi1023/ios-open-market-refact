@@ -9,9 +9,9 @@ import Foundation
 
 class BannerViewModel: ViewModelBuilder {
     
-    var networkAPI: SessionProtocol
+    private let networkAPI: SessionProtocol
     var onErrorHandling : ((APIError) -> Void)?
-    var bannerImage: Observable<[String]> = Observable([])
+    private let bannerImage: Observable<[String]> = Observable([])
     
     struct Input {
         let loadBannerImagesAction: Observable<Void>

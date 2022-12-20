@@ -69,6 +69,7 @@ final class ProductRegistCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
+        super.prepareForReuse()
         registImageButton.imageView?.image = nil
         deleteImageButton.isHidden = false
     }

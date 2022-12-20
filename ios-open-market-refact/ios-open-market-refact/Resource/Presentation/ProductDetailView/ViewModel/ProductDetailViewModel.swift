@@ -15,7 +15,7 @@ final class ProductDetailViewModel: ViewModelBuilder {
     private var editButtonOutput: Observable<(productDetail: ProductDetail, buttonAction: ButtonAction)> = Observable((ProductDetail(), ButtonAction.defaultAction))
     var onErrorHandling : ((APIError) -> Void)?
     
-    let networkAPI: SessionProtocol
+    private let networkAPI: SessionProtocol
     
     enum ButtonAction {
         case defaultAction
@@ -83,8 +83,8 @@ final class ProductDetailViewModel: ViewModelBuilder {
     }
     
     private func receiveDetailData(completion: @escaping (Result<ProductDetail, APIError>) -> Void) {
-        guard let productNumber = productNumber else { return }
-        guard let detailRequest = OpenMarketRequestDirector().createGetDetailRequest(
+        guard let productNumber = productNumber,
+              let detailRequest = OpenMarketRequestDirector().createGetDetailRequest(
             productNumber
         ) else { return }
         

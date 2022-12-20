@@ -179,6 +179,8 @@ final class ProductListViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
+        super.prepareForReuse()
+        
         guard let product = product,
               let nsURL = NSURL(string: product.thumbnail) else {
             return

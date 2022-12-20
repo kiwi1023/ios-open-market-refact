@@ -122,6 +122,7 @@ final class ProductRegistView: SuperViewSetting {
     // MARK: - Setup Functions
     
     override func setupDefault() {
+        super.setupDefault()
         setupTextViewPlaceHolder()
         
         productNameTextField.delegate = self
@@ -132,6 +133,7 @@ final class ProductRegistView: SuperViewSetting {
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         addSubview(mainScrollView)
         mainScrollView.addSubview(mainStackView)
         mainStackView.addArrangedSubview(registCollectionView)
@@ -139,6 +141,8 @@ final class ProductRegistView: SuperViewSetting {
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         NSLayoutConstraint.activate([
             mainScrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             mainScrollView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),

@@ -101,6 +101,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     //MARK: - Setup ViewController method
     
     override func setupDefault() {
+        super.setupDefault()
         view.backgroundColor = .systemBackground
         setupNavigationBar()
         configureImagePicker()
@@ -110,10 +111,13 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         view.addSubview(productRegistView)
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         NSLayoutConstraint.activate([
             productRegistView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             productRegistView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

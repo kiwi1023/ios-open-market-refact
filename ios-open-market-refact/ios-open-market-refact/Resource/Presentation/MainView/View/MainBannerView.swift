@@ -20,6 +20,7 @@ final class MainBannerView: SuperViewSetting {
     //MARK: - Main Banner View Setup Methods
     
     override func setupDefault() {
+        super.setupDefault()
         layer.cornerRadius = 20
         layer.masksToBounds = true
         bind()
@@ -28,6 +29,7 @@ final class MainBannerView: SuperViewSetting {
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         addSubview(scrollView)
         addSubview(pageControl)
     }

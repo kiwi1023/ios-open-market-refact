@@ -15,7 +15,7 @@ final class ProductListViewModel: ViewModelBuilder {
     private var selectedIndexPath: IndexPath?
     private var appendingProuctList: [Product] = []
     
-    let networkAPI: SessionProtocol
+    private let networkAPI: SessionProtocol
     
     struct Input {
         let productListPageInfoUpdateAction: Observable<(

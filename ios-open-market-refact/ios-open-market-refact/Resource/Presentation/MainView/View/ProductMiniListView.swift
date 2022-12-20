@@ -10,36 +10,25 @@ import UIKit
 final class ProductMiniListView: SuperViewSetting {
     
     var titleStackView = ProductMiniListTitleStackView()
-    private(set) var miniListCollectionView: UICollectionView?
+    private(set) lazy var miniListCollectionView = UICollectionView(frame: .zero,
+                                                                                 collectionViewLayout: createHorizonalCollectionViewLayout())
     
     //MARK: - Setup ProductMiniListView Method
     
     override func setupDefault() {
-        addUIComponents()
-        setupLayout()
-        configureCollectionView()
-        miniListCollectionView?.isScrollEnabled = false
+        super.setupDefault()
+        miniListCollectionView.isScrollEnabled = false
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
+        addSubview(miniListCollectionView)
         addSubview(titleStackView)
     }
     
     override func setupLayout() {
-        NSLayoutConstraint.activate([
-            titleStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
-            titleStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            titleStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -10)
-        ])
-    }
-    
-    private func configureCollectionView() {
-        miniListCollectionView = UICollectionView(frame: .zero,
-                                                  collectionViewLayout: createHorizonalCollectionViewLayout())
+        super.setupLayout()
         
-        guard let miniListCollectionView = miniListCollectionView else { return }
-        
-        addSubview(miniListCollectionView)
         miniListCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         miniListCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -48,6 +37,12 @@ final class ProductMiniListView: SuperViewSetting {
             miniListCollectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             miniListCollectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             miniListCollectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            titleStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            titleStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            titleStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -10)
         ])
     }
     

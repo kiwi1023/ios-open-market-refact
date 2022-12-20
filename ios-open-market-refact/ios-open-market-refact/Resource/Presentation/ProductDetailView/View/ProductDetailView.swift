@@ -72,10 +72,12 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     //MARK: - Setup View Method
     
     override func setupDefault() {
+        super.setupDefault()
         setupProductScrollview()
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         addSubview(mainScrollView)
         mainScrollView.addSubview(productScrollView)
         mainScrollView.addSubview(photoIndexLabel)
@@ -87,6 +89,8 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         mainScrollView.translatesAutoresizingMaskIntoConstraints = false
         mainScrollView.contentSize.width = self.bounds.width
         

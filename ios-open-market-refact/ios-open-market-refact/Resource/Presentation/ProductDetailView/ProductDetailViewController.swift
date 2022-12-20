@@ -26,14 +26,18 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     //MARK: - Setup ViewController method
     
     override func setupDefault() {
+        super.setupDefault()
         bind()
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         view.addSubview(productDetailView)
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         NSLayoutConstraint.activate([
             productDetailView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             productDetailView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

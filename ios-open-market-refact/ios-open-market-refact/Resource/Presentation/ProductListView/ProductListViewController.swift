@@ -79,11 +79,10 @@ final class ProductListViewController: SuperViewControllerSetting {
     //MARK: - View Default Setup Method
     
     override func setupDefault() {
+        super.setupDefault()
         view.backgroundColor = .systemBackground
         productListView.mainCollectionView?.delegate = self
         productListView.mainCollectionView?.refreshControl = refreshController
-        addUIComponents()
-        setupLayout()
         setupNavigationBar()
         setupImageViewGesture()
         registerProductNotification()
@@ -91,11 +90,14 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         view.addSubview(productListView)
         view.addSubview(registProductImageView)
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         NSLayoutConstraint.activate([
             productListView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             productListView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

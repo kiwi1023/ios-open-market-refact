@@ -12,7 +12,7 @@ final class ProductRegistViewModel: ViewModelBuilder {
     
     private let output = Observable(false)
     
-    let networkAPI: SessionProtocol
+    private let networkAPI: SessionProtocol
     private var id = 0
     
     struct Input {

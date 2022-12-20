@@ -32,9 +32,10 @@ final class MainViewController: SuperViewControllerSetting {
     //MARK: - Setup ViewController Method
     
     override func setupDefault() {
+        super.setupDefault()
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
-        productMiniListView.miniListCollectionView?.delegate = self
+        productMiniListView.miniListCollectionView.delegate = self
         bannerView.bannerViewErrorHandlingDelegate = self
         setupNavigationBar()
     }
@@ -45,6 +46,7 @@ final class MainViewController: SuperViewControllerSetting {
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         view.addSubview(bannerView)
         view.addSubview(productMiniListView)
     }
@@ -57,6 +59,8 @@ final class MainViewController: SuperViewControllerSetting {
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         NSLayoutConstraint.activate([
             bannerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             bannerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  30),
@@ -97,10 +101,8 @@ final class MainViewController: SuperViewControllerSetting {
 
 extension MainViewController {
     
-    private func configureDataSource() -> DataSource? {
-        guard let miniListCollectionView = productMiniListView.miniListCollectionView else {
-            return nil
-        }
+    private func configureDataSource() -> DataSource {
+        let miniListCollectionView = productMiniListView.miniListCollectionView
         
         let cellRegistration = UICollectionView.CellRegistration<ProductMiniListViewCell, Product> { cell, indexPath, item in
             cell.configure(data: item)

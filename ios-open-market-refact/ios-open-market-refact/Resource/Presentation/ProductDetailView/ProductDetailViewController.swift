@@ -64,7 +64,8 @@ final class ProductDetailViewController: SuperViewControllerSetting {
     
     private func convertToEditView(productDetail: ProductDetail) {
         
-        let registView = ProductRegistViewController(product: productDetail)
+        let registView = ProductRegistViewController()
+        registView.configureProduct(product: productDetail)
         
         registView.refreshList = {
             self.fetchProductDetailAction.value = ProductDetailViewModel.detailViewRefreshAction.refreshAction

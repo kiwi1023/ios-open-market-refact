@@ -130,7 +130,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     @objc private func didTapRegistButton() {
-        navigationController?.pushViewController(ProductRegistViewController(product: nil), animated: true)
+        navigationController?.pushViewController(ProductRegistViewController(), animated: true)
     }
     
     //MARK: - Data Source, Snapshot Update Method

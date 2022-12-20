@@ -29,6 +29,7 @@ final class MainViewController: SuperViewControllerSetting {
     //MARK: - Setup ViewController Method
     
     override func setupDefault() {
+        super.setupDefault()
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
@@ -43,6 +44,7 @@ final class MainViewController: SuperViewControllerSetting {
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         view.addSubview(bannerView)
         view.addSubview(productMiniListView)
     }
@@ -55,6 +57,8 @@ final class MainViewController: SuperViewControllerSetting {
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         NSLayoutConstraint.activate([
             bannerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             bannerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant:  30),

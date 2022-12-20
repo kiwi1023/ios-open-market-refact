@@ -79,6 +79,8 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardUp),
@@ -95,6 +97,8 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
         NotificationCenter.default.removeObserver(
             self,
             name: UIResponder.keyboardWillShowNotification,
@@ -111,6 +115,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     //MARK: - Setup ViewController method
     
     override func setupDefault() {
+        super.setupDefault()
         view.backgroundColor = .systemBackground
         configureProduct()
         setupNavigationBar()
@@ -120,10 +125,13 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         view.addSubview(registView)
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         NSLayoutConstraint.activate([
             registView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             registView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

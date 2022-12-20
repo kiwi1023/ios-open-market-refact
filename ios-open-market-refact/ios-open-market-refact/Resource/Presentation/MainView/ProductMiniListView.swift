@@ -15,6 +15,7 @@ final class ProductMiniListView: SuperViewSetting {
     //MARK: - Setup ProductMiniListView Method
     
     override func setupDefault() {
+        super.setupDefault()
         addUIComponents()
         setupLayout()
         configureCollectionView()
@@ -22,10 +23,13 @@ final class ProductMiniListView: SuperViewSetting {
     }
     
     override func addUIComponents() {
+        super.addUIComponents()
         addSubview(titleStackView)
     }
     
     override func setupLayout() {
+        super.setupLayout()
+        
         NSLayoutConstraint.activate([
             titleStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
             titleStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),

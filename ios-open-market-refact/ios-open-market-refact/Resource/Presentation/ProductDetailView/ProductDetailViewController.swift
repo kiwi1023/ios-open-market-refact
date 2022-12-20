@@ -17,7 +17,7 @@ private enum ProductDetailViewControllerNameSpace {
 final class ProductDetailViewController: SuperViewControllerSetting {
     
     private let productDetailViewModel = ProductDetailViewModel()
-    private lazy var productDetailView = ProductDetailView()
+    private let productDetailView = ProductDetailView()
     
     private let fetchProductDetailAction = Observable(ProductDetailViewModel.detailViewRefreshAction.refreshAction)
     private var deleteButtonAction = Observable(ProductDetailViewModel.ButtonAction.defaultAction)

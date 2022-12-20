@@ -59,7 +59,7 @@ final class ProductListViewController: SuperViewControllerSetting {
         return refreshControl
     }()
     
-    private lazy var mainView = ProductListView()
+    private let productListView = ProductListView()
     
     private let registProductImageView: UIImageView = {
         let imageView = UIImageView()
@@ -80,8 +80,8 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     override func setupDefault() {
         view.backgroundColor = .systemBackground
-        mainView.mainCollectionView?.delegate = self
-        mainView.mainCollectionView?.refreshControl = refreshController
+        productListView.mainCollectionView?.delegate = self
+        productListView.mainCollectionView?.refreshControl = refreshController
         addUIComponents()
         setupLayout()
         setupNavigationBar()
@@ -91,16 +91,16 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     override func addUIComponents() {
-        view.addSubview(mainView)
+        view.addSubview(productListView)
         view.addSubview(registProductImageView)
     }
     
     override func setupLayout() {
         NSLayoutConstraint.activate([
-            mainView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            mainView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            mainView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            mainView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            productListView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            productListView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            productListView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            productListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         NSLayoutConstraint.activate([
             registProductImageView.widthAnchor.constraint(equalToConstant: 50),
@@ -184,7 +184,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     private func configureDataSource() -> DataSource? {
-        guard let mainCollectionView = mainView.mainCollectionView else { return nil }
+        guard let mainCollectionView = productListView.mainCollectionView else { return nil }
         
         let cellRegistration = UICollectionView.CellRegistration<ProductListViewCell, Product> { cell, indexPath, item in
             cell.configure(data: item)
@@ -235,7 +235,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     private func scrollToTop() {
-        mainView.mainCollectionView?.scrollToItem(
+        productListView.mainCollectionView?.scrollToItem(
             at: IndexPath(item: -1, section: 0),
             at: .init(rawValue: 0),
             animated: true
@@ -245,7 +245,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     private func scrollToSelectedIndex() {
         guard let selectedIndexPath = selectedIndexPath else { return }
         
-        mainView.mainCollectionView?.scrollToItem(
+        productListView.mainCollectionView?.scrollToItem(
             at: selectedIndexPath,
             at: .init(rawValue: 0),
             animated: true
@@ -273,8 +273,8 @@ extension ProductListViewController: UICollectionViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let position = scrollView.contentOffset.y
         
-        guard let height = mainView.mainCollectionView?.contentSize.height,
-              let boundHeight = mainView.mainCollectionView?.bounds.size.height else { return }
+        guard let height = productListView.mainCollectionView?.contentSize.height,
+              let boundHeight = productListView.mainCollectionView?.bounds.size.height else { return }
         
         if position > (height - boundHeight + 100) {
             pageState.value = (pageState.value.pageNumber + 1, pageState.value.itemsPerPage, .add)

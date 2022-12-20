@@ -7,11 +7,6 @@
 
 import Foundation
 
-enum Update {
-    case updatable
-    case unUpdatable
-}
-
 final class ProductRegistViewModel: ViewModelBuilder {
     var onErrorHandling : ((APIError) -> Void)?
     
@@ -21,8 +16,8 @@ final class ProductRegistViewModel: ViewModelBuilder {
     private var id = 0
     
     struct Input {
-        let postAction: Observable<(RegistrationProduct?, [ProductImage], Update)>
-        let patchAction: Observable<(RegistrationProduct?, Update)>
+        let postAction: Observable<(RegistrationProduct?, [ProductImage])>
+        let patchAction: Observable<(RegistrationProduct?)>
     }
     
     struct Output {
@@ -34,36 +29,26 @@ final class ProductRegistViewModel: ViewModelBuilder {
     }
     
     func transform(input: Input) -> Output {
-        input.postAction.subscribe(listener: { product, images, update in
+        input.postAction.subscribe(listener: { product, images in
             guard let product = product else { return }
-            switch update {
-            case .unUpdatable:
-                return
-            case .updatable:
                 self.postProduct(input: product, images: images) { result in
                     switch result {
                     case .success():
                         self.output.value = true
                     case .failure(let failure):
                         self.onErrorHandling?(failure)
-                    }
                 }
             }
         })
         
-        input.patchAction.subscribe(listener: { product, update in
+        input.patchAction.subscribe(listener: { product in
             guard let product = product else { return }
-            switch update {
-            case .unUpdatable:
-                return
-            case .updatable:
-                self.patchProduct(input: product, id: self.id) { result in
-                    switch result {
-                    case .success():
-                        self.output.value = true
-                    case .failure(let failure):
-                        self.onErrorHandling?(failure)
-                    }
+            self.patchProduct(input: product, id: self.id) { result in
+                switch result {
+                case .success():
+                    self.output.value = true
+                case .failure(let failure):
+                    self.onErrorHandling?(failure)
                 }
             }
         })

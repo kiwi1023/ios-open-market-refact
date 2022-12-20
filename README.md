@@ -1,5 +1,7 @@
-# My Market 🏪 (MVC)
-> 프로젝트 기간: 2022-11-10 ~ 2022-12-02
+# My Market 🏪 (MVVM + UIKit)
+> <프로젝트 기간>
+MVC: 2022-11-10 ~ 2022-12-02
+MVVM: 2022-12-05 ~ 2022-12-20
 
 ## 팀원
 
@@ -25,6 +27,9 @@
 - `UICollectionView`
     - `DiffableDataSource`
     - `CompositionalLayout`
+- `MVVM`
+- `delegate`
+- `Observable`
 
 ## 📱 프로젝트 실행화면
 |메인화면 (배너뷰)|무한스크롤|UISearch Bar 구현
@@ -35,7 +40,10 @@
 
 ## 🚀트러블 슈팅
 
-### 
+
+
+### MVC 
+
 <details>
 <summary>Launch Screen 이슈</summary>
     
@@ -63,8 +71,10 @@ CollectionView의 각 anchor를 메인 View Controller의 View의 safeAreaLayout
 
 </details>
 
-###
+</br>
+
 <details>
+    
 <summary> 상품 목록 화면이동시 서치바가 보여지도록 수정 </summary>
     
 상품 목록 화면으로 진입시 다음과 같이 서치바가 보여지도록 설정하고자 했다.
@@ -79,8 +89,10 @@ CollectionView의 각 anchor를 메인 View Controller의 View의 safeAreaLayout
 </details>
 
 ###
+
 <details>
     <summary>이미지 캐시 싱글톤 객체 </summary>
+    
     상품 리스트 뷰에서 이미지를 로드하기 위해 DataTask 작업을 UIImageView의 extension으로 확장하여 사용하고 있었다. 
     
 ```swift
@@ -147,6 +159,7 @@ final class DownloadableUIImageView: UIImageView {
 결국 캐싱 작업을 추가하면서 UIImageView에서 네트워크 통신 코드를 분리하는 작업을 한번 더 수행했다.
     
 ```swift
+    
 final class ImageCache {
     static let shared = ImageCache()
     private init() {}
@@ -211,8 +224,10 @@ final class ImageCache {
     
 </details>
 
+</details>
+    
+###
 
-### 
 <details>
     
 <summary>UITextView의 크기가 늘어나지 않는 문제</summary>
@@ -228,7 +243,8 @@ UITextView가 속한 StackView의 bottomAnchor를 ScrollView의 bottomAnchor와 
     
 </details>
 
-### 
+</br>
+
 <details>
     
 <summary> 배너 뷰의 이미지가 무한 반복하도록 구현하는 방법
@@ -243,7 +259,8 @@ UITextView가 속한 StackView의 bottomAnchor를 ScrollView의 bottomAnchor와 
     
 </details>
     
-### 
+</br>
+
 <details>
     
 <summary> 
@@ -260,7 +277,8 @@ UITextView가 속한 StackView의 bottomAnchor를 ScrollView의 bottomAnchor와 
     
 </details>
     
-### 
+</br>
+
 <details>
     
 <summary> 
@@ -286,7 +304,184 @@ let cell = UICollectionView.CellRegistration<ProductRegistCollectionViewCell, UI
 @objc private func didTapRemoveButton() {
     removeImage?()
 }
+    
 ```
+    
 위 코드와 같이 각 Cell에 지정된 "X"버튼 action에 클로저를 추가해주어 Delete기능을 구현했다.
+
+    </details>
+</details>
+
+    
+
+---
+
+### MVVM
+
+<details>
+    
+<summary> Observable 타입의 설정 
+</summary>
+        
+이벤트 흐름을 단방향으로 처리하기 위해 초반에 클로저의 형태로 구현을 하였다. 하지만 이벤트의 갯수 만큼 뷰모델이 클로저와 데이터 모델을 소유하고 있어야 했기에 이를 합치는 개념이 필요했다. 
+    
+RxSwift의 Observable 타입을 참고하여 다음과 같이 리스너를 소유하는 커스텀 Observable 타입을 생성하여 이를 해결해보았다.
+    
+```swift 
+    
+class Observable<T> {
+    var value: T {
+        didSet {
+            self.listener?(value)
+        }
+    }
+    
+    var listener: ((T) -> Void)?
+    
+    init(_ value: T) {
+        self.value = value
+    }
+    
+    func subscribe(listener: @escaping (T) -> Void) {
+        listener(value)
+        self.listener = listener
+    }
+}
+    
+```
+    
+이 Observable 타입을 활용함으로써 ViewModel에 Input과 Output으로 이벤트 입출력을 정리하고 최종적으로 View Controller에서 상태값이 변경되면 이에 대응되는 데이터모델을 클로저로 넘겨주어 RxSwift의 bindindg작업과 유사하게 UIKit만을 사용하여 구현할 수 있었다.
+    
+    
 </details>
     
+
+</br>
+
+<details>
+    
+<summary> 뷰 모델의 Input에 어떤 값을 넣어야 할지에 대하여 </summary>
+
+RxSwift의 경우 UIComponents에 rx를 이용하여 접근하고 이에 대한 이벤트 흐름을 이끌어 올 수 있다. 
+다만 Pure MVVM을 목표로 개발을 하다보니 이 이벤트 흐름의 시작점이 어디에 위치할 것인가에 대해서 굉장히 고민을 많이 했다. 
+    
+Main ViewController의 경우 초기 데이터 로드만 불러오기 때문에 binding 작업에서 Observable 타입을 넘겨 주었다.
+    
+```swift
+// MainViewController.swift
+private func bind() {
+    let miniListFetchAction = Observable<(InitialPageInfo)></(InitialPageInfo)>(MainViewControllerNameSpace.initialPageInfo)
+    let output = mainViewModel.transform(input: .init(
+        pageInfoInput: miniListFetchAction
+    ))
+    
+    output.fetchedProductListOutput.subscribe { list in
+        DispatchQueue.main.async {
+            self.updateDataSource(data: list)
+        }
+    }
+} 
+    
+```
+
+하지만 상품 목록 뷰에서는 현재 불러온 페이지와 페이지당 아이템의 개수, 현재 상태가 update인지 혹은 add인지에 대해서 변화를 ViewController가 소유하고 있어야 해서 ViewController에 `pageState`라는 Observable타입을 프로퍼티로 소유하도록 하였다. 또한 SearchController를 통해 입력되는것도 필터링 값의 이벤트 변화로 연결하기 위해 Observable타입으로 만들었다.
+    
+```swift 
+//ProductListViewController.swift
+private let pageState = Observable<(
+    pageNumber: Int,
+    itemsPerPage: Int,
+    fetchType: FetchType)
+>((
+    ProductListViewControllerNameSpace.initialPageInfo.pageNumber,
+    ProductListViewControllerNameSpace.initialPageInfo.itemsPerPage,
+    .update
+))
+    
+private let filteringState = Observable<String>("")
+    
+```
+
+이 프로퍼티 두가지를 뷰 모델의 transform 메서드를 통해 바인딩 작업을 거쳤다.
+
+```swift
+let output = productListViewModel.transform(input: .init(
+    productListPageInfoUpdateAction: pageState,
+    filteringStateUpdateAction: filteringState
+))
+```
+
+    
+</details>
+    
+</br>
+<details>
+<summary> 뷰모델의 에러 핸들링의 처리에 관하여</summary>
+
+기존의 코드는 에러 핸들링이 네트워크 코드에 위임 되어 있었다. SessionProtocol로 부터 ResultType을 반환받아 이를 분기 처리하여 Completion Handler를 넘겨주는 방식이었다.
+    
+하지만 결과의 분기 처리 자체를 뷰 컨트롤러가 진행하게 되는 것 자체가 비즈니스 로직이라고 생각되었다. 또한 실패의 경우 AlertDirector를 통해 실패 내용을 출력 해야하는데 비즈니스 로직이 뷰모델로 이관되면서 에러 타입을 넘겨 받도록 구조를 짜야했다.
+    
+https://benoitpasquier.com/error-handling-swift-mvvm/
+    
+위 블로그를 참고하여 에러코드에 대해서 분리를 했다.
+    
+먼저 뷰모델 내부에 에러 핸들링을 실제로 진행 할 클로저를 선언하였다.
+    
+```swift
+var onErrorHandling : ((APIError) -> Void)?
+```
+
+그리고 bind 메서드에서 실제 에러가 발생할 경우 띄워줄 AlertDirector를 호출하도록 하였다.
+    
+```swift
+mainViewModel.onErrorHandling = { failure in 
+    AlertDirector(viewController: self).createErrorAlert(
+        message: MainViewControllerNameSpace.getDataErrorMassage
+    )
+}
+```
+
+뷰 모델에서는 에러의 분기 처리를 진행한다. success라면 Completion Handler를 호출하고, failure라면 ViewController로 부터 주입받은 클로저를 실행한다.
+    
+```swift
+input.pageInfoInput.subscribe { (pageNumber: Int, itemsPerPage: Int) in
+    self.fetchProductList(pageNumber: pageNumber, itemsPerPage: itemsPerPage) { (result: Result<[Product], APIError>) in
+        switch result {
+            case .success(let productList):
+                fetchedProductListOutput.value = productList
+            case .failure(let failure):
+                self.onErrorHandling?(failure)
+        }
+    }
+}
+```
+    
+이렇게하여 ViewController는 실패시 동작해야할 View와 관련된 로직만을 소유하게 되고, ViewModel에서 에러 처리분기에 관련된 비즈니스 로직을 배치함과 동시에 View관련 작업은 하지 않도록 할 수 있었다.
+
+</details>    
+
+</br>
+
+<details>
+<summary>View Model 내부에 데이터의 형태</summary>
+
+최초에 Input Output 구조를 작성할 때 뷰 모델 내부에 데이터를 배치시키지 않으려고 했다. ViewController의 상태 변화에 따른 비즈니스 로직을 거쳐 핸들링된 데이터를 넘겨주기만 하는 역할만을 뷰 모델에 부여하려했다. 
+
+하지만 상품 목록의 경우 Search Controller로 부터 넘어오는 검색어의 상태변화에 따라 검색을 진행할 데이터가 필요했기에 결국 ProductListViewModel 내부에 `[Product]` 타입을 저장하게 되었다.
+    
+<img src=https://i.imgur.com/0luKtLW.png width=60%>
+
+다만 dataSource 자체를 뷰 모델에 위치시키게 되면 이러한 문제를 해결할 수 있을것이라 생각했었는데 UIKit관련 모든 코드를 뷰 모델에서 선언하는것 자체가 모순이라 생각하여 이런식으로 작성하게 되었다.
+    
+    
+</details>
+
+</br>
+
+<details>
+<summary>RegistViewModel subscribe시 초기 실행 문제</summary>
+    초기 값이 설정되고 값이 변경될 때마다 output을 이용하여 post, patch해야되는데, 초기 값으로도 post가 되는 문제가 발생했다.
+    Enum 타입을 새로 만들어 초기에만 unUpdatable case를 넣어주어 초기에만 네트워킹을 하지 않는 방식으로 코드를 넣었지만 불필요한 타입이 추가되고, 필요한 데이터가 아닌 정보를 viewModel에 넘겨준다고 생각하였다.
+    그래서 input에 들어가는 Observable의 RegistrationProduct타입을 옵셔널로 설정하여 nil일 경우 closure을 return하는 방식으로 넘기는 방식으로 해결했다.
+</details>

@@ -14,7 +14,7 @@ final class MainBannerView: SuperViewSetting {
     private var imageViews: [UIImageView] = []
     var imageUrls: [String] = [] {
         didSet {
-            configureScrollView()
+            setUpScrollViewLayout()
             setupPageControl()
             setupScrollView()
             startTimer()
@@ -50,33 +50,32 @@ final class MainBannerView: SuperViewSetting {
         scrollView.scrollsToTop = false
     }
     
-    private func configureScrollView() {
-        
+    private func setUpScrollViewLayout() {
         NSLayoutConstraint.activate([
             pageControl.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             pageControl.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
         ])
         
-        DispatchQueue.main.async { [self] in
-            scrollView.frame = bounds
-            scrollView.contentSize = CGSize(
-                width: scrollView.frame.size.width * CGFloat(imageUrls.count + 2),
-                height: bounds.height
-            )
-            scrollView.contentOffset.x = scrollView.frame.size.width
-        }
+        scrollView.frame = bounds
+        scrollView.contentSize = CGSize(
+            width: scrollView.frame.size.width * CGFloat(imageUrls.count + 2),
+            height: bounds.height
+        )
+        scrollView.contentOffset.x = scrollView.frame.size.width
         
-        DispatchQueue.main.async { [self] in
-            for index in 0..<imageUrls.count + 2 {
-                let imageView = UIImageView(frame: bounds)
-                
-                imageView.contentMode = .scaleToFill
-                imageView.frame.origin.x = bounds.width * CGFloat(index)
-                scrollView.addSubview(imageView)
-                imageViews.append(imageView)
-            }
-            downloadImages()
+        setupImageView()
+    }
+    
+    private func setupImageView() {
+        for index in 0..<imageUrls.count + 2 {
+            let imageView = UIImageView(frame: bounds)
+            
+            imageView.contentMode = .scaleToFill
+            imageView.frame.origin.x = bounds.width * CGFloat(index)
+            scrollView.addSubview(imageView)
+            imageViews.append(imageView)
         }
+        downloadImages()
     }
     
     private func downloadImages() {

@@ -168,12 +168,11 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     //MARK: - Product DetailViewController Data Setup
     
     private func configureImageView(_ productDetail: ProductDetail) {
-        DispatchQueue.main.async { [self] in
-            productScrollView.contentSize = CGSize(
-                width: productScrollView.bounds.width * CGFloat(productDetail.images.count),
-                height: productScrollView.bounds.height
-            )
-        }
+        
+        productScrollView.contentSize = CGSize(
+            width: productScrollView.bounds.width * CGFloat(productDetail.images.count),
+            height: productScrollView.bounds.height
+        )
         
         for (index, image) in productDetail.images.enumerated() {
             let imageView = UIImageView()
@@ -184,11 +183,10 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
                 imageView.image = image
             }
             
-            DispatchQueue.main.async { [self] in
-                imageView.frame = productScrollView.bounds
-                imageView.frame.origin.x = productScrollView.bounds.width * CGFloat(index)
-                imageView.contentMode = .scaleToFill
-            }
+            imageView.frame = productScrollView.bounds
+            imageView.frame.origin.x = productScrollView.bounds.width *
+            CGFloat(index)
+            imageView.contentMode = .scaleToFill
             
             productScrollView.addSubview(imageView)
         }

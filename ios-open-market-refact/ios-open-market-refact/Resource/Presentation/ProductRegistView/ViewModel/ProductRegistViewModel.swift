@@ -8,6 +8,7 @@
 import Foundation
 
 final class ProductRegistViewModel: ViewModelBuilder {
+    
     var onErrorHandling : ((APIError) -> Void)?
     
     private let output = Observable(false)
@@ -24,11 +25,12 @@ final class ProductRegistViewModel: ViewModelBuilder {
         let doneAction: Observable<(Bool)>
     }
     
-    init(networkAPI: SessionProtocol) {
+    init(networkAPI: SessionProtocol = NetworkManager()) {
         self.networkAPI = networkAPI
     }
     
     func transform(input: Input) -> Output {
+        
         input.postAction.subscribe(listener: { product, images in
             guard let product = product else { return }
                 self.postProduct(input: product, images: images) { result in
@@ -56,7 +58,12 @@ final class ProductRegistViewModel: ViewModelBuilder {
         return .init(doneAction: output)
     }
     
-    private func postProduct(input: RegistrationProduct, images: [ProductImage], completion: @escaping (Result<Void, APIError>) -> Void) {
+    private func postProduct(
+        input: RegistrationProduct,
+        images: [ProductImage],
+        completion: @escaping (Result<Void, APIError>) -> Void
+    ) {
+        
         guard let request = OpenMarketRequestDirector().createPostRequest(
             product: input,
             images: images

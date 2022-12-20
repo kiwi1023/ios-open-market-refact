@@ -9,13 +9,17 @@ import UIKit
 
 final class MainViewController: SuperViewControllerSetting {
     
-    //MARK: MainViewController NameSpace
-
+    //MARK: MainViewController Namespace
+    
     private enum MainViewControllerNameSpace {
         static let appTitle = "My Market🏪"
         static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 20)
         static let getDataErrorMassage = "데이터를 받아오지 못했습니다."
     }
+    
+    //MARK: CollectionView Properties
+    
+    typealias InitialPageInfo = (pageNumber: Int, itemsPerPage: Int)
     
     enum Section {
         case main
@@ -23,11 +27,17 @@ final class MainViewController: SuperViewControllerSetting {
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
-    private typealias InitialPageInfo = (pageNumber: Int, itemsPerPage: Int)
     
     private lazy var dataSource: DataSource? = configureDataSource()
+    
+    //MARK: View
+    
     private let bannerView = MainBannerView()
     private let productMiniListView = ProductMiniListView()
+    private let mainViewModel = MainViewModel()
+    
+    //MARK: View Model
+    
     private let mainViewModel = MainViewModel()
     
     //MARK: - Setup ViewController Method

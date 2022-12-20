@@ -7,23 +7,27 @@
 
 import UIKit
 
-private enum RegistrationBasicValueNameSpace {
-    static let stringEmpty = ""
-    static let stringZero = "0"
-    static let doubleZero: Double = 0
-    static let intZero: Int = 0
-}
-
-private enum ProductRegistViewNameSpace {
-    static let productNamePlaceHolder = " 상품명"
-    static let productPricePlaceHolder = " 판매 가격"
-    static let productSalePlaceHolder = " 할인 금액"
-    static let productStockPlaceHolder = " 재고 수량"
-    static let productDescriptionPlaceHolder = " 텍스트를 입력하세요"
-    static let productDefaultCurrency = "KRW"
-}
-
 final class ProductRegistView: SuperViewSetting {
+    
+    //MARK: ProductRegistView NameSpace
+    
+    private enum RegistrationBasicValueNameSpace {
+        static let stringEmpty = ""
+        static let stringZero = "0"
+        static let doubleZero: Double = 0
+        static let intZero: Int = 0
+    }
+
+    private enum ProductRegistViewNameSpace {
+        static let productNamePlaceHolder = " 상품명"
+        static let productPricePlaceHolder = " 판매 가격"
+        static let productSalePlaceHolder = " 할인 금액"
+        static let productStockPlaceHolder = " 재고 수량"
+        static let productDescriptionPlaceHolder = " 텍스트를 입력하세요"
+        static let productDefaultCurrency = "KRW"
+    }
+    
+    //MARK: UIComponents
     
     private let mainStackView: UIStackView = {
         let stackView = UIStackView()
@@ -40,6 +44,8 @@ final class ProductRegistView: SuperViewSetting {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
+    
+    //MARK: - View SetupMethod
     
     private(set) lazy var registCollectionView: UICollectionView = {
         let collectionView = UICollectionView(

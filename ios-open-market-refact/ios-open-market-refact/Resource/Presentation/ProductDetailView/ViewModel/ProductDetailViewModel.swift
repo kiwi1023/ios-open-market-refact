@@ -8,11 +8,9 @@
 import Foundation
 
 final class ProductDetailViewModel: ViewModelBuilder {
+    
     var productNumber: Int?
     
-    private var productDetail = Observable(ProductDetail())
-    private var deleteButtonOutput = Observable(ButtonAction.defaultAction)
-    private var editButtonOutput: Observable<(productDetail: ProductDetail, buttonAction: ButtonAction)> = Observable((ProductDetail(), ButtonAction.defaultAction))
     var onErrorHandling : ((APIError) -> Void)?
     
     private let networkAPI: SessionProtocol
@@ -36,20 +34,30 @@ final class ProductDetailViewModel: ViewModelBuilder {
     struct Output {
         let fetchedProductDetailOutput: Observable<ProductDetail>
         let deleteButtonActionOutput: Observable<ButtonAction>
-        let editButtonActionOutput: Observable<(productDetail: ProductDetail, buttonAction: ButtonAction)>
+        let editButtonActionOutput: Observable<(
+            productDetail: ProductDetail,
+            buttonAction: ButtonAction
+        )>
     }
     
     init(networkAPI: SessionProtocol = NetworkManager()) {
+        
         self.networkAPI = networkAPI
     }
     
     func transform(input: Input) -> Output {
         
+        let fetchedProductDetailOutput = Observable(ProductDetail())
+        let deleteButtonOutput = Observable(ButtonAction.defaultAction)
+        let editButtonOutput = Observable(
+            (productDetail: ProductDetail(), buttonAction: ButtonAction.defaultAction)
+        )
+        
         input.fetchProductDetailAction.subscribe { [self] action in
             receiveDetailData { result in
                 switch result {
                 case .success(let productDetail):
-                    self.productDetail.value = productDetail
+                    fetchedProductDetailOutput.value = productDetail
                 case .failure(let failure):
                     self.onErrorHandling?(failure)
                 }
@@ -69,20 +77,21 @@ final class ProductDetailViewModel: ViewModelBuilder {
             }
         }
         
-        input.editButtonAction.subscribe { [self] action in
+        input.editButtonAction.subscribe { action in
             if action == .editButtonAction {
-                editButtonOutput.value = (productDetail.value, action)
+                editButtonOutput.value = (fetchedProductDetailOutput.value, action)
             }
         }
         
         return .init(
-            fetchedProductDetailOutput: productDetail,
+            fetchedProductDetailOutput: fetchedProductDetailOutput,
             deleteButtonActionOutput: deleteButtonOutput,
             editButtonActionOutput: editButtonOutput
         )
     }
     
     private func receiveDetailData(completion: @escaping (Result<ProductDetail, APIError>) -> Void) {
+        
         guard let productNumber = productNumber,
               let detailRequest = OpenMarketRequestDirector().createGetDetailRequest(
             productNumber
@@ -94,7 +103,6 @@ final class ProductDetailViewModel: ViewModelBuilder {
                 guard let productDetail = JsonDecoderManager.shared.decode(from: data, to: ProductDetail.self) else { return }
                 
                 completion(.success(productDetail))
-                
             case .failure(_):
                 completion(.failure(APIError.response))
             }
@@ -102,6 +110,7 @@ final class ProductDetailViewModel: ViewModelBuilder {
     }
     
     private func deleteProduct(completion: @escaping (Result<Bool, APIError>) -> Void) {
+        
         guard let productNumber = productNumber else { return }
         guard let deleteURIRequest = OpenMarketRequestDirector().createDeleteURIRequest(
             productNumber: productNumber

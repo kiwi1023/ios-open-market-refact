@@ -7,43 +7,43 @@
 
 import UIKit
 
-private enum ProductRegistViewControllerNameSpace {
-    static let addViewNavigationTitle = "상품 등록"
-    static let editViewNavigationTitle = "상품 수정"
-    static let editImageMessage = "사진은 수정이 불가합니다."
-    static let successRegistMessage = "해당 상품을 등록 완료했습니다."
-    static let registImageMessage = "사진을 등록해 주세요"
-    static let successEditMessage = "해당 상품을 수정 완료했습니다."
-    static let editFailureMessage = "상품 수정에 실패하였습니다."
-    static let dataLoadFailureMessage = "데이터를 불러오지 못했습니다."
-}
-
-private enum ProductTextConditionAlert {
-    case invalidName
-    case invalidPrice
-    case invalidStock
-    case success
+final class ProductRegistViewController: SuperViewControllerSetting {
     
-    var message: String {
-        switch self {
-        case .invalidName:
-            return "이름을 올바르게 입력해 주세요"
-        case .invalidPrice:
-            return "가격을 올바르게 입력해 주세요"
-        case .invalidStock:
-            return "재고를 올바르게 입력해 주세요"
-        case .success:
-            return "상품 등록 완료"
+    //MARK: ProductRegistViewController NameSpace
+    
+    private enum ProductRegistViewControllerNameSpace {
+        static let addViewNavigationTitle = "상품 등록"
+        static let editViewNavigationTitle = "상품 수정"
+        static let editImageMessage = "사진은 수정이 불가합니다."
+        static let successRegistMessage = "해당 상품을 등록 완료했습니다."
+        static let registImageMessage = "사진을 등록해 주세요"
+        static let successEditMessage = "해당 상품을 수정 완료했습니다."
+        static let editFailureMessage = "상품 수정에 실패하였습니다."
+        static let dataLoadFailureMessage = "데이터를 불러오지 못했습니다."
+        static let defaultCameraImageName = "iconCamera.png"
+    }
+
+    private enum ProductTextConditionAlert {
+        case invalidName
+        case invalidPrice
+        case invalidStock
+        case success
+        
+        var message: String {
+            switch self {
+            case .invalidName:
+                return "이름을 올바르게 입력해 주세요"
+            case .invalidPrice:
+                return "가격을 올바르게 입력해 주세요"
+            case .invalidStock:
+                return "재고를 올바르게 입력해 주세요"
+            case .success:
+                return "상품 등록 완료"
+            }
         }
     }
-}
-
-final class ProductRegistViewController: SuperViewControllerSetting {
-
-    enum ViewMode {
-        case add
-        case edit
-    }
+    
+    //MARK: CollectionView Properties
     
     enum Section: Int {
         case image
@@ -55,16 +55,27 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     private lazy var dataSource: DataSource = configureDataSource()
     private lazy var snapshot: Snapshot = configureSnapshot()
     
-    private let productRegistView = ProductRegistView()
-    private let imagePicker = UIImagePickerController()
-    private var viewMode = ViewMode.add
-    private var isAppendable = true
-    private let productRegistViewModel = ProductRegistViewModel(networkAPI: NetworkManager())
+    //MARK: ViewModel
+    
+    private let productRegistViewModel = ProductRegistViewModel()
     
     private let postAction = Observable<(RegistrationProduct?, [ProductImage])>((nil, []))
     private let patchAction = Observable<(RegistrationProduct?)>(nil)
     
     var refreshList: (() -> Void)?
+    
+    //MARK: View
+    
+    enum ViewMode {
+        case add
+        case edit
+    }
+    
+    private var viewMode = ViewMode.add
+    private var isAppendable = true
+    
+    private let productRegistView = ProductRegistView()
+    private let imagePicker = UIImagePickerController()
     
     //MARK: - ViewController Initializer
     
@@ -102,16 +113,15 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     
     override func setupDefault() {
         super.setupDefault()
-        view.backgroundColor = .systemBackground
         setupNavigationBar()
         configureImagePicker()
-        updateDataSource(data: [UIImage(named: "iconCamera.png") ?? UIImage()])
-        productRegistView.registCollectionView.delegate = self
+        collectionViewSetup()
         bind()
     }
     
     override func addUIComponents() {
         super.addUIComponents()
+        
         view.addSubview(productRegistView)
     }
     
@@ -127,6 +137,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func setupNavigationBar() {
+        
         switch viewMode {
         case .add:
             self.navigationItem.title = ProductRegistViewControllerNameSpace.addViewNavigationTitle
@@ -142,12 +153,20 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func configureImagePicker() {
+        
         imagePicker.delegate = self
         imagePicker.allowsEditing = true
         imagePicker.sourceType = .photoLibrary
     }
     
+    private func collectionViewSetup() {
+        
+        updateDataSource(data: [UIImage(named: ProductRegistViewControllerNameSpace.defaultCameraImageName) ?? UIImage()])
+        productRegistView.registCollectionView.delegate = self
+    }
+    
     private func configureDataSource() -> DataSource {
+        
         let cell = UICollectionView.CellRegistration<ProductRegistCollectionViewCell, UIImage> { cell, indexPath, item in
             cell.removeImage = {
                 switch self.viewMode {
@@ -159,27 +178,33 @@ final class ProductRegistViewController: SuperViewControllerSetting {
                     )
                 }
             }
+            
             if self.isAppendable && indexPath.row == 0 {
                 cell.hideDeleteImageButton()
             }
+            
             cell.configureImage(data: item)
         }
         
         let dataSource = DataSource(collectionView: productRegistView.registCollectionView) {
             (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
-            return collectionView.dequeueConfiguredReusableCell(using: cell,
-                                                                for: indexPath,
-                                                                item: itemIdentifier)
+            return collectionView.dequeueConfiguredReusableCell(
+                using: cell,
+                for: indexPath,
+                item: itemIdentifier
+            )
         }
         
         return dataSource
     }
     
     private func configureSnapshot() -> Snapshot {
+        
         Snapshot()
     }
     
     private func updateDataSource(data: [UIImage]) {
+        
         snapshot.appendSections([.image])
         snapshot.appendItems(data)
         
@@ -189,6 +214,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func appendDataSource(data: UIImage) {
+        
         snapshot.appendItems([data])
         
         if snapshot.numberOfItems > 5 {
@@ -204,12 +230,13 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func deleteDataSource(image: UIImage) {
+        
         snapshot.deleteItems([image])
         
         if !isAppendable {
             guard let first = snapshot.itemIdentifiers.first else { return }
             
-            let insertImage = UIImage(named: "iconCamera.png") ?? UIImage()
+            let insertImage = UIImage(named: ProductRegistViewControllerNameSpace.defaultCameraImageName) ?? UIImage()
             
             snapshot.insertItems([insertImage], beforeItem: first)
             isAppendable = true
@@ -221,6 +248,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func makeProductImages() -> [ProductImage] {
+        
         var images = snapshot.itemIdentifiers
         
         if isAppendable {
@@ -228,11 +256,16 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         }
         
         return images.map {
-            ProductImage(name: $0.description, data: $0.compress() ?? Data(), type: "png")
+            ProductImage(
+                name: $0.description,
+                data: $0.compress() ?? Data(),
+                type: "png"
+            )
         }
     }
     
     func configureProduct(product: ProductDetail) {
+        
         productRegistViewModel.configure(id: product.id)
         productRegistView.configureProduct(product: product)
         viewMode = .edit
@@ -251,6 +284,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func checkProductInfomation(product: RegistrationProduct, completion: @escaping () -> Void) {
+        
         if checkTextIsEmpty(product: product) == .success {
             completion()
         } else {
@@ -261,25 +295,24 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func bind() {
+        
         let input = ProductRegistViewModel.Input(postAction: postAction, patchAction: patchAction)
         let output = self.productRegistViewModel.transform(input: input)
         
         output.doneAction.subscribe { isAction in
             if isAction {
                 DispatchQueue.main.async {
+                    self.refreshList?()
+                    self.navigationController?.popViewController(animated: true)
+                    
                     switch self.viewMode {
                     case .add:
-                        self.refreshList?()
-                        self.navigationController?.popViewController(animated: true)
                         NotificationCenter.default.post(name: .addProductData,
                                                         object: self)
                     case .edit:
-                        self.refreshList?()
-                        self.navigationController?.popViewController(animated: true)
                         NotificationCenter.default.post(name: .productDataDidChanged,
                                                         object: self)
                     }
-                    
                 }
             }
         }
@@ -292,6 +325,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     @objc private func didTapDoneButton() {
+        
         let product = productRegistView.makeProduct()
         let images = makeProductImages()
         
@@ -306,6 +340,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     private func checkTextIsEmpty(product: RegistrationProduct) -> ProductTextConditionAlert {
+        
         guard product.name != "" else { return ProductTextConditionAlert.invalidName }
         guard product.price != 0 else  { return ProductTextConditionAlert.invalidPrice }
         guard product.stock != 0 else  { return ProductTextConditionAlert.invalidStock }
@@ -318,6 +353,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
 
 extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
         guard let selectedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
         
         appendDataSource(data: selectedImage)
@@ -329,6 +365,7 @@ extension ProductRegistViewController: UIImagePickerControllerDelegate & UINavig
 
 extension ProductRegistViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         if indexPath.row == 0 && isAppendable {
             switch viewMode {
             case .add:
@@ -346,6 +383,7 @@ extension ProductRegistViewController: UICollectionViewDelegate {
 
 extension ProductRegistViewController {
     @objc private func keyboardUp(notification:NSNotification) {
+        
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
             return

@@ -18,8 +18,21 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         static let dataLoadFailureMessage = "데이터를 불러오지 못했습니다."
     }
     
+    //MARK: ProductDetailViewController NameSpace
+
+    private enum ProductDetailViewControllerNameSpace {
+        static let deleteCompletionMessage = "해당 상품을 삭제 완료했습니다."
+        static let deleteFailureMessage = "제품을 삭제하지 못했습니다."
+        static let wrongPasswordMessage = "비밀번호가 틀렸습니다"
+        static let dataLoadFailureMessage = "데이터를 불러오지 못했습니다."
+    }
+    
+    //MARK: ViewModel
+    
     private let productDetailViewModel = ProductDetailViewModel()
     private let productDetailView = ProductDetailView()
+    
+    //MARK: ViewModel - State
     
     private let fetchProductDetailAction = Observable(ProductDetailViewModel.detailViewRefreshAction.refreshAction)
     private var deleteButtonAction = Observable(ProductDetailViewModel.ButtonAction.defaultAction)
@@ -46,54 +59,6 @@ final class ProductDetailViewController: SuperViewControllerSetting {
             productDetailView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             productDetailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-    }
-    
-    private func configureNavigationBar(productDetail: ProductDetail) {
-        if productDetail.vendorID == UserInfo.id {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(
-                barButtonSystemItem: .action,
-                target: self,
-                action: #selector(didTapEitButton)
-            )
-        }
-        
-        navigationItem.title = productDetail.name
-    }
-    
-    @objc private func didTapEitButton() {
-        AlertDirector(viewController: self).createProductEditActionSheet { [weak self] _ in
-            self?.editButtonAction.value = .editButtonAction
-        } deleteAction: { [weak self] _ in
-            self?.didTapDeleteButton()
-        }
-    }
-    
-    private func convertToEditView(productDetail: ProductDetail) {
-        
-        let registView = ProductRegistViewController()
-        registView.configureProduct(product: productDetail)
-        
-        registView.refreshList = {
-            self.fetchProductDetailAction.value = ProductDetailViewModel.detailViewRefreshAction.refreshAction
-        }
-        
-        navigationController?.pushViewController(registView, animated: true)
-    }
-    
-    private func didTapDeleteButton() {
-        deleteButtonAction.value = .deleteButtonAction
-    }
-    
-    private func removeCurrentProduct() {
-        AlertDirector(viewController: self).createProductDeleteSuccessAlert(
-            message: ProductDetailViewControllerNameSpace.deleteCompletionMessage
-        ) { [weak self] _ in
-            self?.navigationController?.popViewController(animated: true)
-        }
-    }
-    
-    func receiveProductNumber(productNumber: Int) {
-        self.productDetailViewModel.productNumber = productNumber
     }
     
     private func bind() {
@@ -139,6 +104,56 @@ final class ProductDetailViewController: SuperViewControllerSetting {
                 message: ProductDetailViewControllerNameSpace.dataLoadFailureMessage
             )
         }
+    }
+    
+    private func configureNavigationBar(productDetail: ProductDetail) {
+        
+        if productDetail.vendorID == UserInfo.id {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .action,
+                target: self,
+                action: #selector(didTapEitButton)
+            )
+        }
+        
+        navigationItem.title = productDetail.name
+    }
+    
+    @objc private func didTapEitButton() {
+        
+        AlertDirector(viewController: self).createProductEditActionSheet { [weak self] _ in
+            self?.editButtonAction.value = .editButtonAction
+        } deleteAction: { [weak self] _ in
+            self?.didTapDeleteButton()
+        }
+    }
+    
+    private func convertToEditView(productDetail: ProductDetail) {
+        
+        let registView = ProductRegistViewController()
+        
+        registView.configureProduct(product: productDetail)
+        registView.refreshList = {
+            self.fetchProductDetailAction.value = ProductDetailViewModel.detailViewRefreshAction.refreshAction
+        }
+        
+        navigationController?.pushViewController(registView, animated: true)
+    }
+    
+    private func didTapDeleteButton() {
+        deleteButtonAction.value = .deleteButtonAction
+    }
+    
+    private func removeCurrentProduct() {
+        AlertDirector(viewController: self).createProductDeleteSuccessAlert(
+            message: ProductDetailViewControllerNameSpace.deleteCompletionMessage
+        ) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    func receiveProductNumber(productNumber: Int) {
+        self.productDetailViewModel.productNumber = productNumber
     }
 }
 

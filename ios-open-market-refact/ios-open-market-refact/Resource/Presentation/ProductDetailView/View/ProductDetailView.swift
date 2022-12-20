@@ -13,11 +13,14 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     private let productScrollView = UIScrollView()
     
     var changeCurrentPage: (() -> Void)?
+    
     private var currentPage = 1 {
         didSet {
             changeCurrentPage?()
         }
     }
+    
+    //MARK: UI Components
     
     private let photoIndexLabel: UILabel = {
         let label = UILabel()

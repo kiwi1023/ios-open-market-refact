@@ -150,6 +150,13 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         productScrollView.layer.cornerRadius = 15
     }
     
+    private func setupProductScrollViewLayout(_ productDetail: ProductDetail) {
+        productScrollView.contentSize = CGSize(
+            width: productScrollView.bounds.width * CGFloat(productDetail.images.count),
+            height: productScrollView.bounds.height
+        )
+    }
+    
     private func setupProductInfoStackViewLayout(productDetail: ProductDetail) {
         productInfoStackView.setupProductDetail(productDetail: productDetail)
         
@@ -166,13 +173,6 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
     //MARK: - Product DetailViewController Data Setup
     
     private func configureImageView(_ productDetail: ProductDetail) {
-        DispatchQueue.main.async { [self] in
-            productScrollView.contentSize = CGSize(
-                width: productScrollView.bounds.width * CGFloat(productDetail.images.count),
-                height: productScrollView.bounds.height
-            )
-        }
-        
         for (index, image) in productDetail.images.enumerated() {
             let imageView = UIImageView()
             
@@ -182,17 +182,16 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
                 imageView.image = image
             }
             
-            DispatchQueue.main.async { [self] in
-                imageView.frame = productScrollView.bounds
-                imageView.frame.origin.x = productScrollView.bounds.width * CGFloat(index)
-                imageView.contentMode = .scaleToFill
-            }
+            imageView.frame = productScrollView.bounds
+            imageView.frame.origin.x = productScrollView.bounds.width * CGFloat(index)
+            imageView.contentMode = .scaleToFill
             
             productScrollView.addSubview(imageView)
         }
     }
     
     func getProductDetailData(productDetail: ProductDetail) {
+        setupProductScrollViewLayout(productDetail)
         configureImageView(productDetail)
         photoIndexLabel.text = "\(currentPage) / \(productDetail.images.count)"
         venderImageView.image = UIImage(systemName: "person.circle")

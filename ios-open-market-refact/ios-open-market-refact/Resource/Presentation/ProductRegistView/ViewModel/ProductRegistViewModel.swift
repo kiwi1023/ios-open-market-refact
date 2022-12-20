@@ -67,7 +67,7 @@ final class ProductRegistViewModel: ViewModelBuilder {
             images: images
         ) else { return }
         
-        NetworkManager().dataTask(with: request) { result in
+        networkAPI.dataTask(with: request) { result in
             switch result {
             case .success(_):
                 completion()
@@ -83,7 +83,7 @@ final class ProductRegistViewModel: ViewModelBuilder {
             productNumber: id
         ) else { return }
         
-        NetworkManager().dataTask(with: request) { result in
+        networkAPI.dataTask(with: request) { result in
             switch result {
             case .success(_):
                 completion()

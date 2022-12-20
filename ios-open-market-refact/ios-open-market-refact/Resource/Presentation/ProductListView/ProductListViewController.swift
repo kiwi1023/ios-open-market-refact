@@ -159,6 +159,12 @@ final class ProductListViewController: SuperViewControllerSetting {
         output.filteredListOutput.subscribe { filteredList in
             self.filteredDataSource(data: filteredList)
         }
+        
+        productListViewModel.onErrorHandling = { failure in
+            AlertDirector(viewController: self).createErrorAlert(
+                message: ProductListViewControllerNameSpace.getDataErrorMassage
+            )
+        }
     }
     
     func filteredDataSource(data: [Product]) {

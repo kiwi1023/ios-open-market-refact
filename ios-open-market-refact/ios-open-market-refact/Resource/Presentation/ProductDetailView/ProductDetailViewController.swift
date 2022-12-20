@@ -127,6 +127,12 @@ final class ProductDetailViewController: SuperViewControllerSetting {
                 convertToEditView(productDetail: productDetail)
             }
         }
+        
+        productDetailViewModel.onErrorHandling = { failure in
+            AlertDirector(viewController: self).createErrorAlert(
+                message: ProductDetailViewControllerNameSpace.dataLoadFailureMessage
+            )
+        }
     }
 }
 

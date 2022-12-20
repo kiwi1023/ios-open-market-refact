@@ -15,6 +15,7 @@ private enum ProductRegistViewControllerNameSpace {
     static let registImageMessage = "사진을 등록해 주세요"
     static let successEditMessage = "해당 상품을 수정 완료했습니다."
     static let editFailureMessage = "상품 수정에 실패하였습니다."
+    static let dataLoadFailureMessage = "데이터를 불러오지 못했습니다."
 }
 
 private enum ProductTextConditionAlert {
@@ -258,6 +259,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     private func bind() {
         let input = ProductRegistViewModel.Input(postAction: postAction, patchAction: patchAction)
         let output = self.viewModel.transform(input: input)
+        
         output.doneAction.subscribe { isAction in
             if isAction {
                 DispatchQueue.main.async {
@@ -276,6 +278,12 @@ final class ProductRegistViewController: SuperViewControllerSetting {
                     
                 }
             }
+        }
+        
+        viewModel.onErrorHandling = { failure in
+            AlertDirector(viewController: self).createErrorAlert(
+                message: ProductRegistViewControllerNameSpace.dataLoadFailureMessage
+            )
         }
     }
     

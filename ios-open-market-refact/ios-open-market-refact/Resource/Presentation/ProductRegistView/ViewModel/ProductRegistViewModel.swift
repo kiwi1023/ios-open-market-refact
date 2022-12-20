@@ -40,8 +40,13 @@ final class ProductRegistViewModel: ViewModelBuilder {
             case .unUpdatable:
                 return
             case .updatable:
-                self.postProduct(input: product, images: images) {
-                    self.output.value = true
+                self.postProduct(input: product, images: images) { result in
+                    switch result {
+                    case .success():
+                        self.output.value = true
+                    case .failure(let failure):
+                        self.onErrorHandling?(failure)
+                    }
                 }
             }
         })
@@ -52,8 +57,13 @@ final class ProductRegistViewModel: ViewModelBuilder {
             case .unUpdatable:
                 return
             case .updatable:
-                self.patchProduct(input: product, id: self.id) {
-                    self.output.value = true
+                self.patchProduct(input: product, id: self.id) { result in
+                    switch result {
+                    case .success():
+                        self.output.value = true
+                    case .failure(let failure):
+                        self.onErrorHandling?(failure)
+                    }
                 }
             }
         })
@@ -61,34 +71,34 @@ final class ProductRegistViewModel: ViewModelBuilder {
         return .init(doneAction: output)
     }
     
-    private func postProduct(input: RegistrationProduct, images: [ProductImage], completion: @escaping () -> Void) {
+    private func postProduct(input: RegistrationProduct, images: [ProductImage], completion: @escaping (Result<Void, APIError>) -> Void) {
         guard let request = OpenMarketRequestDirector().createPostRequest(
             product: input,
             images: images
         ) else { return }
         
-        NetworkManager().dataTask(with: request) { result in
+        self.networkAPI.dataTask(with: request) { result in
             switch result {
             case .success(_):
-                completion()
-            case .failure(let error):
-                print(error)
+                completion(.success(()))
+            case .failure:
+                completion(.failure(APIError.response))
             }
         }
     }
     
-    private func patchProduct(input: RegistrationProduct, id: Int, completion: @escaping () -> Void) {
+    private func patchProduct(input: RegistrationProduct, id: Int, completion: @escaping (Result<Void, APIError>) -> Void) {
         guard let request = OpenMarketRequestDirector().createPatchRequest(
             product: input,
             productNumber: id
         ) else { return }
         
-        NetworkManager().dataTask(with: request) { result in
+        self.networkAPI.dataTask(with: request) { result in
             switch result {
             case .success(_):
-                completion()
-            case .failure(let error):
-                print(error)
+                completion(.success(()))
+            case .failure:
+                completion(.failure(APIError.response))
             }
         }
     }

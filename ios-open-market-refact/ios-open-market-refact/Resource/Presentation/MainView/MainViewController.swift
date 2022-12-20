@@ -35,6 +35,7 @@ final class MainViewController: SuperViewControllerSetting {
         view.backgroundColor = .systemBackground
         productMiniListView.titleStackView.moreButtonDelegate = self
         productMiniListView.miniListCollectionView?.delegate = self
+        bannerView.bannerViewErrorHandlingDelegate = self
         setupNavigationBar()
     }
     
@@ -72,18 +73,24 @@ final class MainViewController: SuperViewControllerSetting {
     }
     
     private func bind() {
-           let miniListFetchAction = Observable<(InitialPageInfo)>(MainViewControllerNameSpace.initialPageInfo)
-                                                                   
-           let output = mainViewModel.transform(input: .init(
+        let miniListFetchAction = Observable<(InitialPageInfo)>(MainViewControllerNameSpace.initialPageInfo)
+        
+        let output = mainViewModel.transform(input: .init(
             pageInfoInput: miniListFetchAction
-           ))
-           
-           output.fetchedProductListOutput.subscribe { list in
-               DispatchQueue.main.async {
-                   self.updateDataSource(data: list)
-               }
-           }
-       }
+        ))
+        
+        output.fetchedProductListOutput.subscribe { list in
+            DispatchQueue.main.async {
+                self.updateDataSource(data: list)
+            }
+        }
+        
+        mainViewModel.onErrorHandling = { failure in 
+            AlertDirector(viewController: self).createErrorAlert(
+                message: MainViewControllerNameSpace.getDataErrorMassage
+            )
+        }
+    }
 }
 
 //MARK: - Setup CollectionView Method
@@ -147,4 +154,22 @@ extension MainViewController: UICollectionViewDelegate {
         productDetailViewController.receiveProductNumber(productNumber: productId)
         navigationController?.pushViewController(productDetailViewController, animated: true)
     }
+}
+
+//MARK: - BannerView Error Handling delegate
+
+protocol BannerViewErrorHandlingDelegate {
+    
+    func popErrorAlert()
+}
+
+extension MainViewController: BannerViewErrorHandlingDelegate {
+    func popErrorAlert() {
+        print("DD")
+
+        AlertDirector(viewController: self).createErrorAlert(
+            message: MainViewControllerNameSpace.getDataErrorMassage
+            )
+    }
+    
 }

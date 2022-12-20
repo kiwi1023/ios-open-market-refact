@@ -88,7 +88,7 @@ final class ProductDetailViewModel: ViewModelBuilder {
             productNumber
         ) else { return }
         
-        NetworkManager().dataTask(with: detailRequest) { result in
+        self.networkAPI.dataTask(with: detailRequest) { result in
             switch result {
             case .success(let data):
                 guard let productDetail = JsonDecoderManager.shared.decode(from: data, to: ProductDetail.self) else { return }
@@ -108,7 +108,7 @@ final class ProductDetailViewModel: ViewModelBuilder {
         ) else { return }
         
         
-        NetworkManager().dataTask(with: deleteURIRequest) { result in
+        self.networkAPI.dataTask(with: deleteURIRequest) { result in
             switch result {
             case .success(let data):
                 
@@ -116,7 +116,7 @@ final class ProductDetailViewModel: ViewModelBuilder {
                     with: data
                 ) else { return }
                 
-                NetworkManager().dataTask(with: deleteRequest) { result in
+                self.networkAPI.dataTask(with: deleteRequest) { result in
                     switch result {
                     case .success(_):
                         completion(.success(true))

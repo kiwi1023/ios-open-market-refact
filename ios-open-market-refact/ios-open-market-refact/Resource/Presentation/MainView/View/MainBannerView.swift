@@ -15,6 +15,8 @@ final class MainBannerView: SuperViewSetting {
     private var imageViews: [UIImageView] = []
     private var timer = Timer()
     
+    var bannerViewErrorHandlingDelegate: BannerViewErrorHandlingDelegate?
+    
     //MARK: - Main Banner View Setup Methods
     
     override func setupDefault() {
@@ -89,6 +91,10 @@ final class MainBannerView: SuperViewSetting {
                     configureBannerImages(index: index, url: url)
                 }
             }
+        }
+        
+        bannerViewModel.onErrorHandling = { [self] failure in
+            bannerViewErrorHandlingDelegate?.popErrorAlert()
         }
     }
     

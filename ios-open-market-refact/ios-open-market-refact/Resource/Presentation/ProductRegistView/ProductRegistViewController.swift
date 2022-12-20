@@ -55,11 +55,11 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     private lazy var dataSource: DataSource = configureDataSource()
     private lazy var snapshot: Snapshot = configureSnapshot()
     
-    private let registView = ProductRegistView()
+    private let productRegistView = ProductRegistView()
     private let imagePicker = UIImagePickerController()
     private var viewMode = ViewMode.add
     private var isAppendable = true
-    private let viewModel = ProductRegistViewModel(networkAPI: NetworkManager())
+    private let productRegistViewModel = ProductRegistViewModel(networkAPI: NetworkManager())
     
     private let postAction = Observable<(RegistrationProduct?, [ProductImage])>((nil, []))
     private let patchAction = Observable<(RegistrationProduct?)>(nil)
@@ -105,20 +105,20 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         setupNavigationBar()
         configureImagePicker()
         updateDataSource(data: [UIImage(named: "iconCamera.png") ?? UIImage()])
-        registView.registCollectionView.delegate = self
+        productRegistView.registCollectionView.delegate = self
         bind()
     }
     
     override func addUIComponents() {
-        view.addSubview(registView)
+        view.addSubview(productRegistView)
     }
     
     override func setupLayout() {
         NSLayoutConstraint.activate([
-            registView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            registView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            registView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            registView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            productRegistView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            productRegistView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            productRegistView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            productRegistView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
@@ -161,7 +161,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
             cell.configureImage(data: item)
         }
         
-        let dataSource = DataSource(collectionView: registView.registCollectionView) {
+        let dataSource = DataSource(collectionView: productRegistView.registCollectionView) {
             (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
             return collectionView.dequeueConfiguredReusableCell(using: cell,
                                                                 for: indexPath,
@@ -229,8 +229,8 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     func configureProduct(product: ProductDetail) {
-        viewModel.configure(id: product.id)
-        registView.configureProduct(product: product)
+        productRegistViewModel.configure(id: product.id)
+        productRegistView.configureProduct(product: product)
         viewMode = .edit
         
         DispatchQueue.main.async {
@@ -258,7 +258,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     
     private func bind() {
         let input = ProductRegistViewModel.Input(postAction: postAction, patchAction: patchAction)
-        let output = self.viewModel.transform(input: input)
+        let output = self.productRegistViewModel.transform(input: input)
         
         output.doneAction.subscribe { isAction in
             if isAction {
@@ -280,7 +280,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
             }
         }
         
-        viewModel.onErrorHandling = { failure in
+        productRegistViewModel.onErrorHandling = { failure in
             AlertDirector(viewController: self).createErrorAlert(
                 message: ProductRegistViewControllerNameSpace.dataLoadFailureMessage
             )
@@ -288,7 +288,7 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     }
     
     @objc private func didTapDoneButton() {
-        let product = registView.makeProduct()
+        let product = productRegistView.makeProduct()
         let images = makeProductImages()
         
         checkProductInfomation(product: product) {
@@ -354,14 +354,14 @@ extension ProductRegistViewController {
             right: 0.0
         )
         
-        registView.mainScrollView.contentInset = contentInset
-        registView.mainScrollView.scrollIndicatorInsets = contentInset
+        productRegistView.mainScrollView.contentInset = contentInset
+        productRegistView.mainScrollView.scrollIndicatorInsets = contentInset
     }
     
     @objc private func keyboardDown() {
         let contentInset = UIEdgeInsets.zero
         
-        registView.mainScrollView.contentInset = contentInset
-        registView.mainScrollView.scrollIndicatorInsets = contentInset
+        productRegistView.mainScrollView.contentInset = contentInset
+        productRegistView.mainScrollView.scrollIndicatorInsets = contentInset
     }
 }

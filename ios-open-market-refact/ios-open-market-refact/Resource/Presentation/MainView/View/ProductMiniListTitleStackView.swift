@@ -14,7 +14,7 @@ private enum ProductMiniListTitleStackViewNameSpace {
 
 final class ProductMiniListTitleStackView: UIStackView {
     
-    var moreButtonDelegate: MoreButtonTapDelegate?
+    weak var moreButtonDelegate: MoreButtonTapDelegate?
     
     private let titleLabel: UILabel = {
         let label = UILabel()

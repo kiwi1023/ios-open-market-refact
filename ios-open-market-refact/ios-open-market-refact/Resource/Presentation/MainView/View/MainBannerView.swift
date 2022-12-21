@@ -15,7 +15,7 @@ final class MainBannerView: SuperViewSetting {
     private var imageViews: [UIImageView] = []
     private var timer = Timer()
     
-    var bannerViewErrorHandlingDelegate: BannerViewErrorHandlingDelegate?
+    weak var bannerViewErrorHandlingDelegate: BannerViewErrorHandlingDelegate?
     
     //MARK: - Main Banner View Setup Methods
     

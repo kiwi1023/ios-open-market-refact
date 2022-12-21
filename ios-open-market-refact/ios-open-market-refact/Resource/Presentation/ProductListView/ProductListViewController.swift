@@ -137,7 +137,9 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     @objc private func didTapRegistButton() {
-        navigationController?.pushViewController(ProductRegistViewController(), animated: true)
+        DispatchQueue.main.async {
+            self.navigationController?.pushViewController(ProductRegistViewController(), animated: true)
+        }
     }
     
     //MARK: - Data Source, Snapshot Update Method

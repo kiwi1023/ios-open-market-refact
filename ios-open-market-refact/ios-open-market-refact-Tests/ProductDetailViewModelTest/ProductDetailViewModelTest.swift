@@ -2,7 +2,7 @@
 //  ProductDetailViewModelTest.swift
 //  ios-open-market-refact-Tests
 //
-//  Created by Kiwon Song on 2022/12/20.
+//  Created by 송기원, 유한석, 이은찬 on 2022/12/20.
 //
 
 import XCTest

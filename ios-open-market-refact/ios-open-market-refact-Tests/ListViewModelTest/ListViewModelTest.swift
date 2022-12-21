@@ -2,7 +2,7 @@
 //  ListViewModelTest.swift
 //  ios-open-market-refact-Tests
 //
-//  Created by 이은찬 on 2022/12/18.
+//  Created by 송기원, 유한석, 이은찬 on 2022/12/18.
 //
 
 import XCTest

@@ -110,6 +110,7 @@ final class NetworkTest: XCTestCase {
         networkManager.dataTask(with: deleteRequest) { (result: Result<Data, Error>) in
             switch result {
             case .success(let success):
+                print(success)
                 print(String(decoding: success, as: UTF8.self))
             case .failure(let error):
                 print(error)
@@ -120,24 +121,4 @@ final class NetworkTest: XCTestCase {
 
         wait(for: [expectation], timeout: 300)
     }
-
-//    func test_DELETE_메서드_동작확인() {
-//        // given
-//        let expectation = expectation(description: "비동기 요청을 기다림.")
-//        let networkManager = NetworkManager()
-//        guard let deleteRequest = OpenMarketRequestDirector().createDeleteRequest(with: "MTg5fDU3MDNjODU4LTYxMTAtMTFlZC1hOTE3LTYxZDNlYmI5MDA4MQ") else { return }
-//        
-//        networkManager.dataTask(with: deleteRequest) { (result: Result<Data, Error>) in
-//            switch result {
-//            case .success(let success):
-//                print(String(decoding: success, as: UTF8.self))
-//            case .failure(let error):
-//                print(error)
-//                break
-//            }
-//            expectation.fulfill()
-//        }
-//
-//        wait(for: [expectation], timeout: 300)
-//    }
 }

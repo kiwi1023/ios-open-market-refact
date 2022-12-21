@@ -2,7 +2,7 @@
 //  RegistViewModelTest.swift
 //  ios-open-market-refact-Tests
 //
-//  Created by 이은찬 on 2022/12/20.
+//  Created by 송기원, 유한석, 이은찬 on 2022/12/20.
 //
 
 import XCTest
@@ -21,8 +21,8 @@ final class RegistViewModelTest: XCTestCase {
         // given
         let viewModel = ProductRegistViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
-        let postAction = Observable<(RegistrationProduct?, [ProductImage], Update)>((product, [], .updatable))
-        let patchAction = Observable<(RegistrationProduct?, Update)>((product, .unUpdatable))
+        let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
+        let patchAction = Observable<(RegistrationProduct?)>((product))
         let input = ProductRegistViewModel.Input(postAction: postAction,
                                                  patchAction: patchAction)
         let output = viewModel.transform(input: input)
@@ -42,8 +42,8 @@ final class RegistViewModelTest: XCTestCase {
         // given
         let viewModel = ProductRegistViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
-        let postAction = Observable<(RegistrationProduct?, [ProductImage], Update)>((product, [], .unUpdatable))
-        let patchAction = Observable<(RegistrationProduct?, Update)>((product, .updatable))
+        let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
+        let patchAction = Observable<(RegistrationProduct?)>((product))
         let input = ProductRegistViewModel.Input(postAction: postAction,
                                                  patchAction: patchAction)
         let output = viewModel.transform(input: input)
@@ -63,8 +63,8 @@ final class RegistViewModelTest: XCTestCase {
         // given
         let viewModel = ProductRegistViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
-        let postAction = Observable<(RegistrationProduct?, [ProductImage], Update)>((product, [], .unUpdatable))
-        let patchAction = Observable<(RegistrationProduct?, Update)>((product, .unUpdatable))
+        let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
+        let patchAction = Observable<(RegistrationProduct?)>((product))
         let input = ProductRegistViewModel.Input(postAction: postAction,
                                                  patchAction: patchAction)
         let output = viewModel.transform(input: input)
@@ -77,6 +77,6 @@ final class RegistViewModelTest: XCTestCase {
         }
         
         // then
-        XCTAssertEqual(result, false)
+        XCTAssertEqual(result, true)
     }
 }

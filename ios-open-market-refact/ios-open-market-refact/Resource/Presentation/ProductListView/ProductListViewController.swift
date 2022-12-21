@@ -43,12 +43,6 @@ final class ProductListViewController: SuperViewControllerSetting {
         case add
     }
     
-    private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
-
-    private lazy var dataSource: DataSource? = configureDataSource()
-    private lazy var snapshot: Snapshot = configureSnapshot()
-    private let productListViewModel = ProductListViewModel(networkAPI: NetworkManager())
     private let pageState = Observable<(
         pageNumber: Int,
         itemsPerPage: Int,

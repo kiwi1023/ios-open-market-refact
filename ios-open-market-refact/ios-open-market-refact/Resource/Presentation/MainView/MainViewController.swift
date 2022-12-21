@@ -34,7 +34,6 @@ final class MainViewController: SuperViewControllerSetting {
     
     private let bannerView = MainBannerView()
     private let productMiniListView = ProductMiniListView()
-    private let mainViewModel = MainViewModel()
     
     //MARK: View Model
     

@@ -297,7 +297,6 @@ extension ProductListViewController: UISearchResultsUpdating {
         guard let text = searchController.searchBar.text?.lowercased() else { return }
         
         if text == ProductListViewControllerNameSpace.emptySearchState {
-            //pageState.value = (pageState.value.pageNumber, pageState.value.itemsPerPage, .update)
             self.scrollToTop()
         } else {
             sortingProduct(text: text)

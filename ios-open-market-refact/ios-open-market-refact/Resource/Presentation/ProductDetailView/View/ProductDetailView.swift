@@ -138,8 +138,8 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
         
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor.constraint(equalTo: spacingView.bottomAnchor, constant: 10),
-            descriptionLabel.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 20),
-            descriptionLabel.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -20),
+            descriptionLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            descriptionLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             descriptionLabel.bottomAnchor.constraint(equalTo: mainScrollView.contentLayoutGuide.bottomAnchor)
         ])
     }

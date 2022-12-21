@@ -25,7 +25,7 @@ class BannerViewModel: ViewModelBuilder {
     }
     
     func transform(input: Input) -> Output {
-        let bannerImageOutput = Observable([""])
+        let bannerImageOutput: Observable<[String]> = Observable([])
         
         input.loadBannerImagesAction.subscribe { [self] action in
             fetchBannerImages { [self] result in

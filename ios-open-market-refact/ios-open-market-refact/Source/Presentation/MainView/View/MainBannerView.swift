@@ -88,20 +88,22 @@ final class MainBannerView: SuperViewSetting {
         
         let output = bannerViewModel.transform(input: .init(loadBannerImagesAction: loadBannerImagesAction))
         
-        output.loadBannerImagesOutPut.subscribe { [self] bannerImageUrls in
-            DispatchQueue.main.async { [self] in
-                getNumberOfImageUrls(count: bannerImageUrls.count - 2)
+        output.loadBannerImagesOutPut.subscribe { [weak self] bannerImageUrls in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.getNumberOfImageUrls(count: bannerImageUrls.count - 2)
                 
-                guard imageViews.count != 2 else  { return }
+                guard self.imageViews.count != 2 else  { return }
                 
                 for (index , url) in bannerImageUrls.enumerated() {
-                    configureBannerImages(index: index, url: url)
+                    self.configureBannerImages(index: index, url: url)
                 }
             }
         }
         
-        bannerViewModel.onErrorHandling = { [self] failure in
-            bannerViewErrorHandlingDelegate?.popErrorAlert()
+        bannerViewModel.onErrorHandling = { [weak self] failure in
+            self?.bannerViewErrorHandlingDelegate?.popErrorAlert()
         }
     }
     
@@ -114,8 +116,8 @@ final class MainBannerView: SuperViewSetting {
     private func configureBannerImages(index: Int, url: String) {
         guard let nsURL = NSURL(string: url) else { return  }
         
-        ImageCache.shared.loadBannerImage(url: nsURL) { [self] image in
-            imageViews[index].image = image
+        ImageCache.shared.loadBannerImage(url: nsURL) { [weak self] image in
+            self?.imageViews[index].image = image
         }
     }
     
@@ -133,16 +135,17 @@ final class MainBannerView: SuperViewSetting {
     
     private func startTimer() {
         timer.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true, block: { [self] timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: true, block: { [weak self] timer in
+            guard let self = self else { return }
             
-            let index = Int(scrollView.contentOffset.x / scrollView.bounds.width)
+            let index = Int(self.scrollView.contentOffset.x / self.scrollView.bounds.width)
             var nextIndex = index + 1
             
-            if nextIndex == imageViews.count {
+            if nextIndex == self.imageViews.count {
                 nextIndex = 0
             }
             
-            let newOffset = CGFloat(nextIndex) * CGFloat(scrollView.bounds.width)
+            let newOffset = CGFloat(nextIndex) * CGFloat(self.scrollView.bounds.width)
             
             UIView.animate(withDuration: 0.3, animations: {
                 self.scrollView.contentOffset.x = newOffset

@@ -35,7 +35,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     //MARK: ViewModel
     
-    private let productListViewModel = ProductListViewModel(networkAPI: NetworkManager())
+    private let productListViewModel = ProductListViewModel()
     
     //MARK: ViewModel - State
     
@@ -152,25 +152,30 @@ final class ProductListViewController: SuperViewControllerSetting {
             filteringStateUpdateAction: filteringState
         ))
         
-        output.productListOutput.subscribe { [self] productList in
-            switch pageState.value.fetchType {
+        output.productListOutput.subscribe { [weak self] productList in
+            guard let self = self else { return }
+            
+            switch self.pageState.value.fetchType {
             case .update :
-                snapshot.deleteAllItems()
-                snapshot.appendSections([.main])
-                snapshot.appendItems(productList)
+                self.snapshot.deleteAllItems()
+                self.snapshot.appendSections([.main])
+                self.snapshot.appendItems(productList)
             case .add :
-                snapshot.appendItems(productList)
+                self.snapshot.appendItems(productList)
             }
+            
             DispatchQueue.main.async {
                 self.dataSource?.apply(self.snapshot, animatingDifferences: false, completion: nil)
             }
         }
         
-        output.filteredListOutput.subscribe { filteredList in
-            self.filteredDataSource(data: filteredList)
+        output.filteredListOutput.subscribe { [weak self] filteredList in
+            self?.filteredDataSource(data: filteredList)
         }
         
-        productListViewModel.onErrorHandling = { failure in
+        productListViewModel.onErrorHandling = { [weak self] failure in
+            guard let self = self else { return }
+            
             AlertDirector(viewController: self).createErrorAlert(
                 message: ProductListViewControllerNameSpace.getDataErrorMassage
             )
@@ -234,7 +239,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     @objc private func refreshList() {
-        let initialPageInfo = initialPageInfo
+        let initialPageInfo = ProductListViewController.initialPageInfo
         pageState.value = (initialPageInfo.pageNumber, initialPageInfo.itemsPerPage, .update)
         refreshController.endRefreshing()
     }

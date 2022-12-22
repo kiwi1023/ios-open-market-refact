@@ -88,7 +88,7 @@ final class MainViewController: SuperViewControllerSetting {
     }
     
     private func bind() {
-        let miniListFetchAction = Observable<(InitialPageInfo)>(initialPageInfo)
+        let miniListFetchAction = Observable<(InitialPageInfo)>(MainViewController.initialPageInfo)
         let output = mainViewModel.transform(input: .init(
             pageInfoInput: miniListFetchAction
         ))

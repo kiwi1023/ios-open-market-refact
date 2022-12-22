@@ -28,14 +28,16 @@ class BannerViewModel: ViewModelBuilder {
         let bannerImageOutput: Observable<[String]> = Observable([])
         
         input.loadBannerImagesAction.subscribe { [self] action in
-            fetchBannerImages { [self] result in
+            fetchBannerImages { [weak self] result in
+                guard let self = self else { return }
+                
                 switch result {
                 case .success(let bannerImages):
                     var url: [String] = []
                     bannerImages.forEach {
                         url.append($0.image)
                     }
-                    bannerImageOutput.value = sortImageUrls(imageUrls: url)
+                    bannerImageOutput.value = self.sortImageUrls(imageUrls: url)
                     
                 case .failure(let failure):
                     self.onErrorHandling?(failure)

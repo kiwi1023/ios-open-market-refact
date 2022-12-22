@@ -53,25 +53,25 @@ final class ProductDetailViewModel: ViewModelBuilder {
             (productDetail: ProductDetail(), buttonAction: ButtonAction.defaultAction)
         )
         
-        input.fetchProductDetailAction.subscribe { [self] action in
-            receiveDetailData { result in
+        input.fetchProductDetailAction.subscribe { [weak self] action in
+            self?.receiveDetailData { result in
                 switch result {
                 case .success(let productDetail):
                     fetchedProductDetailOutput.value = productDetail
                 case .failure(let failure):
-                    self.onErrorHandling?(failure)
+                    self?.onErrorHandling?(failure)
                 }
             }
         }
         
-        input.deleteButtonAction.subscribe { [self] action in
+        input.deleteButtonAction.subscribe { [weak self] action in
             if action == .deleteButtonAction {
-                deleteProduct { [self] result in
+                self?.deleteProduct { result in
                     switch result {
                     case .success(_):
                         deleteButtonOutput.value = action
                     case .failure(let failure):
-                        self.onErrorHandling?(failure)
+                        self?.onErrorHandling?(failure)
                     }
                 }
             }

@@ -212,8 +212,10 @@ final class ProductDetailView: SuperViewSetting, UIScrollViewDelegate {
 
 extension ProductDetailView {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        DispatchQueue.main.async { [self] in
-            self.currentPage = Int(round(scrollView.contentOffset.x / productScrollView.bounds.width)) + 1
+        DispatchQueue.main.async { [weak self] in
+            guard self != nil else { return }
+            guard let productScrollViewWidth = self?.productScrollView.bounds.width else { return }
+            self?.currentPage = Int(round(scrollView.contentOffset.x / productScrollViewWidth)) + 1
         }
     }
 }

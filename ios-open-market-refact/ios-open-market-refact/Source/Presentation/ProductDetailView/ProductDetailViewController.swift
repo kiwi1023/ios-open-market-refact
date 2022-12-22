@@ -62,19 +62,20 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         
         let output = productDetailViewModel.transform(input: input)
         
-        output.fetchedProductDetailOutput.subscribe { [self] productDetail in
-            DispatchQueue.main.async { [self] in
-                configureNavigationBar(productDetail: productDetail)
-                productDetailView.getProductDetailData(productDetail: productDetail)
+        output.fetchedProductDetailOutput.subscribe { [weak self] productDetail in
+            DispatchQueue.main.async {
+                self?.configureNavigationBar(productDetail: productDetail)
+                self?.productDetailView.getProductDetailData(productDetail: productDetail)
             }
         }
         
-        output.deleteButtonActionOutput.subscribe { [self] action in
-            guard action == .deleteButtonAction else  { return }
+        output.deleteButtonActionOutput.subscribe { [weak self] action in
+            guard let self = self,
+                  action == .deleteButtonAction else  { return }
             
-            DispatchQueue.main.async { [self] in
-                AlertDirector(viewController: self).createProductDeleteAlert { [weak self] _ in
-                    self?.removeCurrentProduct()
+            DispatchQueue.main.async {
+                AlertDirector(viewController: self).createProductDeleteAlert {_ in
+                    self.removeCurrentProduct()
                     NotificationCenter.default.post(name: .addProductData,
                                                     object: self)
                 }
@@ -82,11 +83,12 @@ final class ProductDetailViewController: SuperViewControllerSetting {
         }
         
         
-        output.editButtonActionOutput.subscribe { [self] productDetail, action in
-            guard action == .editButtonAction else  { return }
+        output.editButtonActionOutput.subscribe { [weak self] productDetail, action in
+            guard let self = self,
+                    action == .editButtonAction else  { return }
             
-            DispatchQueue.main.async { [self] in
-                convertToEditView(productDetail: productDetail)
+            DispatchQueue.main.async {
+                self.convertToEditView(productDetail: productDetail)
             }
         }
         

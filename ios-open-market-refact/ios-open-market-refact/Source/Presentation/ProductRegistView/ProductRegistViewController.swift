@@ -167,7 +167,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
     
     private func configureDataSource() -> DataSource {
         
-        let cell = UICollectionView.CellRegistration<ProductRegistCollectionViewCell, UIImage> { cell, indexPath, item in
+        let cell = UICollectionView.CellRegistration<ProductRegistCollectionViewCell, UIImage> { [weak self] cell, indexPath, item in
+            guard let self = self else { return }
+            
             cell.removeImage = {
                 switch self.viewMode {
                 case .add:
@@ -274,8 +276,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
             product.images.forEach { image in
                 guard let url = NSURL(string: image.url) else { return }
                 
-                ImageCache.shared.load(url: url) { image in
-                    guard let image = image else { return }
+                ImageCache.shared.load(url: url) { [weak self] image in
+                    guard let self = self,
+                          let image = image else { return }
                     
                     self.appendDataSource(data: image)
                 }
@@ -299,7 +302,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         let input = ProductRegistViewModel.Input(postAction: postAction, patchAction: patchAction)
         let output = self.productRegistViewModel.transform(input: input)
         
-        output.doneAction.subscribe { isAction in
+        output.doneAction.subscribe { [weak self] isAction in
+            guard let self = self else { return }
+            
             if isAction {
                 DispatchQueue.main.async {
                     self.refreshList?()
@@ -317,7 +322,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
             }
         }
         
-        productRegistViewModel.onErrorHandling = { failure in
+        productRegistViewModel.onErrorHandling = { [weak self] failure in
+            guard let self = self else { return }
+            
             AlertDirector(viewController: self).createErrorAlert(
                 message: ProductRegistViewControllerNameSpace.dataLoadFailureMessage
             )
@@ -329,7 +336,9 @@ final class ProductRegistViewController: SuperViewControllerSetting {
         let product = productRegistView.makeProduct()
         let images = makeProductImages()
         
-        checkProductInfomation(product: product) {
+        checkProductInfomation(product: product) { [weak self] in
+            guard let self = self else { return }
+            
             switch self.viewMode {
             case .add:
                 self.postAction.value = (product, images)

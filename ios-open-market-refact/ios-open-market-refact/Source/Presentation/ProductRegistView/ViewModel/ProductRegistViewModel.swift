@@ -31,8 +31,10 @@ final class ProductRegistViewModel: ViewModelBuilder {
     
     func transform(input: Input) -> Output {
         
-        input.postAction.subscribe(listener: { product, images in
-            guard let product = product else { return }
+        input.postAction.subscribe(listener: { [weak self] product, images in
+            guard let self = self,
+                  let product = product else { return }
+            
                 self.postProduct(input: product, images: images) { result in
                     switch result {
                     case .success():
@@ -43,8 +45,10 @@ final class ProductRegistViewModel: ViewModelBuilder {
             }
         })
         
-        input.patchAction.subscribe(listener: { product in
-            guard let product = product else { return }
+        input.patchAction.subscribe(listener: { [weak self] product in
+            guard let self = self,
+                  let product = product else { return }
+            
             self.patchProduct(input: product, id: self.id) { result in
                 switch result {
                 case .success():
@@ -79,7 +83,11 @@ final class ProductRegistViewModel: ViewModelBuilder {
         }
     }
     
-    private func patchProduct(input: RegistrationProduct, id: Int, completion: @escaping (Result<Void, APIError>) -> Void) {
+    private func patchProduct(
+        input: RegistrationProduct, id: Int,
+        completion: @escaping (Result<Void, APIError>) -> Void
+    ) {
+        
         guard let request = OpenMarketRequestDirector().createPatchRequest(
             product: input,
             productNumber: id

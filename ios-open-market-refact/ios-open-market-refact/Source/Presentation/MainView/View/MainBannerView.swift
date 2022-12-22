@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol BannerViewErrorHandlingDelegate: AnyObject {
+    
+    func popErrorAlert()
+}
+
 final class MainBannerView: SuperViewSetting {
     
     private let bannerViewModel = BannerViewModel()

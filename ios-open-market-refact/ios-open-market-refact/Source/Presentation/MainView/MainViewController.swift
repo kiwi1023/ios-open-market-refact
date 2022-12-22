@@ -141,11 +141,6 @@ extension MainViewController {
 
 //MARK: - More Button AddTargeting delegate
 
-protocol MoreButtonTapDelegate: AnyObject {
-    
-    func moreButtonAddGesture()
-}
-
 extension MainViewController: MoreButtonTapDelegate {
     
     func moreButtonAddGesture() {
@@ -168,11 +163,6 @@ extension MainViewController: UICollectionViewDelegate {
 }
 
 //MARK: - BannerView Error Handling delegate
-
-protocol BannerViewErrorHandlingDelegate: AnyObject {
-    
-    func popErrorAlert()
-}
 
 extension MainViewController: BannerViewErrorHandlingDelegate {
     func popErrorAlert() {

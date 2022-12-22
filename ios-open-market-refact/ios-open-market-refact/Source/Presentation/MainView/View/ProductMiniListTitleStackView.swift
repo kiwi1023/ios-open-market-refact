@@ -7,12 +7,19 @@
 
 import UIKit
 
-private enum ProductMiniListTitleStackViewNameSpace {
-    static let titleLabelContent = "🚨 이 상품 놓치지 마세요"
-    static let moreListLabelContent = "more ➡️"
+protocol MoreButtonTapDelegate: AnyObject {
+    
+    func moreButtonAddGesture()
 }
 
 final class ProductMiniListTitleStackView: UIStackView {
+    
+    //MARK: ProductMiniListTitleStackView NameSpace
+    
+    private enum ProductMiniListTitleStackViewNameSpace {
+        static let titleLabelContent = "🚨 이 상품 놓치지 마세요"
+        static let moreListLabelContent = "more ➡️"
+    }
     
     weak var moreButtonDelegate: MoreButtonTapDelegate?
     

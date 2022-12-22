@@ -155,8 +155,8 @@ final class ProductListViewCell: UICollectionViewCell {
             return
         }
         
-        ImageCache.shared.load(url: nsURL) { image in
-            self.thumbnailImageView.image = image
+        ImageCache.shared.load(url: nsURL) { [weak self] image in
+            self?.thumbnailImageView.image = image
         }
         
         nameLabel.text = data.name

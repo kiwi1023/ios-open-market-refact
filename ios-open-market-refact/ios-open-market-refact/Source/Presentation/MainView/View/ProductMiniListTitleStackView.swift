@@ -61,7 +61,10 @@ final class ProductMiniListTitleStackView: UIStackView {
     }
     
     private func setupTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapMoreButton))
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(tapMoreButton)
+        )
         
         moreListLabel.addGestureRecognizer(tapGesture)
         moreListLabel.isUserInteractionEnabled = true

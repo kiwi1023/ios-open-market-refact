@@ -31,7 +31,9 @@ final class MainViewModel: ViewModelBuilder {
     func transform(input: Input) -> Output {
         let fetchedProductListOutput = Observable<[Product]>([])
         
-        input.pageInfoInput.subscribe { (pageNumber: Int, itemsPerPage: Int) in
+        input.pageInfoInput.subscribe { [weak self] (pageNumber: Int, itemsPerPage: Int) in
+            guard let self = self else { return }
+            
             self.fetchProductList(pageNumber: pageNumber, itemsPerPage: itemsPerPage) { (result: Result<[Product], APIError>) in
                 switch result {
                 case .success(let productList):

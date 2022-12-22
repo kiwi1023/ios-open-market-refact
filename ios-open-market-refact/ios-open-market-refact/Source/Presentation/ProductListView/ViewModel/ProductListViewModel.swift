@@ -38,8 +38,18 @@ final class ProductListViewModel: ViewModelBuilder {
         let fetchedProductList = Observable<[Product]>([])
         let fileteredProductList = Observable<[Product]>([])
         
-        input.productListPageInfoUpdateAction.subscribe { (pageNumber: Int, itemsPerPage: Int, fetchType: ProductListViewController.FetchType) in
-            self.fetchedCurrentProductList(pageNumber: pageNumber, itemsPerPage: itemsPerPage, fetchType: fetchType) { (result: Result<Bool, APIError>) in
+        input.productListPageInfoUpdateAction.subscribe { [self] (
+            pageNumber: Int,
+            itemsPerPage: Int,
+            fetchType: ProductListViewController.FetchType
+        ) in
+            self.fetchedCurrentProductList(
+                pageNumber: pageNumber,
+                itemsPerPage: itemsPerPage,
+                fetchType: fetchType
+            ) { [weak self] (result: Result<Bool, APIError>) in
+                guard let self = self else { return }
+                
                 switch result {
                 case .success:
                     switch input.productListPageInfoUpdateAction.value.fetchType {
@@ -55,7 +65,9 @@ final class ProductListViewModel: ViewModelBuilder {
             }
         }
         
-        input.filteringStateUpdateAction.subscribe { filteringWord in
+        input.filteringStateUpdateAction.subscribe { [weak self] filteringWord in
+            guard let self = self else { return }
+            
             fileteredProductList.value = self.productList.filter({ product in
                 product.name.lowercased().contains(filteringWord)
             })
@@ -80,6 +92,8 @@ final class ProductListViewModel: ViewModelBuilder {
             ) else { return }
         
         self.networkAPI.dataTask(with: productListGetRequest) { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let data):
                 guard let fetchedList = JsonDecoderManager.shared.decode(
@@ -88,10 +102,10 @@ final class ProductListViewModel: ViewModelBuilder {
                 ) else { return }
                 switch fetchType {
                 case .update:
-                    self?.productList = fetchedList.pages
+                    self.productList = fetchedList.pages
                 case .add:
-                    self?.productList += fetchedList.pages
-                    self?.appendingProuctList = fetchedList.pages
+                    self.productList += fetchedList.pages
+                    self.appendingProuctList = fetchedList.pages
                 }
                 completion(.success(true))
             case .failure:

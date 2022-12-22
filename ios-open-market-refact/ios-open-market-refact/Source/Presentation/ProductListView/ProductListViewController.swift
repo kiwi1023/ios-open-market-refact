@@ -61,7 +61,12 @@ final class ProductListViewController: SuperViewControllerSetting {
     
     private lazy var refreshController: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(refreshList), for: .valueChanged)
+        refreshControl.addTarget(
+            self,
+            action: #selector(refreshList),
+            for: .valueChanged
+        )
+        
         return refreshControl
     }()
     
@@ -131,7 +136,11 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     private func setupImageViewGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapRegistButton))
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(didTapRegistButton)
+        )
+        
         registProductImageView.image = UIImage(systemName: "plus.circle.fill")
         registProductImageView.addGestureRecognizer(tapGesture)
         registProductImageView.isUserInteractionEnabled = true

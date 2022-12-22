@@ -69,8 +69,8 @@ final class ProductMiniListViewCell: UICollectionViewCell {
     func configure(data: Product) {
         guard let nsURL = NSURL(string: data.thumbnail) else { return }
         
-        ImageCache.shared.load(url: nsURL) {  image in
-            self.thumbnailImageView.image = image
+        ImageCache.shared.load(url: nsURL) { [weak self] image in
+            self?.thumbnailImageView.image = image
         }
         
         nameLabel.text = data.name

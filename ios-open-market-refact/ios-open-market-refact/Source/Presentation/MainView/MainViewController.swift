@@ -94,12 +94,14 @@ final class MainViewController: SuperViewControllerSetting {
         ))
         
         output.fetchedProductListOutput.subscribe { list in
-            DispatchQueue.main.async {
-                self.updateDataSource(data: list)
+            DispatchQueue.main.async { [weak self] in
+                self?.updateDataSource(data: list)
             }
         }
         
-        mainViewModel.onErrorHandling = { failure in
+        mainViewModel.onErrorHandling = { [weak self] failure in
+            guard let self = self else { return }
+            
             AlertDirector(viewController: self).createErrorAlert(
                 message: MainViewControllerNameSpace.getDataErrorMassage
             )

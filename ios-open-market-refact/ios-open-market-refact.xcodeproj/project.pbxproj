@@ -888,7 +888,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RF7GLLKTJB;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "ios-open-market-refact/Source/Info.plist";
+				INFOPLIST_FILE = "ios-open-market-refact/Resource/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
@@ -916,7 +916,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RF7GLLKTJB;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "ios-open-market-refact/Source/Info.plist";
+				INFOPLIST_FILE = "ios-open-market-refact/Resource/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";

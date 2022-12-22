@@ -12,7 +12,6 @@ final class ProductListViewController: SuperViewControllerSetting {
     //MARK: ProductListView NameSpace
     
     private enum ProductListViewControllerNameSpace {
-        static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
         static let navigationTitle = "상품목록"
         static let searchControllerPlaceHolder = "검색해보세용"
         static let emptySearchState = ""
@@ -25,6 +24,8 @@ final class ProductListViewController: SuperViewControllerSetting {
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
 
+    static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 10)
+    
     private lazy var dataSource: DataSource? = configureDataSource()
     private lazy var snapshot: Snapshot = configureSnapshot()
     
@@ -48,8 +49,8 @@ final class ProductListViewController: SuperViewControllerSetting {
         itemsPerPage: Int,
         fetchType: FetchType)
     >((
-        ProductListViewControllerNameSpace.initialPageInfo.pageNumber,
-        ProductListViewControllerNameSpace.initialPageInfo.itemsPerPage,
+        initialPageInfo.pageNumber,
+        initialPageInfo.itemsPerPage,
         .update
     ))
     private let filteringState = Observable<String>("")
@@ -233,7 +234,7 @@ final class ProductListViewController: SuperViewControllerSetting {
     }
     
     @objc private func refreshList() {
-        let initialPageInfo = ProductListViewControllerNameSpace.initialPageInfo
+        let initialPageInfo = initialPageInfo
         pageState.value = (initialPageInfo.pageNumber, initialPageInfo.itemsPerPage, .update)
         refreshController.endRefreshing()
     }

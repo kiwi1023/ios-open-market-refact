@@ -13,7 +13,6 @@ final class MainViewController: SuperViewControllerSetting {
     
     private enum MainViewControllerNameSpace {
         static let appTitle = "My Market🏪"
-        static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 20)
         static let getDataErrorMassage = "데이터를 받아오지 못했습니다."
     }
     
@@ -25,6 +24,8 @@ final class MainViewController: SuperViewControllerSetting {
         case main
     }
     
+    static let initialPageInfo: (pageNumber: Int, itemsPerPage: Int) = (1, 20)
+
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, Product>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Product>
     
@@ -87,7 +88,7 @@ final class MainViewController: SuperViewControllerSetting {
     }
     
     private func bind() {
-        let miniListFetchAction = Observable<(InitialPageInfo)>(MainViewControllerNameSpace.initialPageInfo)
+        let miniListFetchAction = Observable<(InitialPageInfo)>(initialPageInfo)
         let output = mainViewModel.transform(input: .init(
             pageInfoInput: miniListFetchAction
         ))

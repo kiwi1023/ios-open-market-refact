@@ -320,16 +320,16 @@
 			path = Manager;
 			sourceTree = "<group>";
 		};
-		459EDB5B291CADC500B1A7EB /* Source */ = {
+		459EDB5B291CADC500B1A7EB /* Resource */ = {
 			isa = PBXGroup;
 			children = (
 				4D85B724291A1D0100E41E71 /* Assets.xcassets */,
 				4D85B729291A1D0100E41E71 /* Info.plist */,
 			);
-			path = Source;
+			path = Resource;
 			sourceTree = "<group>";
 		};
-		459EDB5C291CADD700B1A7EB /* Resource */ = {
+		459EDB5C291CADD700B1A7EB /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */,
@@ -338,7 +338,7 @@
 				459EDB5D291CAE0C00B1A7EB /* Model */,
 				455785BE291E56AE0082A983 /* Presentation */,
 			);
-			path = Resource;
+			path = Source;
 			sourceTree = "<group>";
 		};
 		459EDB5D291CAE0C00B1A7EB /* Model */ = {
@@ -444,8 +444,8 @@
 		4D85B71A291A1D0000E41E71 /* ios-open-market-refact */ = {
 			isa = PBXGroup;
 			children = (
-				459EDB5C291CADD700B1A7EB /* Resource */,
-				459EDB5B291CADC500B1A7EB /* Source */,
+				459EDB5C291CADD700B1A7EB /* Source */,
+				459EDB5B291CADC500B1A7EB /* Resource */,
 			);
 			path = "ios-open-market-refact";
 			sourceTree = "<group>";

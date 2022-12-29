@@ -332,8 +332,8 @@
 		459EDB5C291CADD700B1A7EB /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */,
 				4D85B71B291A1D0000E41E71 /* AppDelegate.swift */,
+				4D85B71D291A1D0000E41E71 /* SceneDelegate.swift */,
 				4D8B7BBA291CDEF400A6E5F2 /* Utill */,
 				459EDB5D291CAE0C00B1A7EB /* Model */,
 				455785BE291E56AE0082A983 /* Presentation */,

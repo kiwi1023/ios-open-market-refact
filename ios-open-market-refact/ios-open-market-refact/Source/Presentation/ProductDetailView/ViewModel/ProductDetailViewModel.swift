@@ -13,7 +13,7 @@ final class ProductDetailViewModel: ViewModelBuilder {
     
     var onErrorHandling : ((APIError) -> Void)?
     
-    private let networkAPI: SessionProtocol
+    private let networkAPI: NetworkManagerProtocol
     
     enum ButtonAction {
         case defaultAction
@@ -40,7 +40,7 @@ final class ProductDetailViewModel: ViewModelBuilder {
         )>
     }
     
-    init(networkAPI: SessionProtocol = NetworkManager()) {
+    init(networkAPI: NetworkManagerProtocol = NetworkManager()) {
         
         self.networkAPI = networkAPI
     }

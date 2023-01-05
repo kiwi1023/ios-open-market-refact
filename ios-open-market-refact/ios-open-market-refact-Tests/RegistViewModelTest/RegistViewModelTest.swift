@@ -10,7 +10,7 @@ import XCTest
 
 final class RegistViewModelTest: XCTestCase {
     
-    struct MockSession: SessionProtocol {
+    struct MockNetworkManager: NetworkManagerProtocol {
         var result: Result<Data, Error>
         func dataTask(with request: APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) {
             completionHandler(result)
@@ -19,7 +19,7 @@ final class RegistViewModelTest: XCTestCase {
     
     func test_post_결과_확인() {
         // given
-        let viewModel = ProductRegistViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
         let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
         let patchAction = Observable<(RegistrationProduct?)>((product))
@@ -40,7 +40,7 @@ final class RegistViewModelTest: XCTestCase {
     
     func test_patch_결과_확인() {
         // given
-        let viewModel = ProductRegistViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
         let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
         let patchAction = Observable<(RegistrationProduct?)>((product))
@@ -61,7 +61,7 @@ final class RegistViewModelTest: XCTestCase {
     
     func test_post_patch_둘_다_action이_없을때() {
         // given
-        let viewModel = ProductRegistViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
         let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
         let patchAction = Observable<(RegistrationProduct?)>((product))

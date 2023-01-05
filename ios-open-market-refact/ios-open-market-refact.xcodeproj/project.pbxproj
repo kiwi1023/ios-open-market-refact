@@ -10,7 +10,7 @@
 		1824C6962935CCC900C1A7C4 /* ProductRegistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A132CA2921FB4D00E6FE34 /* ProductRegistViewController.swift */; };
 		1824C6972935CCE600C1A7C4 /* ProductInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454DAB7729223E64002CC8D6 /* ProductInfoStackView.swift */; };
 		1824C6982935CD2300C1A7C4 /* UILable + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAEADB7291E652B0029C029 /* UILable + Extension.swift */; };
-		1824C6992935CD2700C1A7C4 /* SessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785A6291CF2FF0082A983 /* SessionProtocol.swift */; };
+		1824C6992935CD2700C1A7C4 /* NetworkManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785A6291CF2FF0082A983 /* NetworkManagerProtocol.swift */; };
 		1841B1F2294DECBB00973DA5 /* MainViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1841B1F1294DECBB00973DA5 /* MainViewModelTest.swift */; };
 		1841B1FB294E18DF00973DA5 /* ListViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1841B1FA294E18DF00973DA5 /* ListViewModelTest.swift */; };
 		1841B203294F13A100973DA5 /* ProductRegistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1841B202294F13A100973DA5 /* ProductRegistViewModel.swift */; };
@@ -29,7 +29,7 @@
 		454DAB9229262A68002CC8D6 /* ViewSettingProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454DAB9129262A68002CC8D6 /* ViewSettingProtocol.swift */; };
 		45578592291CB20F0082A983 /* CurrencyEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45578591291CB20F0082A983 /* CurrencyEnum.swift */; };
 		4557859D291CEFC90082A983 /* NetworkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4557859C291CEFC90082A983 /* NetworkTest.swift */; };
-		455785A9291CF33A0082A983 /* StubSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785A8291CF33A0082A983 /* StubSession.swift */; };
+		455785A9291CF33A0082A983 /* MockNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785A8291CF33A0082A983 /* MockNetworkManager.swift */; };
 		455785AB291CF49C0082A983 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785AA291CF49C0082A983 /* MockData.swift */; };
 		455785B1291CF6B20082A983 /* ProductListMockData.json in Resources */ = {isa = PBXBuildFile; fileRef = 455785A3291CF1010082A983 /* ProductListMockData.json */; };
 		455785B3291D0B730082A983 /* RegistrationProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455785B2291D0B730082A983 /* RegistrationProduct.swift */; };
@@ -104,8 +104,8 @@
 		4557859A291CEFC90082A983 /* ios-open-market-refact-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-open-market-refact-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4557859C291CEFC90082A983 /* NetworkTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTest.swift; sourceTree = "<group>"; };
 		455785A3291CF1010082A983 /* ProductListMockData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ProductListMockData.json; sourceTree = "<group>"; };
-		455785A6291CF2FF0082A983 /* SessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionProtocol.swift; sourceTree = "<group>"; };
-		455785A8291CF33A0082A983 /* StubSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubSession.swift; sourceTree = "<group>"; };
+		455785A6291CF2FF0082A983 /* NetworkManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerProtocol.swift; sourceTree = "<group>"; };
+		455785A8291CF33A0082A983 /* MockNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkManager.swift; sourceTree = "<group>"; };
 		455785AA291CF49C0082A983 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		455785B2291D0B730082A983 /* RegistrationProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationProduct.swift; sourceTree = "<group>"; };
 		455785B5291D0C7E0082A983 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
@@ -280,7 +280,7 @@
 		455785A5291CF20F0082A983 /* TestDouble */ = {
 			isa = PBXGroup;
 			children = (
-				455785A8291CF33A0082A983 /* StubSession.swift */,
+				455785A8291CF33A0082A983 /* MockNetworkManager.swift */,
 				455785AA291CF49C0082A983 /* MockData.swift */,
 				455785A3291CF1010082A983 /* ProductListMockData.json */,
 				45BD3FF9294E109B00B37A25 /* BannerImageUrlMockData.json */,
@@ -508,7 +508,7 @@
 		4DE5DD822939CAE7007E845F /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
-				455785A6291CF2FF0082A983 /* SessionProtocol.swift */,
+				455785A6291CF2FF0082A983 /* NetworkManagerProtocol.swift */,
 				4D8B7BBE291CE09C00A6E5F2 /* APIRequestProtocol.swift */,
 			);
 			path = Protocol;
@@ -637,7 +637,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				455785AB291CF49C0082A983 /* MockData.swift in Sources */,
-				455785A9291CF33A0082A983 /* StubSession.swift in Sources */,
+				455785A9291CF33A0082A983 /* MockNetworkManager.swift in Sources */,
 				1841B1FB294E18DF00973DA5 /* ListViewModelTest.swift in Sources */,
 				45BD3FF8294E104C00B37A25 /* BannerViewModelTest.swift in Sources */,
 				4557859D291CEFC90082A983 /* NetworkTest.swift in Sources */,
@@ -651,7 +651,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1824C6992935CD2700C1A7C4 /* SessionProtocol.swift in Sources */,
+				1824C6992935CD2700C1A7C4 /* NetworkManagerProtocol.swift in Sources */,
 				1824C6982935CD2300C1A7C4 /* UILable + Extension.swift in Sources */,
 				1824C6972935CCE600C1A7C4 /* ProductInfoStackView.swift in Sources */,
 				1824C6962935CCC900C1A7C4 /* ProductRegistViewController.swift in Sources */,
@@ -811,7 +811,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "ios-open-market-refact/Source/Info.plist";
+				INFOPLIST_FILE = "ios-open-market-refact/Resource/Info.plist";
 				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -867,7 +867,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "ios-open-market-refact/Source/Info.plist";
+				INFOPLIST_FILE = "ios-open-market-refact/Resource/Info.plist";
 				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MTL_ENABLE_DEBUG_INFO = NO;

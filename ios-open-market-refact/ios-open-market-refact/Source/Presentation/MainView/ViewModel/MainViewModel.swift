@@ -9,10 +9,10 @@ import Foundation
 
 final class MainViewModel: ViewModelBuilder {
     
-    private let networkAPI: SessionProtocol
+    private let networkAPI: NetworkManagerProtocol
     var onErrorHandling : ((APIError) -> Void)?
     
-    init(networkAPI: SessionProtocol = NetworkManager()) {
+    init(networkAPI: NetworkManagerProtocol = NetworkManager()) {
         self.networkAPI = networkAPI
     }
     

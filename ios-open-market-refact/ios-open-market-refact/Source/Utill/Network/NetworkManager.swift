@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct NetworkManager: SessionProtocol {
+struct NetworkManager: NetworkManagerProtocol {
     func dataTask(with request: APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) {
         guard let request = request.urlRequest else {
             completionHandler(.failure(APIError.request))

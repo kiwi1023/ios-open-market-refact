@@ -9,7 +9,7 @@ import Foundation
 
 final class ProductListViewModel: ViewModelBuilder {
     
-    private let networkAPI: SessionProtocol
+    private let networkAPI: NetworkManagerProtocol
     var onErrorHandling : ((APIError) -> Void)?
     
     private var productList: [Product] = []
@@ -30,7 +30,7 @@ final class ProductListViewModel: ViewModelBuilder {
         let filteredListOutput: Observable<[Product]>
     }
     
-    init(networkAPI: SessionProtocol = NetworkManager()) {
+    init(networkAPI: NetworkManagerProtocol = NetworkManager()) {
         self.networkAPI = networkAPI
     }
     

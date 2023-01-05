@@ -10,7 +10,7 @@ import XCTest
 
 final class ProductDetailViewModelTest: XCTestCase {
     
-    struct MockSession: SessionProtocol {
+    struct MockNetworkManager: NetworkManagerProtocol {
         var result: Result<Data, Error>
         func dataTask(with request: APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) {
             completionHandler(result)
@@ -19,7 +19,7 @@ final class ProductDetailViewModelTest: XCTestCase {
  
     func test_유효한_데이터_값이_주어졌을_경우확인() {
         //given
-        let viewModel = ProductDetailViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductDetailMockData").data!)))
+        let viewModel = ProductDetailViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductDetailMockData").data!)))
         viewModel.productNumber = 1
         
         let productInfo = Observable((ProductDetailViewModel.detailViewRefreshAction.refreshAction))
@@ -38,7 +38,7 @@ final class ProductDetailViewModelTest: XCTestCase {
     func test_유효하지_않는_데이터_값이_주어졌을_경우확인() {
         // given, when
         var result = ""
-        let viewModel = ProductDetailViewModel(networkAPI: MockSession(result: .failure(APIError.invalidData)))
+        let viewModel = ProductDetailViewModel(networkAPI: MockNetworkManager(result: .failure(APIError.invalidData)))
         
         viewModel.productNumber = 1
         viewModel.onErrorHandling = { _ in
@@ -58,7 +58,7 @@ final class ProductDetailViewModelTest: XCTestCase {
     func test_버튼이_눌렸을_경우_메서드_실행_확인() {
         // given
         var result = ""
-        let viewModel = ProductDetailViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductDetailMockData").data!)))
+        let viewModel = ProductDetailViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductDetailMockData").data!)))
         viewModel.productNumber = 1
         
         let productInfo = Observable((ProductDetailViewModel.detailViewRefreshAction.refreshAction))

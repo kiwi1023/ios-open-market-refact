@@ -9,7 +9,7 @@ import Foundation
 
 class BannerViewModel: ViewModelBuilder {
     
-    private let networkAPI: SessionProtocol
+    private let networkAPI: NetworkManagerProtocol
     var onErrorHandling : ((APIError) -> Void)?
     
     struct Input {
@@ -20,7 +20,7 @@ class BannerViewModel: ViewModelBuilder {
         let loadBannerImagesOutPut: Observable<[String]>
     }
     
-    init(networkAPI: SessionProtocol = NetworkManager()) {
+    init(networkAPI: NetworkManagerProtocol = NetworkManager()) {
         self.networkAPI = networkAPI
     }
     

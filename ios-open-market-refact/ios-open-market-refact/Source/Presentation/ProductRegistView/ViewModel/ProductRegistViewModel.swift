@@ -13,7 +13,7 @@ final class ProductRegistViewModel: ViewModelBuilder {
     
     private let output = Observable(false)
     
-    private let networkAPI: SessionProtocol
+    private let networkAPI: NetworkManagerProtocol
     private var id = 0
     
     struct Input {
@@ -25,7 +25,7 @@ final class ProductRegistViewModel: ViewModelBuilder {
         let doneAction: Observable<(Bool)>
     }
     
-    init(networkAPI: SessionProtocol = NetworkManager()) {
+    init(networkAPI: NetworkManagerProtocol = NetworkManager()) {
         self.networkAPI = networkAPI
     }
     

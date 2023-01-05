@@ -10,15 +10,16 @@ import XCTest
 
 final class NetworkTest: XCTestCase {
     
-    func test_GET_메서드_동작확인() {
+    func test_GET_메서드_동작확인_성공() {
         // given
         let expectation = expectation(description: "비동기테스트")
-        let session = StubSession()
+        let mockNetworkManager = MockNetworkManager(fileName: "ProductListMockData",
+                                                    isSuccess: true)
         var productName: String?
         guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1,
                                                                          itemsPerPage: 100) else { return }
         
-        session.dataTask(with: request) { result in
+        mockNetworkManager.dataTask(with: request) { result in
             switch result {
             case .success(let data):
                 let decodedData = try? JSONDecoder().decode(ProductList.self, from: data)
@@ -36,6 +37,35 @@ final class NetworkTest: XCTestCase {
         
         // then
         XCTAssertEqual(productName, result)
+    }
+    
+    func test_GET_메서드_동작확인_실패() {
+        // given
+        let expectation = expectation(description: "비동기테스트")
+        let mockNetworkManager = MockNetworkManager(fileName: "ProductListMockData",
+                                                    isSuccess: false)
+        var error: String?
+        
+        guard let request = OpenMarketRequestDirector().createGetRequest(pageNumber: 1,
+                                                                         itemsPerPage: 100) else { return }
+        
+        mockNetworkManager.dataTask(with: request) { result in
+            switch result {
+            case .success(_):
+                print("Success")
+            case .failure(_):
+                error = "Error"
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 3)
+        
+        // when
+        let testResult = "Error"
+        
+        // then
+       XCTAssertEqual(testResult, error)
     }
     
     func test_POST_메서드_동작확인() {

@@ -12,7 +12,7 @@ final class ImageCache {
     private init() {}
     
     private let cachedImages = NSCache<NSURL, UIImage>()
-    private var waitingRespoinseClosure = [NSURL: [(UIImage) -> Void]]()
+    private var waitingResponseClosure = [NSURL: [(UIImage) -> Void]]()
     private var dataTasks = [NSURL: URLSessionDataTask]()
     
     private func image(url: NSURL) -> UIImage? {
@@ -27,17 +27,17 @@ final class ImageCache {
             return
         }
         
-        if waitingRespoinseClosure[url] != nil {
+        if waitingResponseClosure[url] != nil {
             return
         } else {
-            waitingRespoinseClosure[url] = [completion]
+            waitingResponseClosure[url] = [completion]
         }
         
         let urlSession = URLSession(configuration: .ephemeral)
         let task = urlSession.dataTask(with: url as URL) { data, response, error in
             guard let responseData = data,
                   let image = UIImage(data: responseData),
-                  let blocks = self.waitingRespoinseClosure[url], error == nil else {
+                  let blocks = self.waitingResponseClosure[url], error == nil else {
                 DispatchQueue.main.async {
                     completion(nil)
                 }
@@ -84,7 +84,7 @@ final class ImageCache {
         dataTasks[url]?.cancel()
         dataTasks[url] = nil
         dataTasks.removeValue(forKey: url)
-        waitingRespoinseClosure[url] = []
-        waitingRespoinseClosure.removeValue(forKey: url)
+        waitingResponseClosure[url] = []
+        waitingResponseClosure.removeValue(forKey: url)
     }
 }

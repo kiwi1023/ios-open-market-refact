@@ -10,7 +10,7 @@ import XCTest
 
 final class MainViewModelTest: XCTestCase {
     
-    struct MockSession: SessionProtocol {
+    struct MockNetworkManager: NetworkManagerProtocol {
         var result: Result<Data, Error>
         func dataTask(with request: APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) {
             completionHandler(result)
@@ -19,7 +19,7 @@ final class MainViewModelTest: XCTestCase {
     
     func test_유효한_데이터_값이_주어졌을_경우확인() {
         // given
-        let viewModel = MainViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = MainViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let updateAction = Observable((pageNumber: 1, itemsPerPage: 5))
         let input = MainViewModel.Input(pageInfoInput: updateAction)
         let output = viewModel.transform(input: input)
@@ -34,7 +34,7 @@ final class MainViewModelTest: XCTestCase {
     func test_유효하지_않는_데이터_값이_주어졌을_경우확인() {
         // given, when
         var result = ""
-        let viewModel = MainViewModel(networkAPI: MockSession(result: .failure(APIError.invalidData)))
+        let viewModel = MainViewModel(networkAPI: MockNetworkManager(result: .failure(APIError.invalidData)))
         
         viewModel.onErrorHandling = { _ in
             result = "error"
@@ -51,7 +51,7 @@ final class MainViewModelTest: XCTestCase {
     func test_값을_변경했을때_subscribe발동확인() {
         // given
         var result = ""
-        let viewModel = MainViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = MainViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let updateAction = Observable((pageNumber: 1, itemsPerPage: 5))
         let input = MainViewModel.Input(pageInfoInput: updateAction)
         let output = viewModel.transform(input: input)

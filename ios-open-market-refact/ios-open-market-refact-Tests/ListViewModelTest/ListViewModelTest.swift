@@ -10,7 +10,7 @@ import XCTest
 
 final class ListViewModelTest: XCTestCase {
     
-    struct MockSession: SessionProtocol {
+    struct MockNetworkManager: NetworkManagerProtocol {
         var result: Result<Data, Error>
         func dataTask(with request: APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) {
             completionHandler(result)
@@ -19,7 +19,7 @@ final class ListViewModelTest: XCTestCase {
     
     func test_item_갯수확인() {
         var count = 0
-        let viewModel = ProductListViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let pageInfo = Observable((pageNumber: 1, itemsPerPage: 5,
                                    fetchType: ProductListViewController.FetchType.add))
         let filteringState = Observable("")
@@ -38,7 +38,7 @@ final class ListViewModelTest: XCTestCase {
     
     func test_유효한_데이터_값이_주어졌을_경우확인() {
         // given
-        let viewModel = ProductListViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let pageInfo = Observable((pageNumber: 1, itemsPerPage: 5, fetchType: ProductListViewController.FetchType.add))
         let filteringState = Observable("mock")
         let input = ProductListViewModel.Input(productListPageInfoUpdateAction: pageInfo,
@@ -58,7 +58,7 @@ final class ListViewModelTest: XCTestCase {
     func test_유효하지_않는_데이터_값이_주어졌을_경우확인() {
         // given, when
         var result = ""
-        let viewModel = ProductListViewModel(networkAPI: MockSession(result: .failure(APIError.invalidData)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .failure(APIError.invalidData)))
 
         viewModel.onErrorHandling = { _ in
             result = "error"
@@ -80,7 +80,7 @@ final class ListViewModelTest: XCTestCase {
     func test_값을_변경했을때_subscribe발동확인() {
         // given
         var result = ""
-        let viewModel = ProductListViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let pageInfo = Observable((pageNumber: 1, itemsPerPage: 5,
                                    fetchType: ProductListViewController.FetchType.add))
         let filteringState = Observable("")
@@ -102,7 +102,7 @@ final class ListViewModelTest: XCTestCase {
     
     func test_검색된_데이터가_없을_경우확인() {
         // given
-        let viewModel = ProductListViewModel(networkAPI: MockSession(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
         let pageInfo = Observable((pageNumber: 1, itemsPerPage: 5,
                                    fetchType: ProductListViewController.FetchType.add))
         let filteringState = Observable("없는데이터")

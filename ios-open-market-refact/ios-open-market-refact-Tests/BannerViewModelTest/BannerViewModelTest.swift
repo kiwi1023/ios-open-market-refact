@@ -10,7 +10,7 @@ import XCTest
 
 final class BannerViewModelTest: XCTestCase {
     
-    struct MockSession: SessionProtocol {
+    struct MockNetworkManager: NetworkManagerProtocol {
         var result: Result<Data, Error>
         func dataTask(with request: APIRequest, completionHandler: @escaping (Result<Data, Error>) -> Void) {
             completionHandler(result)
@@ -20,7 +20,7 @@ final class BannerViewModelTest: XCTestCase {
     func test_유효한_데이터_값이_주어졌을_경우확인() {
         // given
         let viewModel = BannerViewModel(
-            networkAPI: MockSession(result: .success(MockData(fileName: "BannerImageUrlMockData").data!))
+            networkAPI: MockNetworkManager(result: .success(MockData(fileName: "BannerImageUrlMockData").data!))
         )
         let bannerImageUrlLoadAction = Observable<Void>(())
         let input = BannerViewModel.Input(loadBannerImagesAction: bannerImageUrlLoadAction)
@@ -36,7 +36,7 @@ final class BannerViewModelTest: XCTestCase {
     func test_유효하지_않는_데이터_값이_주어졌을_경우확인() {
         // given, when
         var result = ""
-        let viewModel = BannerViewModel(networkAPI: MockSession(result: .failure(APIError.invalidData)))
+        let viewModel = BannerViewModel(networkAPI: MockNetworkManager(result: .failure(APIError.invalidData)))
         
         viewModel.onErrorHandling = { _ in
             result = "error"

@@ -20,7 +20,7 @@ final class BannerViewModelTest: XCTestCase {
     func test_유효한_데이터_값이_주어졌을_경우확인() {
         // given
         let viewModel = BannerViewModel(
-            networkAPI: MockNetworkManager(result: .success(MockData(fileName: "BannerImageUrlMockData").data!))
+            networkAPI: MockNetworkManager(result: .success(StubData(fileName: "BannerImageUrlStubData").data!))
         )
         let bannerImageUrlLoadAction = Observable<Void>(())
         let input = BannerViewModel.Input(loadBannerImagesAction: bannerImageUrlLoadAction)

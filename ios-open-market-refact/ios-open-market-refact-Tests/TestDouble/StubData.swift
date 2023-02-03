@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MockData {
+struct StubData {
     let data: Data?
 
     init(fileName: String) {

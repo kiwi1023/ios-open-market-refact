@@ -19,7 +19,7 @@ final class ListViewModelTest: XCTestCase {
     
     func test_item_갯수확인() {
         var count = 0
-        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let pageInfo = Observable((pageNumber: 1, itemsPerPage: 5,
                                    fetchType: ProductListViewController.FetchType.add))
         let filteringState = Observable("")
@@ -38,9 +38,9 @@ final class ListViewModelTest: XCTestCase {
     
     func test_유효한_데이터_값이_주어졌을_경우확인() {
         // given
-        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let pageInfo = Observable((pageNumber: 1, itemsPerPage: 5, fetchType: ProductListViewController.FetchType.add))
-        let filteringState = Observable("mock")
+        let filteringState = Observable("stub")
         let input = ProductListViewModel.Input(productListPageInfoUpdateAction: pageInfo,
                                                filteringStateUpdateAction: filteringState
                                                )
@@ -51,8 +51,8 @@ final class ListViewModelTest: XCTestCase {
         let lowercasedName = output.filteredListOutput.value.first?.name
         
         // then
-        XCTAssertEqual(name, "MockProductForTest")
-        XCTAssertEqual(lowercasedName, "MockProductForTest")
+        XCTAssertEqual(name, "StubProductForTest")
+        XCTAssertEqual(lowercasedName, "StubProductForTest")
     }
     
     func test_유효하지_않는_데이터_값이_주어졌을_경우확인() {
@@ -80,7 +80,7 @@ final class ListViewModelTest: XCTestCase {
     func test_값을_변경했을때_subscribe발동확인() {
         // given
         var result = ""
-        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let pageInfo = Observable((pageNumber: 1, itemsPerPage: 5,
                                    fetchType: ProductListViewController.FetchType.add))
         let filteringState = Observable("")
@@ -102,7 +102,7 @@ final class ListViewModelTest: XCTestCase {
     
     func test_검색된_데이터가_없을_경우확인() {
         // given
-        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductListViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let pageInfo = Observable((pageNumber: 1, itemsPerPage: 5,
                                    fetchType: ProductListViewController.FetchType.add))
         let filteringState = Observable("없는데이터")
@@ -116,7 +116,7 @@ final class ListViewModelTest: XCTestCase {
         let lowercasedName = output.filteredListOutput.value.first?.name
         
         // then
-        XCTAssertEqual(name, "MockProductForTest")
-        XCTAssertNotEqual(lowercasedName, "MockProductForTest")
+        XCTAssertEqual(name, "StubProductForTest")
+        XCTAssertNotEqual(lowercasedName, "StubProductForTest")
     }
 }

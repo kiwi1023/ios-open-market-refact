@@ -19,7 +19,7 @@ final class RegistViewModelTest: XCTestCase {
     
     func test_post_결과_확인() {
         // given
-        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
         let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
         let patchAction = Observable<(RegistrationProduct?)>((product))
@@ -40,7 +40,7 @@ final class RegistViewModelTest: XCTestCase {
     
     func test_patch_결과_확인() {
         // given
-        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
         let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
         let patchAction = Observable<(RegistrationProduct?)>((product))
@@ -61,7 +61,7 @@ final class RegistViewModelTest: XCTestCase {
     
     func test_post_patch_둘_다_action이_없을때() {
         // given
-        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = ProductRegistViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let product = RegistrationProduct(name: "", description: "", price: 0, currency: "", discountedPrice: 0, stock: 0, secret: "")
         let postAction = Observable<(RegistrationProduct?, [ProductImage])>((product, []))
         let patchAction = Observable<(RegistrationProduct?)>((product))

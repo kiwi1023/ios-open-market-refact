@@ -19,7 +19,7 @@ final class MainViewModelTest: XCTestCase {
     
     func test_유효한_데이터_값이_주어졌을_경우확인() {
         // given
-        let viewModel = MainViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = MainViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let updateAction = Observable((pageNumber: 1, itemsPerPage: 5))
         let input = MainViewModel.Input(pageInfoInput: updateAction)
         let output = viewModel.transform(input: input)
@@ -28,7 +28,7 @@ final class MainViewModelTest: XCTestCase {
         let name = output.fetchedProductListOutput.value.first?.name
         
         // then
-        XCTAssertEqual(name, "MockProductForTest")
+        XCTAssertEqual(name, "StubProductForTest")
     }
     
     func test_유효하지_않는_데이터_값이_주어졌을_경우확인() {
@@ -51,7 +51,7 @@ final class MainViewModelTest: XCTestCase {
     func test_값을_변경했을때_subscribe발동확인() {
         // given
         var result = ""
-        let viewModel = MainViewModel(networkAPI: MockNetworkManager(result: .success(MockData(fileName: "ProductListMockData").data!)))
+        let viewModel = MainViewModel(networkAPI: MockNetworkManager(result: .success(StubData(fileName: "ProductListStubData").data!)))
         let updateAction = Observable((pageNumber: 1, itemsPerPage: 5))
         let input = MainViewModel.Input(pageInfoInput: updateAction)
         let output = viewModel.transform(input: input)

@@ -1,7 +1,7 @@
 {
     "id": 1,
     "vendor_id": 1,
-    "name": "MockProductForTest",
+    "name": "StubProductForTest",
     "description": "파격세잉",
     "thumbnail": "https://s3.ap-northeast-2.amazonaws.com/media.yagom-academy.kr/training-resources/11/20221110/b983491260fb11eda9178d8e68eeb7c2_thumb.jpeg",
     "currency": "KRW",
@@ -21,6 +21,6 @@
     ],
     "vendors": {
         "id": 11,
-        "name": "MockProductForTest"
+        "name": "StubProductForTest"
     }
 }

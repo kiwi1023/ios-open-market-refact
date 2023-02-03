@@ -12,7 +12,7 @@
             "id": 175,
             "vendor_id": 13,
             "vendorName": "mimm123",
-            "name": "MockProductForTest",
+            "name": "StubProductForTest",
             "description": "사줘ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ",
             "thumbnail": "https://s3.ap-northeast-2.amazonaws.com/media.yagom-academy.kr/training-resources/13/20221109/a7b21893606a11eda917d10cd0dd5a16_thumb.jpeg",
             "currency": "KRW",

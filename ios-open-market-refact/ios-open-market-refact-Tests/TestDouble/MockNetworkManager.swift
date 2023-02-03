@@ -22,7 +22,7 @@ final class MockNetworkManager: NetworkManagerProtocol {
         DispatchQueue.global().asyncAfter(deadline: .now() + 1) { [weak self] in
             
             guard let self = self,
-                  let mockData = MockData(fileName: self.fileName).data else { return }
+                  let mockData = StubData(fileName: self.fileName).data else { return }
             
             if self.isSuccess {
                 completionHandler(.success(mockData))
